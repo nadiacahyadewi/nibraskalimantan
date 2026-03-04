@@ -59,17 +59,41 @@
                     <p class="text-gray-500 mt-4 max-w-2xl mx-auto text-lg hover:text-gray-700 transition-colors">Telusuri seluruh katalog produk terbaik kami di sini.</p>
                 </div>
 
-                <!-- Category Filters -->
-                <div class="flex flex-wrap justify-center gap-4 mb-12">
-                    <a href="{{ url('/produk') }}" class="px-6 py-2 rounded-full font-medium transition-colors border {{ request('kategori') == null ? 'bg-nibras-magenta text-white border-nibras-magenta shadow-md' : 'bg-white text-gray-600 border-gray-300 hover:border-nibras-magenta hover:text-nibras-magenta' }}">
-                        Semua Kategori
-                    </a>
-                    <a href="{{ url('/produk?kategori=Atasan') }}" class="px-6 py-2 rounded-full font-medium transition-colors border {{ request('kategori') == 'Atasan' ? 'bg-nibras-magenta text-white border-nibras-magenta shadow-md' : 'bg-white text-gray-600 border-gray-300 hover:border-nibras-magenta hover:text-nibras-magenta' }}">
-                        Atasan
-                    </a>
-                    <a href="{{ url('/produk?kategori=Bawahan') }}" class="px-6 py-2 rounded-full font-medium transition-colors border {{ request('kategori') == 'Bawahan' ? 'bg-nibras-magenta text-white border-nibras-magenta shadow-md' : 'bg-white text-gray-600 border-gray-300 hover:border-nibras-magenta hover:text-nibras-magenta' }}">
-                        Bawahan
-                    </a>
+                <!-- Search and Filters (Compact) -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-10 max-w-5xl mx-auto">
+                    <form action="{{ url('/produk') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
+                        
+                        <!-- Search Bar -->
+                        <div class="flex-grow flex w-full md:w-auto relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk..." class="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta transition-all">
+                        </div>
+
+                        <!-- Category Dropdown -->
+                        <select name="category_id" class="w-full md:w-auto border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta bg-white text-gray-700 cursor-pointer" onchange="this.form.submit()">
+                            <option value="">-- Semua Kategori --</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+
+                        <!-- Brand Dropdown -->
+                        <select name="brand_id" class="w-full md:w-auto border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta bg-white text-gray-700 cursor-pointer" onchange="this.form.submit()">
+                            <option value="">-- Semua Brand --</option>
+                            @foreach($brands as $brand)
+                                <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                            @endforeach
+                        </select>
+
+                        <!-- Submit Button (Optional, auto-submits on change but useful for search text) -->
+                        <button type="submit" class="w-full md:w-auto bg-nibras-magenta text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:bg-pink-700 transition-colors shadow-sm whitespace-nowrap">
+                            Terapkan
+                        </button>
+                    </form>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
@@ -99,9 +123,14 @@
                                     {{ $p->name }}
                                 </a>
                             </h3>
-                            <div class="mt-auto pt-4 border-t border-gray-50">
+                            <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
                                 <p class="text-xl font-bold text-nibras-magenta mb-1">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">{{ $p->category ?? '-' }}</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest line-clamp-1 mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
+                                    {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
+                                </p>
+                                @if($p->brand)
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 rounded-sm inline-block px-1.5 py-0.5 mx-auto border border-gray-100">{{ $p->brand->name }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>

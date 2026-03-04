@@ -7,7 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
-    $products = \App\Models\Product::with('images')->latest()->take(8)->get();
+    $products = \App\Models\Product::with(['images', 'categoryData', 'brand'])->latest()->take(8)->get();
     return view('welcome', compact('products'));
 })->name('home');
 
@@ -41,5 +41,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     });
+
+    // Category and Brand routes
+    Route::get('/category-brand', [App\Http\Controllers\Admin\CategoryBrandController::class, 'index'])->name('category_brand.index');
+    Route::post('/categories', [App\Http\Controllers\Admin\CategoryBrandController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{category}', [App\Http\Controllers\Admin\CategoryBrandController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{category}', [App\Http\Controllers\Admin\CategoryBrandController::class, 'destroyCategory'])->name('categories.destroy');
+    Route::post('/brands', [App\Http\Controllers\Admin\CategoryBrandController::class, 'storeBrand'])->name('brands.store');
+    Route::put('/brands/{brand}', [App\Http\Controllers\Admin\CategoryBrandController::class, 'updateBrand'])->name('brands.update');
+    Route::delete('/brands/{brand}', [App\Http\Controllers\Admin\CategoryBrandController::class, 'destroyBrand'])->name('brands.destroy');
+
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
 });

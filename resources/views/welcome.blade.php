@@ -113,8 +113,14 @@
                                 </a>
                             </h3>
                             <div class="mt-auto pt-4 border-t border-gray-50">
+                            <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
                                 <p class="text-xl font-bold text-nibras-magenta mb-1">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
-                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">{{ $p->category ?? '-' }}</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest line-clamp-1 mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
+                                    {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
+                                </p>
+                                @if($p->brand)
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 rounded-sm inline-block px-1.5 py-0.5 mx-auto border border-gray-100">{{ $p->brand->name }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>

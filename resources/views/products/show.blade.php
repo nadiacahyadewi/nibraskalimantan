@@ -45,7 +45,7 @@
                 <li>
                     <div class="flex items-center">
                         <svg class="w-4 h-4 text-gray-400 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        <a href="{{ url('/produk?kategori=' . ($product->category ?? '')) }}" class="hover:text-nibras-magenta transition-colors">{{ $product->category ?? 'Kategori' }}</a>
+                        <a href="{{ url('/produk?category_id=' . ($product->category_id ?? '')) }}" class="hover:text-nibras-magenta transition-colors">{{ $product->categoryData ? $product->categoryData->name : ($product->category ?? 'Tanpa Kategori') }}</a>
                     </div>
                 </li>
                 <li aria-current="page">
@@ -87,7 +87,12 @@
 
                 <!-- Right: Product Details -->
                 <div class="w-full lg:w-7/12 p-6 lg:p-10 flex flex-col">
-                    <span class="text-xs font-bold text-nibras-magenta tracking-widest uppercase mb-2">{{ $product->category ?? '-' }}</span>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold text-nibras-magenta tracking-widest uppercase">{{ $product->categoryData ? $product->categoryData->name : ($product->category ?? 'Tanpa Kategori') }}</span>
+                        @if($product->brand)
+                            <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase border border-gray-200 px-2 py-0.5 rounded">{{ $product->brand->name }}</span>
+                        @endif
+                    </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
                     
                     <div class="flex items-center gap-4 mb-6">

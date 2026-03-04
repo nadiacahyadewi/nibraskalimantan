@@ -9,12 +9,22 @@ class Product extends Model
     protected $fillable = [
         'name', 'description', 'price', 
         'size_xs', 'size_s', 'size_m', 'size_l', 'size_xl', 'size_xxl', 
-        'color', 'category'
+        'color', 'category', 'category_id', 'brand_id'
     ];
 
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function categoryData()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function getTotalStockAttribute()

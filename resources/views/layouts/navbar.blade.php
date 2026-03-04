@@ -53,20 +53,7 @@
                 <a href="{{ url('/produk') }}" class="{{ request()->is('produk') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} transition-colors px-2 py-1">
                     Produk
                 </a>
-                <!-- Category Dropdown -->
-                <div class="relative group">
-                    <button class="flex items-center gap-1 text-gray-800 group-hover:text-nibras-magenta transition-colors px-2 py-1 focus:outline-none">
-                        Kategori 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-0.5 transition-transform group-hover:rotate-180 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-                    </button>
-                    <!-- Dropdown Menu -->
-                    <div class="absolute left-0 top-full pt-4 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                        <div class="bg-white border border-gray-100 rounded-md shadow-lg py-2 flex flex-col">
-                            <a href="{{ url('/produk?kategori=Atasan') }}" class="px-4 py-2 hover:bg-pink-50 hover:text-nibras-magenta transition-colors">Atasan</a>
-                            <a href="{{ url('/produk?kategori=Bawahan') }}" class="px-4 py-2 hover:bg-pink-50 hover:text-nibras-magenta transition-colors">Bawahan</a>
-                        </div>
-                    </div>
-                </div>
+
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} transition-colors px-2 py-1">
                     Tentang Kami
                 </a>
@@ -135,12 +122,7 @@
                 <a href="{{ url('/produk') }}" class="{{ request()->is('produk') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Produk</a>
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Tentang Kami</a>
                 
-                <!-- Mobile Category Links -->
-                <div class="flex flex-col border-b border-gray-50 pb-2">
-                    <div class="text-gray-800 font-medium py-2">Kategori</div>
-                    <a href="{{ url('/produk?kategori=Atasan') }}" class="pl-4 text-gray-600 hover:text-nibras-magenta py-1.5">- Atasan</a>
-                    <a href="{{ url('/produk?kategori=Bawahan') }}" class="pl-4 text-gray-600 hover:text-nibras-magenta py-1.5">- Bawahan</a>
-                </div>
+
 
                 <!-- Mobile Search Box -->
                 <form action="{{ url('/produk') }}" method="GET" class="relative w-full mt-2">

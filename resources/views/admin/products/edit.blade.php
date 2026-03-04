@@ -55,6 +55,10 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 Kelola Produk
             </a>
+            <a href="{{ route('admin.category_brand.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                Kategori & Brand
+            </a>
         </nav>
         
         <div class="p-4 border-t border-gray-100">
@@ -123,8 +127,23 @@
                             </div>
                             
                             <div class="space-y-1">
-                                <label for="category" class="block text-sm font-medium text-gray-700">Kategori</label>
-                                <input type="text" name="category" id="category" value="{{ old('category', $product->category) }}" class="w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm">
+                                <label for="category_id" class="block text-sm font-medium text-gray-700">Kategori</label>
+                                <select name="category_id" id="category_id" class="w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($categories as $cat)
+                                        <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label for="brand_id" class="block text-sm font-medium text-gray-700">Brand</label>
+                                <select name="brand_id" id="brand_id" class="w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm">
+                                    <option value="">-- Pilih Brand --</option>
+                                    @foreach($brands as $brand)
+                                        <option value="{{ $brand->id }}" {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="space-y-1">
