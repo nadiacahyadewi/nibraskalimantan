@@ -22,11 +22,13 @@ class CartController extends Controller
     public function index()
     {
         $cart = $this->getCart();
-        $cartItems = $cart->items()->with('product.images')->get();
+        $cartItems = $cart->items()->with('product.images', 'product.variants')->get();
 
         $subtotal = 0;
         foreach ($cartItems as $item) {
-            $subtotal += $item->product->price * $item->quantity;
+            $variant = $item->product->variants->where('size', $item->size)->first();
+            $price = $variant ? $variant->price : $item->product->price;
+            $subtotal += $price * $item->quantity;
         }
 
         $totalQty = $cartItems->sum('quantity');
@@ -45,8 +47,12 @@ class CartController extends Controller
         $product = Product::findOrFail($request->product_id);
         
         // Validate stock
-        $sizeField = 'size_' . strtolower($request->size);
-        $availableStock = $product->$sizeField ?? 0;
+        $variant = $product->variants()->where('size', $request->size)->first();
+        if (!$variant) {
+            return back()->with('error', 'Ukuran varian tidak ditemukan.');
+        }
+
+        $availableStock = $variant->stock;
 
         if ($availableStock < $request->qty) {
             return back()->with('error', 'Stok tidak mencukupi untuk ukuran ' . $request->size);
@@ -91,8 +97,8 @@ class CartController extends Controller
 
         // Validate stock
         $product = $cartItem->product;
-        $sizeField = 'size_' . strtolower($cartItem->size);
-        $availableStock = $product->$sizeField ?? 0;
+        $variant = $product->variants()->where('size', $cartItem->size)->first();
+        $availableStock = $variant ? $variant->stock : 0;
 
         $qty = $request->quantity;
         if ($qty > $availableStock) {
@@ -117,10 +123,116 @@ class CartController extends Controller
         return back()->with('success', 'Item dihapus dari keranjang.');
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
-        // For now, this just shows a placeholder alert or redirects.
-        // In a real app, it would show a checkout form or redirect to WhatsApp.
-        return redirect()->route('cart.index')->with('info', 'Halaman Checkout dalam pengembangan.');
+        $cart = $this->getCart();
+        $cartItems = $cart->items()->with('product.images', 'product.variants', 'product.categoryData')->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        $subtotal = 0;
+        $totalWeight = 0;
+
+        $categoryWeights = [
+            'Jilbab' => 150,
+            'Koko Dewasa' => 300,
+            'Gamis Dewasa' => 700,
+            'Gamis Anak' => 400,
+            'Koko Anak' => 200,
+            'Kaos Kaki' => 100,
+            'Ciput' => 80,
+            'Sarung' => 500,
+            'Baju Olahraga' => 350,
+            'Mukena' => 900,
+            'Inner' => 120,
+            'Atasan Pria' => 300,
+            'Atasan Wanita' => 250,
+        ];
+
+        foreach ($cartItems as $item) {
+            $variant = $item->product->variants->where('size', $item->size)->first();
+            $price = $variant ? $variant->price : $item->product->price;
+            $subtotal += $price * $item->quantity;
+
+            $catName = $item->product->categoryData ? $item->product->categoryData->name : ($item->product->category ?? '');
+            
+            $weightPerItem = 250; // Default weight jika murni tidak didefinisikan
+            foreach ($categoryWeights as $cat => $w) {
+                if (stripos($catName, $cat) !== false) {
+                    $weightPerItem = $w;
+                    break;
+                }
+            }
+            
+            $totalWeight += $weightPerItem * $item->quantity;
+        }
+
+        // Ekspedisi minimal dihitung 1kg (1000g)
+        $totalWeight = max($totalWeight, 1000);
+        $totalQty = $cartItems->sum('quantity');
+
+        return view('checkout.index', compact('cartItems', 'subtotal', 'totalQty', 'totalWeight'));
+    }
+    public function processCheckout(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+        ]);
+
+        $cart = $this->getCart();
+        $cartItems = $cart->items()->with('product.variants')->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        $totalAmount = 0;
+
+        // Calculate total amount and prepare order items data
+        $orderItemsData = [];
+        foreach ($cartItems as $item) {
+            $variant = $item->product->variants->where('size', $item->size)->first();
+            $price = $variant ? $variant->price : $item->product->price;
+            
+            $totalAmount += $price * $item->quantity;
+
+            $orderItemsData[] = [
+                'product_id' => $item->product_id,
+                'product_name' => $item->product->name,
+                'size' => $item->size,
+                'quantity' => $item->quantity,
+                'price' => $price,
+            ];
+
+            // Deduct stock
+            if ($variant) {
+                $variant->stock = max(0, $variant->stock - $item->quantity);
+                $variant->save();
+            }
+        }
+
+        // Create Order
+        $order = \App\Models\Order::create([
+            'user_id' => Auth::id(),
+            'customer_name' => $request->name,
+            'customer_phone' => $request->phone,
+            'customer_address' => $request->address,
+            'total_amount' => $totalAmount,
+            'status' => 'Menunggu Konfirmasi'
+        ]);
+
+        // Create Order Items
+        foreach ($orderItemsData as $itemData) {
+            $order->items()->create($itemData);
+        }
+
+        // Clear cart
+        $cart->items()->delete();
+
+        return redirect()->route('home')->with('success', 'Pesanan Anda berhasil dibuat! Pesanan Anda akan segera diproses.');
     }
 }

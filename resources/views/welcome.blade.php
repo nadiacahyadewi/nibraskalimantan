@@ -92,29 +92,42 @@
                         <!-- Image Area -->
                         <div class="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden">
                             @if($p->images->count() > 0)
-                                <img src="{{ Storage::url($p->images->first()->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out">
+                                <img src="{{ Storage::url($p->images->first()->image_path) }}" 
+                                     alt="{{ $p->name }}" 
+                                     class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
                                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             @endif
-                            <!-- Overlay CTA -->
-                            <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
-                                <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
-                            </a>
+
+                            @if($p->total_stock <= 0)
+                                <!-- Out of Stock Badge -->
+                                <div class="absolute inset-0 z-20 flex items-center justify-center">
+                                    <div class="bg-gray-900/80 backdrop-blur-sm text-white px-6 py-2 rounded-lg font-bold text-sm tracking-widest uppercase shadow-xl transform -rotate-12 border border-white/20">
+                                        Habis
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Overlay CTA -->
+                                <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
+                                    <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
+                                </a>
+                            @endif
                         </div>
                         
-                        <!-- Content -->
-                        <div class="p-6 text-center flex-grow flex flex-col justify-between relative z-30 bg-white">
-                            <h3 class="text-sm font-bold text-gray-900 mb-2 tracking-widest group-hover:text-nibras-magenta transition-colors line-clamp-2 leading-relaxed">
+                        <div class="p-5 md:p-6 text-center flex-grow flex flex-col justify-start relative z-30 bg-white">
+                            <h3 class="text-xs sm:text-sm font-bold text-gray-900 mb-2 tracking-widest group-hover:text-nibras-magenta transition-colors break-words leading-snug">
                                 <a href="{{ route('product.show', $p->id) }}">
                                     <span aria-hidden="true" class="absolute inset-0 z-40"></span>
                                     {{ $p->name }}
                                 </a>
                             </h3>
-                            <div class="mt-auto pt-4 border-t border-gray-50">
+                            <div class="mb-3">
+                                <span class="text-[9px] sm:text-[10px] font-bold text-gray-500 bg-gray-100 rounded-sm px-2 py-0.5 border border-gray-200 uppercase tracking-widest">{{ $p->color ?? 'Sesuai Gambar' }}</span>
+                            </div>
                             <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
-                                <p class="text-xl font-bold text-nibras-magenta mb-1">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                                <p class="text-xl font-bold text-nibras-magenta mb-1">{{ $p->price_range }}</p>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest line-clamp-1 mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
                                     {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
                                 </p>
@@ -157,6 +170,22 @@
             btn.addEventListener('click', () => {
                 menu.classList.toggle('hidden');
             });
+        });
+    </script>
+    
+    <!-- SweetAlert2 for Success Messages -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#E32184',
+                    confirmButtonText: 'Tutup'
+                });
+            @endif
         });
     </script>
 </body>

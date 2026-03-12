@@ -59,6 +59,14 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                 Kategori & Brand
             </a>
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Kelola Pesanan
+            </a>
+            <a href="{{ route('admin.finance.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Kelola Keuangan
+            </a>
         </nav>
         
         <div class="p-4 border-t border-gray-100">
@@ -149,7 +157,7 @@
                                         </div>
                                     </td>
                                     <td class="p-4 text-sm text-gray-600">
-                                        <span class="px-2 py-1 bg-pink-50 text-nibras-magenta rounded-md text-xs font-medium">{{ $product->category ?? 'Tanpa Kategori' }}</span>
+                                        <span class="px-2 py-1 bg-pink-50 text-nibras-magenta rounded-md text-xs font-medium">{{ $product->categoryData->name ?? $product->category ?? 'Tanpa Kategori' }}</span>
                                     </td>
                                     <td class="p-4 text-sm font-medium text-gray-800">
                                         Rp {{ number_format($product->price, 0, ',', '.') }}
@@ -159,11 +167,16 @@
                                             <span class="text-sm font-bold {{ $product->total_stock > 10 ? 'text-green-600' : ($product->total_stock > 0 ? 'text-orange-500' : 'text-red-500') }}">
                                                 {{ $product->total_stock }}
                                             </span>
-                                            <span class="text-xs text-gray-500 mt-1" title="XS:{{$product->size_xs}} S:{{$product->size_s}} M:{{$product->size_m}} L:{{$product->size_l}} XL:{{$product->size_xl}} XXL:{{$product->size_xxl}}">Detail Sizes</span>
+                                        <span class="text-xs text-gray-500 mt-1 cursor-pointer hover:text-nibras-magenta transition-colors underline decoration-dotted" 
+                                              data-product-name="{{ $product->name }}"
+                                              data-product-variants="{{ $product->variants->toJson() }}"
+                                              onclick="showStockModal(this)" 
+                                              title="Klik untuk lihat detail stok">Lihat Detail Stok</span>
                                         </div>
                                     </td>
                                     <td class="p-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
+
                                             <a href="{{ route('admin.products.edit', $product->id) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Product">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                             </a>
@@ -201,6 +214,98 @@
         </div>
     </main>
 
+    <!-- Stock Modal -->
+    <div id="stockModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity" aria-hidden="true" onclick="closeStockModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100 relative z-10">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-100">
+                    <div class="flex justify-between items-center pr-2">
+                        <h3 class="text-lg leading-6 font-semibold text-gray-900" id="stockModalTitle">Detail Stok Produk</h3>
+                        <button type="button" onclick="closeStockModal()" class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nibras-magenta transition-colors">
+                            <span class="sr-only">Close modal</span>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="px-4 py-5 sm:p-6 bg-gray-50">
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+                        <table class="w-full text-left border-collapse" id="stockModalTable">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider">
+                                    <th class="py-3 px-4 font-semibold w-2/3">Ukuran / Varian</th>
+                                    <th class="py-3 px-4 font-semibold text-right w-1/3">Stok</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100" id="stockModalTableBody">
+                                <!-- Rows will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-white px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-100">
+                    <button type="button" onclick="closeStockModal()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-nibras-magenta text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nibras-magenta sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showStockModal(element) {
+            const productName = element.getAttribute('data-product-name');
+            const variantsJson = element.getAttribute('data-product-variants');
+
+            document.getElementById('stockModalTitle').innerText = 'Stok: ' + productName;
+            let variants = [];
+            try {
+                variants = JSON.parse(variantsJson);
+            } catch(e) {
+                console.error("Gagal membaca data varian", e);
+            }
+            const tableBody = document.getElementById('stockModalTableBody');
+            tableBody.innerHTML = '';
+            
+            if (variants.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" class="py-4 px-4 text-center text-gray-500 text-sm">Tidak ada varian stok tercatat.</td></tr>';
+            } else {
+                variants.forEach(variant => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 transition-colors';
+                    
+                    const stock = parseInt(variant.stock) || 0;
+                    let stockColorClass = 'text-red-500';
+                    if(stock > 10) stockColorClass = 'text-green-600';
+                    else if(stock > 0) stockColorClass = 'text-orange-500';
+                    
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 text-sm text-gray-800 font-medium">${variant.size || variant.name || '-'}</td>
+                        <td class="py-3 px-4 text-sm text-right font-bold ${stockColorClass}">${stock}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+            
+            document.getElementById('stockModal').classList.remove('hidden');
+        }
+
+        function closeStockModal() {
+            document.getElementById('stockModal').classList.add('hidden');
+        }
+
+        // Close modal on Escape key press
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeStockModal();
+            }
+        });
+
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');

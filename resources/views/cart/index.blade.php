@@ -75,7 +75,11 @@
                         <p class="text-sm text-gray-500 mb-3 mt-1">Ukuran: {{ $item->size }}</p>
                         
                         <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <span class="text-lg font-bold text-nibras-magenta">Rp {{ number_format($item->product->price, 0, ',', '.') }}</span>
+                            @php
+                                $variant = $item->product->variants->where('size', $item->size)->first();
+                                $itemPrice = $variant ? $variant->price : $item->product->price;
+                            @endphp
+                            <span class="text-lg font-bold text-nibras-magenta">Rp {{ number_format($itemPrice, 0, ',', '.') }}</span>
                             
                             <!-- Quantity Adjuster -->
                             <div class="flex items-center border border-gray-200 rounded-md w-32 h-10 bg-white">
@@ -122,7 +126,7 @@
 
                     <div id="checkout-container" class="{{ count($cartItems) > 0 ? '' : 'hidden' }}">
                         <a href="{{ route('checkout') }}" class="w-full bg-nibras-magenta text-white h-12 rounded-md font-bold hover:bg-pink-700 transition-all shadow-md flex items-center justify-center gap-2 hover:shadow-lg focus:outline-none">
-                            Lanjut ke Pembayaran
+                            Lanjutkan
                         </a>
                     </div>
                     

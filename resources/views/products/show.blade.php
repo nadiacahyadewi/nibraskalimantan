@@ -96,9 +96,12 @@
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
                     
                     <div class="flex items-center gap-4 mb-6">
-                        <span class="text-3xl font-bold text-nibras-magenta">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                        <div class="flex items-center text-sm border-l-2 border-gray-200 pl-4">
-                            <span class="bg-pink-50 text-nibras-magenta px-2.5 py-1 rounded-md font-semibold font-mono">Stok: {{ $product->total_stock }}</span>
+                        <span id="display-price" class="text-2xl md:text-3xl font-bold text-nibras-magenta">{{ $product->price_range }}</span>
+                        <div class="flex items-center text-sm border-l-2 border-gray-200 pl-4 space-x-3">
+                            <span id="display-stock" class="bg-pink-50 text-nibras-magenta px-2.5 py-1 rounded-md font-semibold font-mono">Stok: {{ $product->total_stock }}</span>
+                            @if($product->total_stock <= 0)
+                                <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider border border-red-200 shadow-sm animate-pulse">Habis</span>
+                            @endif
                         </div>
                     </div>
 
@@ -118,22 +121,17 @@
                     <div class="mb-8">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-sm font-semibold text-gray-900">Ukuran:</h3>
-                            <a href="#" class="text-sm text-nibras-magenta hover:underline">Panduan Ukuran</a>
                         </div>
-                        <div class="grid grid-cols-6 gap-2 sm:gap-3">
-                            @foreach(['xs' => 'XS', 's' => 'S', 'm' => 'M', 'l' => 'L', 'xl' => 'XL', 'xxl' => 'XXL'] as $sizeKey => $sizeLabel)
-                                @php
-                                    $sizeField = "size_{$sizeKey}";
-                                    $stock = $product->$sizeField;
-                                @endphp
-                                @if($stock > 0)
-                                    <button class="py-2 border-2 border-gray-200 rounded-md text-sm font-medium hover:border-nibras-magenta hover:text-nibras-magenta transition-colors focus:outline-none text-gray-600 size-btn" onclick="selectSize(this, '{{$sizeLabel}}')">{{ $sizeLabel }}</button>
+                        <div class="flex flex-wrap gap-2 sm:gap-3">
+                            @foreach($product->variants as $variant)
+                                @if($variant->stock > 0)
+                                    <button type="button" class="px-4 py-2 border-2 border-gray-200 rounded-md text-sm font-medium hover:border-nibras-magenta hover:text-nibras-magenta transition-colors focus:outline-none text-gray-600 size-btn" onclick="selectSize(this, '{{$variant->size}}', {{ $variant->price }}, {{ $variant->stock }})">{{ $variant->size }}</button>
                                 @else
-                                    <button class="py-2 border-2 border-gray-200 rounded-md text-sm font-medium text-gray-300 cursor-not-allowed bg-gray-50 focus:outline-none relative overflow-hidden group" disabled title="Habis">
+                                    <button type="button" class="px-4 py-2 border-2 border-gray-200 rounded-md text-sm font-medium text-gray-300 cursor-not-allowed bg-gray-50 focus:outline-none relative overflow-hidden group" disabled title="Habis">
                                         <div class="absolute inset-0 flex items-center justify-center w-full h-full rotate-45 transform">
                                             <div class="w-full h-px bg-gray-300"></div>
                                         </div>
-                                        <span class="relative z-10">{{ $sizeLabel }}</span>
+                                        <span class="relative z-10 hover:text-gray-300">{{ $variant->size }}</span>
                                     </button>
                                 @endif
                             @endforeach
@@ -155,17 +153,21 @@
                             </div>
 
                             <!-- Add to Cart -->
-                            <button type="submit" class="flex-1 bg-nibras-magenta text-white h-12 rounded-md font-semibold hover:bg-pink-700 transition-colors shadow-md flex items-center justify-center gap-2 group">
+                            <button type="submit" 
+                                    class="flex-1 bg-nibras-magenta text-white h-12 rounded-md font-semibold hover:bg-pink-700 transition-colors shadow-md flex items-center justify-center gap-2 group {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
+                                    {{ $product->total_stock <= 0 ? 'disabled' : '' }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                                 </svg>
-                                Masuk Keranjang
+                                {{ $product->total_stock <= 0 ? 'Stok Habis' : 'Masuk Keranjang' }}
                             </button>
                         </div>
                     </form>
 
                     <!-- Buy Now -->
-                    <button onclick="buyNowWA()" class="w-full mt-3 bg-gray-900 text-white h-12 rounded-md font-semibold hover:bg-gray-800 transition-colors shadow flex items-center justify-center gap-2">
+                    <button onclick="{{ $product->total_stock <= 0 ? 'return' : 'buyNowWA()' }}" 
+                            class="w-full mt-3 bg-gray-900 text-white h-12 rounded-md font-semibold hover:bg-gray-800 transition-colors shadow flex items-center justify-center gap-2 {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
+                            {{ $product->total_stock <= 0 ? 'disabled' : '' }}>
                         Beli Sekarang (WhatsApp)
                     </button>
 
@@ -209,10 +211,15 @@
 
         let selectedSize = null;
 
-        function selectSize(btn, size) {
+        function selectSize(btn, size, price, stock) {
             selectedSize = size;
             document.getElementById('form-size').value = size;
             
+            // Format price to Rp X.XXX.XXX
+            let formattedPrice = 'Rp ' + parseInt(price).toLocaleString('id-ID');
+            document.getElementById('display-price').innerText = formattedPrice;
+            document.getElementById('display-stock').innerText = 'Stok: ' + stock;
+
             // Reset all active styles
             document.querySelectorAll('.size-btn').forEach(b => {
                 b.classList.remove('border-nibras-magenta', 'text-nibras-magenta', 'bg-pink-50');
@@ -222,6 +229,9 @@
             // Set active styles for the clicked button
             btn.classList.add('border-nibras-magenta', 'text-nibras-magenta', 'bg-pink-50');
             btn.classList.remove('border-gray-200', 'text-gray-600');
+            
+            // Reset qty to 1 and change max
+            document.getElementById('qty').value = 1;
         }
 
         function validateCartForm() {

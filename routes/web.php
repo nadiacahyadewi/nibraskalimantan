@@ -21,8 +21,18 @@ Route::post('/keranjang/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/keranjang/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
+// RajaOngkir API routes untuk AJAX Frontend
+Route::get('/rajaongkir/provinces', [App\Http\Controllers\RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
+Route::get('/rajaongkir/cities/{province_id}', [App\Http\Controllers\RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
+Route::post('/rajaongkir/cost', [App\Http\Controllers\RajaOngkirController::class, 'checkCost'])->name('rajaongkir.cost');
+
+// Checkout Route (Public / Guest accessible agar bisa beli tanpa login)
+Route::match(['get', 'post'], '/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
+
 Route::middleware('auth')->group(function () {
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::get('/pesanan', [App\Http\Controllers\UserOrderController::class, 'index'])->name('orders.index');
+    Route::get('/pesanan/{id}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('orders.show');
 });
 // Guest routes for login and register
 Route::middleware('guest')->group(function () {
@@ -52,4 +62,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/brands/{brand}', [App\Http\Controllers\Admin\CategoryBrandController::class, 'destroyBrand'])->name('brands.destroy');
 
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('finance', App\Http\Controllers\Admin\FinanceController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
 });

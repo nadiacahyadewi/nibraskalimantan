@@ -8,8 +8,8 @@ class Product extends Model
 {
     protected $fillable = [
         'name', 'description', 'price', 
-        'size_xs', 'size_s', 'size_m', 'size_l', 'size_xl', 'size_xxl', 
         'color', 'category', 'category_id', 'brand_id'
+        // size_xs to size_xxl is now deprecated in favor of variants
     ];
 
     public function images()
@@ -27,8 +27,30 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
     public function getTotalStockAttribute()
     {
-        return $this->size_xs + $this->size_s + $this->size_m + $this->size_l + $this->size_xl + $this->size_xxl;
+        // Calculate total stock from variants
+        return $this->variants()->sum('stock');
+    }
+
+    public function getPriceRangeAttribute()
+    {
+        if ($this->variants()->count() == 0) {
+            return 'Rp ' . number_format($this->price, 0, ',', '.');
+        }
+
+        $minPrice = $this->variants()->min('price');
+        $maxPrice = $this->variants()->max('price');
+
+        if ($minPrice == $maxPrice) {
+            return 'Rp ' . number_format($minPrice, 0, ',', '.');
+        }
+
+        return 'Rp ' . number_format($minPrice, 0, ',', '.') . ' - Rp ' . number_format($maxPrice, 0, ',', '.');
     }
 }

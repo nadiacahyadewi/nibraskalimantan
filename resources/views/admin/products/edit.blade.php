@@ -55,6 +55,10 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 Kelola Produk
             </a>
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Kelola Pesanan
+            </a>
             <a href="{{ route('admin.category_brand.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                 Kategori & Brand
@@ -147,8 +151,8 @@
                             </div>
 
                             <div class="space-y-1">
-                                <label for="price" class="block text-sm font-medium text-gray-700">Harga (Rp) <span class="text-red-500">*</span></label>
-                                <input type="number" name="price" id="price" value="{{ old('price', (int)$product->price) }}" required min="0" step="1000" class="w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm">
+                                <label for="price" class="block text-sm font-medium text-gray-700">Harga Dasar Tampilan (Rp) <span class="text-red-500">*</span></label>
+                                <input type="number" name="price" id="price" value="{{ old('price', (int)$product->price) }}" required min="0" step="1000" class="w-full bg-gray-50 text-gray-500 border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm" readonly title="Harga dasar otomatis disinkronisasi dari varian Anda">
                             </div>
 
                             <div class="space-y-1">
@@ -165,17 +169,69 @@
 
                         <hr class="border-gray-100">
 
-                        <!-- Stock by Size -->
+                        <!-- Product Variants (Sizes & Prices) -->
                         <div>
-                            <h4 class="text-sm font-medium text-gray-900 mb-4">Jumlah Stok per Ukuran</h4>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                                @foreach(['xs', 's', 'm', 'l', 'xl', 'xxl'] as $size)
-                                <div class="space-y-1">
-                                    <label for="size_{{ $size }}" class="block text-xs font-medium text-gray-500 uppercase">{{ $size }}</label>
-                                    <input type="number" name="size_{{ $size }}" id="size_{{ $size }}" value="{{ old('size_'.$size, $product->{'size_'.$size}) }}" min="0" class="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm text-center">
-                                </div>
-                                @endforeach
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-sm font-medium text-gray-900">Variasi Ukuran & Harga <span class="text-red-500">*</span></h4>
+                                <button type="button" id="add-variant-btn" class="text-xs bg-pink-50 text-nibras-magenta hover:bg-pink-100 px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                    Tambah Ukuran Baru
+                                </button>
                             </div>
+                            
+                            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-gray-50 border-b border-gray-200">
+                                        <tr>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/3">Nama Ukuran/Varian (Misal: XS-L)</th>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/3">Harga Khusus (Rp)</th>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/4">Stok</th>
+                                            <th class="px-4 py-3 font-medium text-center text-gray-700 w-16">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="variants-container" class="divide-y divide-gray-100">
+                                        @if($product->variants->count() > 0)
+                                            @foreach($product->variants as $index => $variant)
+                                            <tr class="variant-row">
+                                                <input type="hidden" name="variants[{{ $index }}][id]" value="{{ $variant->id }}">
+                                                <td class="px-4 py-3">
+                                                    <input type="text" name="variants[{{ $index }}][size]" value="{{ old('variants.'.$index.'.size', $variant->size) }}" required placeholder="Contoh: All Size" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[{{ $index }}][price]" value="{{ old('variants.'.$index.'.price', (int)$variant->price) }}" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[{{ $index }}][stock]" value="{{ old('variants.'.$index.'.stock', $variant->stock) }}" required min="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    <button type="button" class="remove-variant-btn text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Hapus">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        @else
+                                            <tr class="variant-row">
+                                                <td class="px-4 py-3">
+                                                    <input type="text" name="variants[0][size]" required placeholder="Contoh: All Size" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[0][price]" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[0][stock]" required min="0" value="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    <button type="button" class="remove-variant-btn text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Hapus">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Tambahkan setidaknya satu ukuran. Jika produk tidak memiliki ukuran berbeda, Anda bisa mengisinya dengan "All Size" atau "Satu Ukuran". Harga Dasar produk di atas otomatis mensinkronisasi harga termurah dari tabel varian ini.</p>
                         </div>
 
                         <hr class="border-gray-100">
@@ -301,6 +357,68 @@
                 const btn = document.getElementById('btn-hapus-' + slotId);
                 btn.setAttribute('onclick', "clearSlot('" + slotId + "')");
             };
+
+            // Variants Dynamic Table Logic
+            const variantsContainer = document.getElementById('variants-container');
+            const addVariantBtn = document.getElementById('add-variant-btn');
+
+            if (addVariantBtn) {
+                addVariantBtn.addEventListener('click', function() {
+                    const idx = Date.now(); // Gunakan timestamp sebagai index unik untuk baris baru
+                    const row = document.createElement('tr');
+                    row.className = 'variant-row';
+                    row.innerHTML = `
+                        <td class="px-4 py-3">
+                            <input type="text" name="variants[${idx}][size]" required placeholder="Contoh: XL-3XL" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="number" name="variants[${idx}][price]" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="number" name="variants[${idx}][stock]" required min="0" value="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button type="button" class="remove-variant-btn text-red-500 hover:text-red-700 p-1 rounded transition-colors" title="Hapus">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </td>
+                    `;
+                    variantsContainer.appendChild(row);
+                });
+
+                variantsContainer.addEventListener('click', function(e) {
+                    if (e.target.closest('.remove-variant-btn')) {
+                        const row = e.target.closest('.variant-row');
+                        if (variantsContainer.querySelectorAll('.variant-row').length > 1) {
+                            row.remove();
+                            // Trigger perhitungan ulang base price setelah baris dihapus
+                            const event = new Event('input', { bubbles: true });
+                            variantsContainer.dispatchEvent(event);
+                        } else {
+                            alert('Minimal harus ada 1 ukuran/varian produk!');
+                        }
+                    }
+                });
+                
+                // Auto sync "Harga Dasar" parameter
+                variantsContainer.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('variant-price') || e.type === 'input') {
+                        const basePriceInput = document.getElementById('price');
+                        let minPrice = Infinity;
+                        
+                        document.querySelectorAll('.variant-price').forEach(input => {
+                            if (input.value && !isNaN(input.value)) {
+                                const val = parseFloat(input.value);
+                                if (val < minPrice) minPrice = val;
+                            }
+                        });
+                        
+                        if (minPrice !== Infinity) {
+                            basePriceInput.value = minPrice;
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>

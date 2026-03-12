@@ -59,43 +59,7 @@
                     <p class="text-gray-500 mt-4 max-w-2xl mx-auto text-lg hover:text-gray-700 transition-colors">Telusuri seluruh katalog produk terbaik kami di sini.</p>
                 </div>
 
-                <!-- Search and Filters (Compact) -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-10 max-w-5xl mx-auto">
-                    <form action="{{ url('/produk') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-center w-full">
-                        
-                        <!-- Search Bar -->
-                        <div class="flex-grow flex w-full md:w-auto relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk..." class="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta transition-all">
-                        </div>
-
-                        <!-- Category Dropdown -->
-                        <select name="category_id" class="w-full md:w-auto border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta bg-white text-gray-700 cursor-pointer" onchange="this.form.submit()">
-                            <option value="">-- Semua Kategori --</option>
-                            @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                            @endforeach
-                        </select>
-
-                        <!-- Brand Dropdown -->
-                        <select name="brand_id" class="w-full md:w-auto border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-nibras-magenta focus:border-nibras-magenta bg-white text-gray-700 cursor-pointer" onchange="this.form.submit()">
-                            <option value="">-- Semua Brand --</option>
-                            @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
-                            @endforeach
-                        </select>
-
-                        <!-- Submit Button (Optional, auto-submits on change but useful for search text) -->
-                        <button type="submit" class="w-full md:w-auto bg-nibras-magenta text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:bg-pink-700 transition-colors shadow-sm whitespace-nowrap">
-                            Terapkan
-                        </button>
-                    </form>
-                </div>
-
+                <!-- Search and Filters moved to Navbar -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
                     
                     @forelse($products as $p)
@@ -103,28 +67,42 @@
                         <!-- Image Area -->
                         <div class="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden">
                             @if($p->images->count() > 0)
-                                <img src="{{ Storage::url($p->images->first()->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out">
+                                <img src="{{ Storage::url($p->images->first()->image_path) }}" 
+                                     alt="{{ $p->name }}" 
+                                     class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
                                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 </div>
                             @endif
-                            <!-- Overlay CTA -->
-                            <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
-                                <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
-                            </a>
+
+                            @if($p->total_stock <= 0)
+                                <!-- Out of Stock Badge -->
+                                <div class="absolute inset-0 z-20 flex items-center justify-center">
+                                    <div class="bg-gray-900/80 backdrop-blur-sm text-white px-6 py-2 rounded-lg font-bold text-sm tracking-widest uppercase shadow-xl transform -rotate-12 border border-white/20">
+                                        Habis
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Overlay CTA -->
+                                <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
+                                    <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
+                                </a>
+                            @endif
                         </div>
                         
-                        <!-- Content -->
-                        <div class="p-6 text-center flex-grow flex flex-col justify-between relative z-30 bg-white">
-                            <h3 class="text-sm font-bold text-gray-900 mb-2 tracking-widest group-hover:text-nibras-magenta transition-colors line-clamp-2 leading-relaxed">
+                        <div class="p-5 md:p-6 text-center flex-grow flex flex-col justify-start relative z-30 bg-white">
+                            <h3 class="text-xs sm:text-sm font-bold text-gray-900 mb-2 tracking-widest group-hover:text-nibras-magenta transition-colors break-words leading-snug">
                                 <a href="{{ route('product.show', $p->id) }}">
                                     <span aria-hidden="true" class="absolute inset-0 z-40"></span>
                                     {{ $p->name }}
                                 </a>
                             </h3>
+                            <div class="mb-3">
+                                <span class="text-[9px] sm:text-[10px] font-bold text-gray-500 bg-gray-100 rounded-sm px-2 py-0.5 border border-gray-200 uppercase tracking-widest">{{ $p->color ?? 'Sesuai Gambar' }}</span>
+                            </div>
                             <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
-                                <p class="text-xl font-bold text-nibras-magenta mb-1">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                                <p class="text-xl font-bold text-nibras-magenta mb-1">{{ $p->price_range }}</p>
                                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest line-clamp-1 mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
                                     {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
                                 </p>

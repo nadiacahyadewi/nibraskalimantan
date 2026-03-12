@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard - Febia Nibras Kalsel</title>
+    <title>@yield('title', 'Admin Panel - Febia Nibras Kalsel')</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,23 +47,23 @@
         </div>
         
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
-            <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-3 px-4 py-3 bg-pink-50 text-nibras-magenta rounded-lg transition-colors font-medium">
+            <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->is('admin/dashboard') ? 'bg-pink-50 text-nibras-magenta font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta' }} rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 Dashboard
             </a>
-            <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+            <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->is('admin/products*') ? 'bg-pink-50 text-nibras-magenta font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta' }} rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 Kelola Produk
             </a>
-            <a href="{{ route('admin.category_brand.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+            <a href="{{ route('admin.category_brand.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->is('admin/category_brand*') || request()->is('admin/categories*') || request()->is('admin/brands*') ? 'bg-pink-50 text-nibras-magenta font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta' }} rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                 Kategori & Brand
             </a>
-            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->is('admin/orders*') ? 'bg-pink-50 text-nibras-magenta font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta' }} rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 Kelola Pesanan
             </a>
-            <a href="{{ route('admin.finance.index') }}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta rounded-lg transition-colors">
+            <a href="{{ route('admin.finance.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->is('admin/finance*') ? 'bg-pink-50 text-nibras-magenta font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-nibras-magenta' }} rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Kelola Keuangan
             </a>
@@ -85,13 +85,11 @@
         <!-- Topbar -->
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 z-10 w-full gap-2">
             <div class="flex items-center gap-2 md:gap-3 whitespace-nowrap">
-                <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-600 hover:text-nibras-magenta focus:outline-none rounded-md hover:bg-gray-50 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
                 <h2 class="text-lg md:text-xl font-semibold text-gray-800">
-                    <span class="md:hidden">Dashboard</span>
-                    <span class="hidden md:inline">Dashboard Overview</span>
+                    @yield('header_title', 'Admin Panel')
                 </h2>
             </div>
             <div class="flex items-center gap-3 md:gap-4 overflow-hidden">
@@ -105,68 +103,8 @@
         </header>
 
         <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative">
-            <!-- Background decors -->
-            <div class="absolute -top-40 -right-40 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 pointer-events-none"></div>
-
-            <div class="max-w-7xl mx-auto space-y-8 relative z-10">
-                <!-- Welcome Card -->
-                <div class="bg-gradient-to-r from-nibras-magenta to-pink-600 rounded-2xl p-8 text-white shadow-lg shadow-pink-200 flex justify-between items-center relative overflow-hidden">
-                    <div class="absolute right-0 top-0 opacity-10">
-                        <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></svg>
-                    </div>
-                    <div class="relative z-10">
-                        <h3 class="text-2xl md:text-3xl font-bold mb-2">Selamat Datang di Admin Panel</h3>
-                        <p class="text-pink-100 text-sm md:text-base">Kelola produk, pesanan, dan hak akses pengguna Anda dengan mudah.</p>
-                    </div>
-                    <a href="/" target="_blank" class="hidden md:flex relative z-10 bg-white text-nibras-magenta px-6 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        Lihat Website
-                    </a>
-                </div>
-
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                        <div class="p-3 rounded-full bg-pink-50 text-nibras-magenta">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Produk</p>
-                            <p class="text-2xl font-bold text-gray-800">124</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                        <div class="p-3 rounded-full bg-blue-50 text-blue-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Pesanan Aktif</p>
-                            <p class="text-2xl font-bold text-gray-800">12</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                        <div class="p-3 rounded-full bg-purple-50 text-purple-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Pengguna Terdaftar</p>
-                            <p class="text-2xl font-bold text-gray-800">1,402</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity Placeholder -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-100">
-                        <h4 class="font-semibold text-gray-800">Aktivitas Terbaru</h4>
-                    </div>
-                    <div class="p-6 flex flex-col items-center justify-center text-gray-400 min-h-[200px]">
-                        <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <p>Belum ada aktivitas baru</p>
-                    </div>
-                </div>
-            </div>
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 relative bg-gray-50">
+            @yield('content')
         </div>
     </main>
 
@@ -178,10 +116,7 @@
             const mobileBtn = document.getElementById('mobile-menu-btn');
 
             function toggleSidebar() {
-                // Toggle sidebar translation
                 sidebar.classList.toggle('-translate-x-full');
-                
-                // Toggle overlay visibility
                 if (sidebar.classList.contains('-translate-x-full')) {
                     overlay.classList.add('hidden');
                 } else {
@@ -189,10 +124,10 @@
                 }
             }
 
-            // Bind click events
             if (mobileBtn) mobileBtn.addEventListener('click', toggleSidebar);
             if (overlay) overlay.addEventListener('click', toggleSidebar);
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

@@ -9,13 +9,14 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('images')->latest()->paginate(10);
+        $products = Product::with(['images', 'variants', 'categoryData'])->latest()->paginate(10);
         return view('admin.products.index', compact('products'));
     }
 
@@ -32,20 +33,28 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'size_xs' => 'required|integer|min:0',
-            'size_s' => 'required|integer|min:0',
-            'size_m' => 'required|integer|min:0',
-            'size_l' => 'required|integer|min:0',
-            'size_xl' => 'required|integer|min:0',
-            'size_xxl' => 'required|integer|min:0',
             'color' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'variants' => 'required|array|min:1',
+            'variants.*.size' => 'required|string|max:255',
+            'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.stock' => 'required|integer|min:0',
         ]);
 
         $product = Product::create($validated);
+
+        if ($request->has('variants')) {
+            foreach ($request->variants as $variantData) {
+                $product->variants()->create([
+                    'size' => $variantData['size'],
+                    'price' => $variantData['price'],
+                    'stock' => $variantData['stock']
+                ]);
+            }
+        }
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -74,21 +83,49 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'size_xs' => 'required|integer|min:0',
-            'size_s' => 'required|integer|min:0',
-            'size_m' => 'required|integer|min:0',
-            'size_l' => 'required|integer|min:0',
-            'size_xl' => 'required|integer|min:0',
-            'size_xxl' => 'required|integer|min:0',
             'color' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'remove_images' => 'nullable|array'
+            'remove_images' => 'nullable|array',
+            'variants' => 'required|array|min:1',
+            'variants.*.id' => 'nullable|exists:product_variants,id',
+            'variants.*.size' => 'required|string|max:255',
+            'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.stock' => 'required|integer|min:0',
         ]);
 
         $product->update($validated);
+
+        // Sync Variants
+        if ($request->has('variants')) {
+            $submittedVariantIds = [];
+            foreach ($request->variants as $variantData) {
+                if (isset($variantData['id']) && $variantData['id']) {
+                    // Update existing variant
+                    $variant = ProductVariant::find($variantData['id']);
+                    if ($variant && $variant->product_id == $product->id) {
+                        $variant->update([
+                            'size' => $variantData['size'],
+                            'price' => $variantData['price'],
+                            'stock' => $variantData['stock']
+                        ]);
+                        $submittedVariantIds[] = $variant->id;
+                    }
+                } else {
+                    // Create new variant
+                    $newVariant = $product->variants()->create([
+                        'size' => $variantData['size'],
+                        'price' => $variantData['price'],
+                        'stock' => $variantData['stock']
+                    ]);
+                    $submittedVariantIds[] = $newVariant->id;
+                }
+            }
+            // Delete variants that were removed from the form
+            $product->variants()->whereNotIn('id', $submittedVariantIds)->delete();
+        }
 
         // Handle image removal
         if ($request->has('remove_images')) {
