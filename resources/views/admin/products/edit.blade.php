@@ -184,8 +184,9 @@
                                     <thead class="bg-gray-50 border-b border-gray-200">
                                         <tr>
                                             <th class="px-4 py-3 font-medium text-gray-700 w-1/3">Nama Ukuran/Varian (Misal: XS-L)</th>
-                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/3">Harga Khusus (Rp)</th>
-                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/4">Stok</th>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/4">Harga Jual (Rp)</th>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/4">Harga Awal (Modal) (Rp)</th>
+                                            <th class="px-4 py-3 font-medium text-gray-700 w-1/6">Stok</th>
                                             <th class="px-4 py-3 font-medium text-center text-gray-700 w-16">Aksi</th>
                                         </tr>
                                     </thead>
@@ -198,7 +199,10 @@
                                                     <input type="text" name="variants[{{ $index }}][size]" value="{{ old('variants.'.$index.'.size', $variant->size) }}" required placeholder="Contoh: All Size" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                                                 </td>
                                                 <td class="px-4 py-3">
-                                                    <input type="number" name="variants[{{ $index }}][price]" value="{{ old('variants.'.$index.'.price', (int)$variant->price) }}" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                    <input type="number" name="variants[{{ $index }}][price]" value="{{ old('variants.'.$index.'.price', (int)$variant->price) }}" required min="0" step="1000" placeholder="Harga Jual" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[{{ $index }}][purchase_price]" value="{{ old('variants.'.$index.'.purchase_price', (int)$variant->purchase_price) }}" required min="0" step="1000" placeholder="Harga Modal" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                                                 </td>
                                                 <td class="px-4 py-3">
                                                     <input type="number" name="variants[{{ $index }}][stock]" value="{{ old('variants.'.$index.'.stock', $variant->stock) }}" required min="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
@@ -216,7 +220,10 @@
                                                     <input type="text" name="variants[0][size]" required placeholder="Contoh: All Size" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                                                 </td>
                                                 <td class="px-4 py-3">
-                                                    <input type="number" name="variants[0][price]" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                    <input type="number" name="variants[0][price]" required min="0" step="1000" placeholder="Harga Jual" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <input type="number" name="variants[0][purchase_price]" required min="0" step="1000" placeholder="Harga Modal" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                                                 </td>
                                                 <td class="px-4 py-3">
                                                     <input type="number" name="variants[0][stock]" required min="0" value="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
@@ -372,7 +379,10 @@
                             <input type="text" name="variants[${idx}][size]" required placeholder="Contoh: XL-3XL" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                         </td>
                         <td class="px-4 py-3">
-                            <input type="number" name="variants[${idx}][price]" required min="0" step="1000" placeholder="Contoh: 150000" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                            <input type="number" name="variants[\${idx}][price]" required min="0" step="1000" placeholder="Harga Jual" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm variant-price">
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="number" name="variants[\${idx}][purchase_price]" required min="0" step="1000" placeholder="Harga Modal" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">
                         </td>
                         <td class="px-4 py-3">
                             <input type="number" name="variants[${idx}][stock]" required min="0" value="0" class="w-full border border-gray-300 rounded-md py-1.5 px-3 focus:outline-none focus:border-nibras-magenta text-sm">

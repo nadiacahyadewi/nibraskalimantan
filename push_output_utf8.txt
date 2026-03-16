@@ -1,0 +1,64 @@
+﻿git : remote: error: GH013: Repository rule 
+violations found for 
+refs/heads/feature/fix-payment-and-migrations. 
+       
+At line:1 char:1
++ git push origin 
+feature/fix-payment-and-migrations 2>&1 | 
+Out-File -F ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (r 
+   emote: error: ...ations.        :String) [  
+  ], RemoteException
+    + FullyQualifiedErrorId : NativeCommandErr 
+   or
+ 
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö        
+remote:     Resolve the following violations 
+before pushing again        
+remote: 
+remote:     - Push cannot contain secrets      
+  
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a 
+blocked push        
+remote:      https://docs.github.com/code-secur
+ity/secret-scanning/working-with-secret-scannin
+g-and-push-protection/working-with-push-protect
+ion-from-the-command-line#resolving-a-blocked-p
+ush        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö Midtrans Production 
+Server Key ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö        
+remote:        locations:        
+remote:          - commit: 
+02e2ecb694d908cac05435f0b7ed6e9ada67e5ec       
+ 
+remote:            path: app/Http/Controllers/m
+idtrans/placeOrder.php:15        
+remote:             
+remote:        (?) To push, remove secret from 
+commit(s) or follow this URL to allow the 
+secret.        
+remote:        https://github.com/nadiacahyadew
+i/nibraskalimantan/security/secret-scanning/unb
+lock-secret/3B318yrewkJs7Ntw3ONmbTeIRhp        
+remote:             
+remote: 
+remote: 
+To https://github.com/nadiacahyadewi/nibraskali
+mantan.git
+ ! [remote rejected] 
+feature/fix-payment-and-migrations -> 
+feature/fix-payment-and-migrations (push 
+declined due to repository rule violations)
+error: failed to push some refs to 'https://git
+hub.com/nadiacahyadewi/nibraskalimantan.git'

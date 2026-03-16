@@ -18,7 +18,7 @@ class OrderController extends Controller
         if ($tab === 'history') {
             $query->whereIn('status', ['Selesai', 'Dibatalkan']);
         } else {
-            $query->whereIn('status', ['Menunggu Konfirmasi', 'Diproses', 'Dikirim']);
+            $query->whereIn('status', ['Menunggu Pembayaran', 'Dibayar', 'Menunggu Konfirmasi', 'Diproses', 'Dikirim']);
         }
 
         $orders = $query->latest()->paginate(15);
@@ -36,13 +36,48 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:Menunggu Konfirmasi,Diproses,Dikirim,Selesai,Dibatalkan'
+            'status' => 'required|in:Menunggu Pembayaran,Dibayar,Menunggu Konfirmasi,Diproses,Dikirim,Selesai,Dibatalkan'
+        ]);
+
+        $oldStatus = $order->status;
+        $newStatus = $request->status;
+        $updateData = ['status' => $newStatus];
+
+        // Requirement: Profit recording & timestamp happens when status is set to 'Diproses'
+        if ($newStatus === 'Diproses' && $oldStatus !== 'Diproses') {
+            $order->recordProfit();
+            $updateData['processed_at'] = now();
+        }
+
+        // Requirement: Profit removal & timestamp happens when status is set to 'Dibatalkan'
+        if ($newStatus === 'Dibatalkan' && $oldStatus !== 'Dibatalkan') {
+            \App\Models\Finance::where('description', 'Keuntungan Penjualan - Pesanan #' . $order->id)->delete();
+            $updateData['cancelled_at'] = now();
+        }
+
+        // Additional status timestamps
+        if ($newStatus === 'Selesai' && $oldStatus !== 'Selesai') {
+            $updateData['completed_at'] = now();
+        }
+
+        $order->update($updateData);
+
+        return back()->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+    public function ship(Request $request, Order $order)
+    {
+        $request->validate([
+            'receipt_number' => 'required|string|max:255'
         ]);
 
         $order->update([
-            'status' => $request->status
+            'status' => 'Dikirim',
+            'receipt_number' => $request->receipt_number,
+            'shipped_at' => now()
         ]);
 
-        return back()->with('success', 'Status pesanan berhasil diperbarui.');
+        // Note: For admin, this is "done", but status remains "Dikirim" for customer
+        return back()->with('success', 'Pesanan telah dikirim dengan nomor resi: ' . $request->receipt_number);
     }
 }
