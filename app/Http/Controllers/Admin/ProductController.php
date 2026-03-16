@@ -41,6 +41,7 @@ class ProductController extends Controller
             'variants' => 'required|array|min:1',
             'variants.*.size' => 'required|string|max:255',
             'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.purchase_price' => 'required|numeric|min:0',
             'variants.*.stock' => 'required|integer|min:0',
         ]);
 
@@ -51,6 +52,7 @@ class ProductController extends Controller
                 $product->variants()->create([
                     'size' => $variantData['size'],
                     'price' => $variantData['price'],
+                    'purchase_price' => $variantData['purchase_price'],
                     'stock' => $variantData['stock']
                 ]);
             }
@@ -93,6 +95,7 @@ class ProductController extends Controller
             'variants.*.id' => 'nullable|exists:product_variants,id',
             'variants.*.size' => 'required|string|max:255',
             'variants.*.price' => 'required|numeric|min:0',
+            'variants.*.purchase_price' => 'required|numeric|min:0',
             'variants.*.stock' => 'required|integer|min:0',
         ]);
 
@@ -109,6 +112,7 @@ class ProductController extends Controller
                         $variant->update([
                             'size' => $variantData['size'],
                             'price' => $variantData['price'],
+                            'purchase_price' => $variantData['purchase_price'],
                             'stock' => $variantData['stock']
                         ]);
                         $submittedVariantIds[] = $variant->id;
@@ -118,6 +122,7 @@ class ProductController extends Controller
                     $newVariant = $product->variants()->create([
                         'size' => $variantData['size'],
                         'price' => $variantData['price'],
+                        'purchase_price' => $variantData['purchase_price'],
                         'stock' => $variantData['stock']
                     ]);
                     $submittedVariantIds[] = $newVariant->id;

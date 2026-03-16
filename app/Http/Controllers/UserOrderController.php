@@ -28,4 +28,24 @@ class UserOrderController extends Controller
 
         return view('orders.show', compact('order'));
     }
+
+    public function complete(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'Dikirim') {
+            return back()->with('error', 'Pesanan tidak bisa diselesaikan pada status ini.');
+        }
+
+        $order->update([
+            'status' => 'Selesai',
+            'completed_at' => now()
+        ]);
+
+        return back()->with('success', 'Terima kasih! Pesanan Anda telah selesai.');
+    }
 }

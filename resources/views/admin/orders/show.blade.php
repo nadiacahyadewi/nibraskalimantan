@@ -1,7 +1,7 @@
 @extends('layouts.admin_layout')
 
 @section('content')
-<div class="px-6 py-8">
+<div class="px-6 py-8" x-data="{ shipModal: false }">
     <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
@@ -12,21 +12,75 @@
             <h2 class="text-2xl font-bold text-gray-800">Pesanan #ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</h2>
         </div>
         
-        <form action="{{ route('admin.orders.update', $order) }}" method="POST" class="flex items-center gap-3">
-            @csrf
-            @method('PUT')
-            <label class="text-sm font-medium text-gray-600">Terima/Ubah Status:</label>
-            <select name="status" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-nibras-magenta focus:border-nibras-magenta">
-                <option value="Menunggu Konfirmasi" {{ $order->status == 'Menunggu Konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                <option value="Diproses" {{ $order->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                <option value="Dikirim" {{ $order->status == 'Dikirim' ? 'selected' : '' }}>Dikirim</option>
-                <option value="Selesai" {{ $order->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                <option value="Dibatalkan" {{ $order->status == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-            </select>
-            <button type="submit" class="bg-nibras-magenta text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-700 transition-colors shadow-sm">
-                Perbarui
-            </button>
-        </form>
+        <div class="flex items-center gap-3">
+            @if($order->status === 'Menunggu Pembayaran')
+                <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" value="Dibayar">
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Konfirmasi Pembayaran
+                    </button>
+                </form>
+            @elseif($order->status === 'Dibayar')
+                <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" value="Menunggu Konfirmasi">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Konfirmasi Pesanan
+                    </button>
+                </form>
+            @elseif($order->status === 'Menunggu Konfirmasi')
+                <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" value="Diproses">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Konfirmasi & Proses
+                    </button>
+                </form>
+            @elseif($order->status === 'Diproses')
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg text-sm font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Diproses ({{ $order->processed_at ? (is_string($order->processed_at) ? \Carbon\Carbon::parse($order->processed_at)->format('d/m, H:i') : $order->processed_at->format('d/m, H:i')) : '-' }})
+                    </div>
+                    <button type="button" @click="shipModal = true" class="bg-nibras-magenta text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-700 transition-colors shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        Kirim Pesanan
+                    </button>
+                </div>
+            @elseif($order->status === 'Dikirim')
+                <div class="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 border border-green-100 rounded-lg text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Dalam Pengiriman ({{ $order->shipped_at ? (is_string($order->shipped_at) ? \Carbon\Carbon::parse($order->shipped_at)->format('d/m, H:i') : $order->shipped_at->format('d/m, H:i')) : '-' }})
+                </div>
+            @elseif($order->status === 'Selesai')
+                <div class="flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-600 border border-gray-100 rounded-lg text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Selesai ({{ $order->completed_at ? (is_string($order->completed_at) ? \Carbon\Carbon::parse($order->completed_at)->format('d/m, H:i') : $order->completed_at->format('d/m, H:i')) : '-' }})
+                </div>
+            @elseif($order->status === 'Dibatalkan')
+                <div class="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    Dibatalkan ({{ $order->cancelled_at ? (is_string($order->cancelled_at) ? \Carbon\Carbon::parse($order->cancelled_at)->format('d/m, H:i') : $order->cancelled_at->format('d/m, H:i')) : '-' }})
+                </div>
+            @endif
+
+            <div class="h-6 w-px bg-gray-200 mx-2"></div>
+
+            <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <button type="submit" name="status" value="Dibatalkan" onclick="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')" class="text-gray-500 hover:text-red-600 px-3 py-2 text-sm font-medium transition-colors">
+                    Batalkan
+                </button>
+            </form>
+        </div>
     </div>
 
     @if(session('success'))
@@ -76,9 +130,23 @@
                 </div>
             </div>
             
-            <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-sm border border-gray-100 px-6 py-5 flex items-center justify-between">
-                <span class="font-medium text-gray-600">Total Keseluruhan</span>
-                <span class="text-2xl font-black text-nibras-magenta">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 bg-gray-50/50">
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Subtotal Produk</span>
+                            <span class="font-medium text-gray-900">Rp {{ number_format($order->total_amount - $order->shipping_cost, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Ongkos Kirim ({{ strtoupper($order->courier) }})</span>
+                            <span class="font-medium text-gray-900">Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="pt-3 border-t border-gray-100 flex justify-between items-center">
+                            <span class="font-bold text-gray-800">Total Pembayaran</span>
+                            <span class="text-2xl font-black text-nibras-magenta">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -104,16 +172,109 @@
                     </div>
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Alamat Pengiriman</p>
-                        <p class="text-gray-800 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">{{ $order->customer_address }}</p>
+                        <div class="text-gray-800 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 text-sm">
+                            <p class="font-bold mb-1">{{ $order->customer_name }}</p>
+                            <p>{{ $order->customer_address }}</p>
+                            <p class="mt-2">{{ $order->district }}, {{ $order->city }}</p>
+                            <p>{{ $order->province }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Layanan Pengiriman</p>
+                        <div class="flex items-center gap-3 p-3 bg-pink-50 rounded-lg border border-pink-100">
+                            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-nibras-magenta font-bold text-xs shadow-sm border border-pink-100 uppercase">
+                                {{ $order->courier }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">{{ $order->shipping_service }}</p>
+                                <p class="text-xs text-gray-500">Ongkir: Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Metode Pembayaran</p>
+                        <div class="flex items-center justify-between">
+                            <p class="font-medium text-gray-900 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-nibras-magenta"></span>
+                                {{ $order->payment_method }}
+                            </p>
+                            @if($order->payment_method === 'Midtrans' && $order->status === 'Menunggu Pembayaran')
+                                <button id="check-status-admin" class="text-[10px] bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    Cek Status
+                                </button>
+                            @endif
+                        </div>
                     </div>
                     <div>
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Waktu Dipesan</p>
-                        <p class="text-gray-800">{{ $order->created_at->format('d F Y, H:i') }}</p>
+                        <p class="text-gray-800 text-sm">{{ $order->created_at->format('d F Y, H:i') }}</p>
                     </div>
+
+                    @if($order->payment_method === 'Midtrans' && $order->status === 'Menunggu Pembayaran')
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                    <script>
+                        $('#check-status-admin').on('click', function() {
+                            const btn = $(this);
+                            btn.prop('disabled', true).addClass('opacity-70').html('...');
+
+                            $.ajax({
+                                url: "{{ route('midtrans.status') }}",
+                                method: 'POST',
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                    order_id: "{{ $order->id }}"
+                                },
+                                success: function(response) {
+                                    alert(response.message);
+                                    if (response.success) {
+                                        window.location.reload();
+                                    } else {
+                                        btn.prop('disabled', false).removeClass('opacity-70').html('Cek Status');
+                                    }
+                                },
+                                error: function(xhr) {
+                                    alert('Gagal mengambil status.');
+                                    btn.prop('disabled', false).removeClass('opacity-70').html('Cek Status');
+                                }
+                            });
+                        });
+                    </script>
+                    @endif
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- Ship Modal -->
+    <div x-show="shipModal" x-transition.opacity class="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.away="shipModal = false">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800">Kirim Pesanan</h3>
+                <button @click="shipModal = false" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form action="{{ route('admin.orders.ship', $order) }}" method="POST">
+                @csrf
+                <div class="p-6 space-y-4">
+                    <p class="text-sm text-gray-500">Masukkan nomor resi pengiriman untuk memberitahu pelanggan bahwa barang telah dikirim.</p>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Resi / No. Kurir</label>
+                        <input type="text" name="receipt_number" required placeholder="Contoh: JNE12345678" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-nibras-magenta focus:border-nibras-magenta">
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3">
+                    <button type="button" @click="shipModal = false" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-nibras-magenta text-white text-sm font-medium rounded-lg hover:bg-pink-700 transition-colors shadow-sm">
+                        Konfirmasi Pengiriman
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

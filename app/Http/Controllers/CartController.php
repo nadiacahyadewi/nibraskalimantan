@@ -173,15 +173,46 @@ class CartController extends Controller
         $totalWeight = max($totalWeight, 1000);
         $totalQty = $cartItems->sum('quantity');
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'totalQty', 'totalWeight'));
+        // Ambil data provinsi dari RajaOngkirController
+        $rajaOngkir = new \App\Http\Controllers\RajaOngkirController();
+        $provincesResponse = $rajaOngkir->index();
+        $provinces = $provincesResponse->getData()['provinces'] ?? [];
+        
+        // Cek jika return view (dari index() original) maka kita perlu extract data provinces-nya
+        if ($provincesResponse instanceof \Illuminate\View\View) {
+            $provinces = $provincesResponse->getData()['provinces'] ?? [];
+        }
+
+        return view('checkout.index', compact('cartItems', 'subtotal', 'totalQty', 'totalWeight', 'provinces'));
     }
     public function processCheckout(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string',
-        ]);
+        \Log::info('Processing Checkout Request:', $request->all());
+
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string',
+                'payment_method' => 'required|string|in:Midtrans,QRIS,Bank Transfer',
+                'province' => 'required|string',
+                'city' => 'required|string',
+                'district' => 'required|string',
+                'courier' => 'required|string',
+                'shipping_service' => 'required|string',
+                'shipping_cost' => 'required|numeric',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Checkout Validation Failed:', $e->errors());
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
+        }
 
         $cart = $this->getCart();
         $cartItems = $cart->items()->with('product.variants')->get();
@@ -221,8 +252,15 @@ class CartController extends Controller
             'customer_name' => $request->name,
             'customer_phone' => $request->phone,
             'customer_address' => $request->address,
-            'total_amount' => $totalAmount,
-            'status' => 'Menunggu Konfirmasi'
+            'province' => $request->province,
+            'city' => $request->city,
+            'district' => $request->district,
+            'courier' => $request->courier,
+            'shipping_service' => $request->shipping_service,
+            'shipping_cost' => $request->shipping_cost,
+            'total_amount' => $totalAmount + $request->shipping_cost,
+            'status' => 'Menunggu Pembayaran',
+            'payment_method' => $request->payment_method
         ]);
 
         // Create Order Items
@@ -232,6 +270,15 @@ class CartController extends Controller
 
         // Clear cart
         $cart->items()->delete();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil dibuat.',
+                'order_id' => $order->id,
+                'redirect_url' => route('home')
+            ]);
+        }
 
         return redirect()->route('home')->with('success', 'Pesanan Anda berhasil dibuat! Pesanan Anda akan segera diproses.');
     }
