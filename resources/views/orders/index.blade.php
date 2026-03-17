@@ -45,10 +45,15 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-nibras-magenta transition-colors group">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-nibras-magenta shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
+                            @php
+                                $firstItem = $order->items->first();
+                                $firstProduct = $firstItem ? $firstItem->product : null;
+                                $firstImage = $firstProduct && $firstProduct->images->count() > 0 
+                                    ? asset('storage/' . $firstProduct->images->first()->image_path) 
+                                    : asset('images/no-image.png');
+                            @endphp
+                            <div class="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shrink-0">
+                                <img src="{{ $firstImage }}" alt="Produk" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <div class="flex items-center gap-3 mb-1">

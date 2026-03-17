@@ -40,12 +40,73 @@ class Product extends Model
 
     public function getPriceRangeAttribute()
     {
-        if ($this->variants()->count() == 0) {
+        $availableVariants = $this->variants->where('stock', '>', 0);
+        
+        if ($availableVariants->count() == 0) {
             return 'Rp ' . number_format($this->price, 0, ',', '.');
         }
 
-        $minPrice = $this->variants()->min('price');
-        $maxPrice = $this->variants()->max('price');
+        $prices = $availableVariants->map(function($variant) {
+            return $variant->effective_price;
+        });
+
+        $minPrice = $prices->min();
+        $maxPrice = $prices->max();
+
+        if ($minPrice == $maxPrice) {
+            return 'Rp ' . number_format($minPrice, 0, ',', '.');
+        }
+
+        return 'Rp ' . number_format($minPrice, 0, ',', '.') . ' - Rp ' . number_format($maxPrice, 0, ',', '.');
+    }
+
+    public function getMinPriceAttribute()
+    {
+        $availableVariants = $this->variants->where('stock', '>', 0);
+
+        if ($availableVariants->count() == 0) {
+            return 'Rp ' . number_format($this->price, 0, ',', '.');
+        }
+
+        $minPrice = $availableVariants->map(function($variant) {
+            return $variant->effective_price;
+        })->min();
+
+        return 'Rp ' . number_format($minPrice, 0, ',', '.');
+    }
+
+    public function getOriginalMinPriceAttribute()
+    {
+        $availableVariants = $this->variants->where('stock', '>', 0);
+
+        if ($availableVariants->count() == 0) {
+            return 'Rp ' . number_format($this->price, 0, ',', '.');
+        }
+
+        $minPrice = $availableVariants->pluck('price')->min();
+
+        return 'Rp ' . number_format($minPrice, 0, ',', '.');
+    }
+
+    public function getHasDiscountAttribute()
+    {
+        return $this->variants->where('stock', '>', 0)->contains(function($v) { 
+            return $v->has_discount; 
+        });
+    }
+
+    public function getOriginalPriceRangeAttribute()
+    {
+        $availableVariants = $this->variants->where('stock', '>', 0);
+
+        if ($availableVariants->count() == 0) {
+            return 'Rp ' . number_format($this->price, 0, ',', '.');
+        }
+
+        $prices = $availableVariants->pluck('price');
+
+        $minPrice = $prices->min();
+        $maxPrice = $prices->max();
 
         if ($minPrice == $maxPrice) {
             return 'Rp ' . number_format($minPrice, 0, ',', '.');

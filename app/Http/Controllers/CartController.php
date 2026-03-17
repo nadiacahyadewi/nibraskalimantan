@@ -25,15 +25,19 @@ class CartController extends Controller
         $cartItems = $cart->items()->with('product.images', 'product.variants')->get();
 
         $subtotal = 0;
+        $baseSubtotal = 0;
         foreach ($cartItems as $item) {
             $variant = $item->product->variants->where('size', $item->size)->first();
-            $price = $variant ? $variant->price : $item->product->price;
-            $subtotal += $price * $item->quantity;
+            $effectivePrice = $variant ? $variant->effective_price : $item->product->price;
+            $originalPrice = $variant ? $variant->price : $item->product->price;
+
+            $subtotal += $effectivePrice * $item->quantity;
+            $baseSubtotal += $originalPrice * $item->quantity;
         }
 
         $totalQty = $cartItems->sum('quantity');
 
-        return view('cart.index', compact('cartItems', 'subtotal', 'totalQty'));
+        return view('cart.index', compact('cartItems', 'subtotal', 'baseSubtotal', 'totalQty'));
     }
 
     public function add(Request $request)
@@ -78,7 +82,11 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang.');
+        if ($request->has('redirect_to_cart') && $request->redirect_to_cart == '1') {
+            return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang.');
+        }
+
+        return back()->with('success', 'Produk berhasil ditambahkan ke keranjang.');
     }
 
     public function update(Request $request, $id)
@@ -133,6 +141,7 @@ class CartController extends Controller
         }
 
         $subtotal = 0;
+        $baseSubtotal = 0;
         $totalWeight = 0;
 
         $categoryWeights = [
@@ -153,8 +162,11 @@ class CartController extends Controller
 
         foreach ($cartItems as $item) {
             $variant = $item->product->variants->where('size', $item->size)->first();
-            $price = $variant ? $variant->price : $item->product->price;
-            $subtotal += $price * $item->quantity;
+            $effectivePrice = $variant ? $variant->effective_price : $item->product->price;
+            $originalPrice = $variant ? $variant->price : $item->product->price;
+
+            $subtotal += $effectivePrice * $item->quantity;
+            $baseSubtotal += $originalPrice * $item->quantity;
 
             $catName = $item->product->categoryData ? $item->product->categoryData->name : ($item->product->category ?? '');
             
@@ -183,7 +195,7 @@ class CartController extends Controller
             $provinces = $provincesResponse->getData()['provinces'] ?? [];
         }
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'totalQty', 'totalWeight', 'provinces'));
+        return view('checkout.index', compact('cartItems', 'subtotal', 'baseSubtotal', 'totalQty', 'totalWeight', 'provinces'));
     }
     public function processCheckout(Request $request)
     {
@@ -227,7 +239,7 @@ class CartController extends Controller
         $orderItemsData = [];
         foreach ($cartItems as $item) {
             $variant = $item->product->variants->where('size', $item->size)->first();
-            $price = $variant ? $variant->price : $item->product->price;
+            $price = $variant ? $variant->effective_price : $item->product->price;
             
             $totalAmount += $price * $item->quantity;
 

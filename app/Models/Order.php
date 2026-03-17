@@ -11,6 +11,8 @@ class Order extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
+        'paid_at' => 'datetime',
+        'confirmed_at' => 'datetime',
         'processed_at' => 'datetime',
         'shipped_at' => 'datetime',
         'completed_at' => 'datetime',

@@ -22,6 +22,10 @@
             }
         }
     </script>
+    <style>
+        body { overflow-x: hidden; }
+        html { overflow-x: hidden; }
+    </style>
 </head>
 <body class="text-gray-800 bg-gray-50 flex flex-col min-h-screen">
 
@@ -48,10 +52,10 @@
                         <a href="{{ url('/produk?category_id=' . ($product->category_id ?? '')) }}" class="hover:text-nibras-magenta transition-colors">{{ $product->categoryData ? $product->categoryData->name : ($product->category ?? 'Tanpa Kategori') }}</a>
                     </div>
                 </li>
-                <li aria-current="page">
+                <li aria-current="page" class="min-w-0 flex-1">
                     <div class="flex items-center">
-                        <svg class="w-4 h-4 text-gray-400 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        <span class="text-gray-800 font-medium line-clamp-1">{{ $product->name }}</span>
+                        <svg class="w-4 h-4 text-gray-400 mx-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <span class="text-gray-800 font-medium truncate">{{ $product->name }}</span>
                     </div>
                 </li>
             </ol>
@@ -65,7 +69,7 @@
                     <!-- Main Image -->
                     <div class="aspect-[3/4] w-full max-w-sm bg-gray-100 rounded-xl overflow-hidden relative group shadow-sm border border-gray-100">
                         @if($product->images->count() > 0)
-                            <img id="main-image" src="{{ Storage::url($product->images->first()->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <img id="main-image" src="{{ $product->images->first()->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
                                 <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -77,8 +81,8 @@
                     @if($product->images->count() > 1)
                     <div class="grid grid-cols-4 gap-3 md:gap-4 mt-2 w-full max-w-sm">
                         @foreach($product->images as $index => $image)
-                        <button onclick="changeImage('{{ Storage::url($image->image_path) }}')" class="aspect-[3/4] rounded-lg overflow-hidden border-2 {{ $index == 0 ? 'border-nibras-magenta' : 'border-transparent hover:border-gray-300' }} relative focus:outline-none transition-colors thumbnail-btn">
-                            <img src="{{ Storage::url($image->image_path) }}" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
+                        <button onclick="changeImage('{{ $image->url }}')" class="aspect-[3/4] rounded-lg overflow-hidden border-2 {{ $index == 0 ? 'border-nibras-magenta' : 'border-transparent hover:border-gray-300' }} relative focus:outline-none transition-colors thumbnail-btn">
+                            <img src="{{ $image->url }}" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
                         </button>
                         @endforeach
                     </div>
@@ -95,9 +99,12 @@
                     </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
                     
-                    <div class="flex items-center gap-4 mb-6">
-                        <span id="display-price" class="text-2xl md:text-3xl font-bold text-nibras-magenta">{{ $product->price_range }}</span>
-                        <div class="flex items-center text-sm border-l-2 border-gray-200 pl-4 space-x-3">
+                    <div class="flex flex-col gap-1 mb-6">
+                        <div class="flex items-center gap-3">
+                            <span id="display-price" class="text-2xl md:text-3xl font-bold text-nibras-magenta">{{ $product->price_range }}</span>
+                            <span id="original-price" class="text-lg text-gray-400 line-through hidden"></span>
+                        </div>
+                        <div class="flex items-center text-sm space-x-3">
                             <span id="display-stock" class="bg-pink-50 text-nibras-magenta px-2.5 py-1 rounded-md font-semibold font-mono">Stok: {{ $product->total_stock }}</span>
                             @if($product->total_stock <= 0)
                                 <span class="bg-red-100 text-red-600 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider border border-red-200 shadow-sm animate-pulse">Habis</span>
@@ -122,16 +129,23 @@
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-sm font-semibold text-gray-900">Ukuran:</h3>
                         </div>
-                        <div class="flex flex-wrap gap-2 sm:gap-3">
+                        <div class="grid grid-cols-4 sm:grid-cols-5 md:flex md:flex-wrap gap-2 sm:gap-3">
                             @foreach($product->variants as $variant)
                                 @if($variant->stock > 0)
-                                    <button type="button" class="px-4 py-2 border-2 border-gray-200 rounded-md text-sm font-medium hover:border-nibras-magenta hover:text-nibras-magenta transition-colors focus:outline-none text-gray-600 size-btn" onclick="selectSize(this, '{{$variant->size}}', {{ $variant->price }}, {{ $variant->stock }})">{{ $variant->size }}</button>
+                                    <button type="button" 
+                                            class="relative px-2 py-2 border-2 border-gray-200 rounded-md text-sm font-medium hover:border-nibras-magenta hover:text-nibras-magenta transition-colors focus:outline-none text-gray-600 size-btn" 
+                                            onclick="selectSize(this, '{{$variant->size}}', {{ $variant->price }}, {{ $variant->stock }}, {{ $variant->discount_price ?? 0 }})">
+                                        {{ $variant->size }}
+                                        @if($variant->has_discount)
+                                            <span class="absolute -top-2 -right-1 bg-red-500 text-white text-[7px] px-1 rounded-full font-bold shadow-sm">Disc</span>
+                                        @endif
+                                    </button>
                                 @else
-                                    <button type="button" class="px-4 py-2 border-2 border-gray-200 rounded-md text-sm font-medium text-gray-300 cursor-not-allowed bg-gray-50 focus:outline-none relative overflow-hidden group" disabled title="Habis">
+                                    <button type="button" class="px-2 py-2 border-2 border-gray-200 rounded-md text-sm font-medium text-gray-300 cursor-not-allowed bg-gray-50 focus:outline-none relative overflow-hidden group" disabled title="Habis">
                                         <div class="absolute inset-0 flex items-center justify-center w-full h-full rotate-45 transform">
                                             <div class="w-full h-px bg-gray-300"></div>
                                         </div>
-                                        <span class="relative z-10 hover:text-gray-300">{{ $variant->size }}</span>
+                                        <span class="relative z-10">{{ $variant->size }}</span>
                                     </button>
                                 @endif
                             @endforeach
@@ -143,6 +157,7 @@
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <input type="hidden" name="size" id="form-size" value="">
+                        <input type="hidden" name="redirect_to_cart" id="redirect_to_cart" value="0">
                         
                         <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-100">
                             <!-- Quantity -->
@@ -151,10 +166,10 @@
                                 <input type="number" name="qty" id="qty" value="1" min="1" max="10" class="w-full text-center text-gray-900 font-semibold focus:outline-none bg-transparent appearance-none">
                                 <button type="button" class="px-4 text-gray-500 hover:text-nibras-magenta focus:outline-none font-bold text-lg" onclick="updateQty(1)">+</button>
                             </div>
-
+ 
                             <!-- Add to Cart -->
-                            <button type="submit" 
-                                    class="flex-1 bg-nibras-magenta text-white h-12 rounded-md font-semibold hover:bg-pink-700 transition-colors shadow-md flex items-center justify-center gap-2 group {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
+                            <button type="submit" onclick="document.getElementById('redirect_to_cart').value='0'"
+                                    class="flex-1 bg-white text-nibras-magenta border-2 border-nibras-magenta h-12 rounded-md font-semibold hover:bg-pink-50 transition-colors shadow-sm flex items-center justify-center gap-2 group {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
                                     {{ $product->total_stock <= 0 ? 'disabled' : '' }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:scale-110 transition-transform">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -162,14 +177,17 @@
                                 {{ $product->total_stock <= 0 ? 'Stok Habis' : 'Masuk Keranjang' }}
                             </button>
                         </div>
+                        
+                        <!-- Buy Now -->
+                        <button type="submit" onclick="document.getElementById('redirect_to_cart').value='1'"
+                                class="w-full mt-3 bg-nibras-magenta text-white h-12 rounded-md font-semibold hover:bg-pink-700 transition-colors shadow-md flex items-center justify-center gap-2 group {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
+                                {{ $product->total_stock <= 0 ? 'disabled' : '' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                            {{ $product->total_stock <= 0 ? 'Stok Habis' : 'Beli Sekarang' }}
+                        </button>
                     </form>
-
-                    <!-- Buy Now -->
-                    <button onclick="{{ $product->total_stock <= 0 ? 'return' : 'buyNowWA()' }}" 
-                            class="w-full mt-3 bg-gray-900 text-white h-12 rounded-md font-semibold hover:bg-gray-800 transition-colors shadow flex items-center justify-center gap-2 {{ $product->total_stock <= 0 ? 'opacity-50 cursor-not-allowed grayscale' : '' }}"
-                            {{ $product->total_stock <= 0 ? 'disabled' : '' }}>
-                        Beli Sekarang (WhatsApp)
-                    </button>
 
                 </div>
             </div>
@@ -211,13 +229,22 @@
 
         let selectedSize = null;
 
-        function selectSize(btn, size, price, stock) {
+        function selectSize(btn, size, price, stock, discountPrice) {
             selectedSize = size;
             document.getElementById('form-size').value = size;
             
-            // Format price to Rp X.XXX.XXX
-            let formattedPrice = 'Rp ' + parseInt(price).toLocaleString('id-ID');
-            document.getElementById('display-price').innerText = formattedPrice;
+            const displayPriceEl = document.getElementById('display-price');
+            const originalPriceEl = document.getElementById('original-price');
+            
+            if (discountPrice > 0) {
+                displayPriceEl.innerText = 'Rp ' + parseInt(discountPrice).toLocaleString('id-ID');
+                originalPriceEl.innerText = 'Rp ' + parseInt(price).toLocaleString('id-ID');
+                originalPriceEl.classList.remove('hidden');
+            } else {
+                displayPriceEl.innerText = 'Rp ' + parseInt(price).toLocaleString('id-ID');
+                originalPriceEl.classList.add('hidden');
+            }
+
             document.getElementById('display-stock').innerText = 'Stok: ' + stock;
 
             // Reset all active styles
@@ -230,7 +257,7 @@
             btn.classList.add('border-nibras-magenta', 'text-nibras-magenta', 'bg-pink-50');
             btn.classList.remove('border-gray-200', 'text-gray-600');
             
-            // Reset qty to 1 and change max
+            // Reset qty to 1
             document.getElementById('qty').value = 1;
         }
 

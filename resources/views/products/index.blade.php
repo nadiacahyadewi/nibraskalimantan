@@ -33,13 +33,9 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #F8F8F8;
-        }
-        .container-glow {
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #F8F8F8; overflow-x: hidden; }
+        html { overflow-x: hidden; }
+        .container-glow { box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); }
     </style>
 </head>
 <body class="text-gray-800">
@@ -67,7 +63,7 @@
                         <!-- Image Area -->
                         <div class="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden">
                             @if($p->images->count() > 0)
-                                <img src="{{ Storage::url($p->images->first()->image_path) }}" 
+                                <img src="{{ $p->images->first()->url }}" 
                                      alt="{{ $p->name }}" 
                                      class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
                             @else
@@ -84,6 +80,13 @@
                                     </div>
                                 </div>
                             @else
+                                @if($p->has_discount)
+                                    <div class="absolute top-4 left-4 z-20">
+                                        <div class="bg-red-500 text-white px-3 py-1 rounded-full font-black text-[10px] tracking-widest uppercase shadow-lg animate-pulse">
+                                            DISKON
+                                        </div>
+                                    </div>
+                                @endif
                                 <!-- Overlay CTA -->
                                 <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
                                     <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
@@ -102,8 +105,11 @@
                                 <span class="text-[9px] sm:text-[10px] font-bold text-gray-500 bg-gray-100 rounded-sm px-2 py-0.5 border border-gray-200 uppercase tracking-widest">{{ $p->color ?? 'Sesuai Gambar' }}</span>
                             </div>
                             <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
-                                <p class="text-xl font-bold text-nibras-magenta mb-1">{{ $p->price_range }}</p>
-                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest line-clamp-1 mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
+                                @if($p->has_discount)
+                                    <p class="text-[10px] text-gray-400 line-through font-medium">{{ $p->original_min_price }}</p>
+                                @endif
+                                <p class="text-xl font-bold text-nibras-magenta mb-1 truncate">{{ $p->min_price }}</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest truncate mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
                                     {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
                                 </p>
                                 @if($p->brand)

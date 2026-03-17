@@ -63,7 +63,7 @@
                     <!-- Product Image -->
                     <div class="w-24 h-32 md:w-28 md:h-36 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                         @if($item->product->images->isNotEmpty())
-                            <img src="{{ Storage::url($item->product->images->first()->image_path) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
+                            <img src="{{ $item->product->images->first()->url }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">No Img</div>
                         @endif
@@ -77,9 +77,16 @@
                         <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             @php
                                 $variant = $item->product->variants->where('size', $item->size)->first();
-                                $itemPrice = $variant ? $variant->price : $item->product->price;
+                                $itemPrice = $variant ? $variant->effective_price : $item->product->price;
+                                $hasDiscount = $variant && $variant->has_discount;
+                                $originalPrice = $variant ? $variant->price : $item->product->price;
                             @endphp
-                            <span class="text-lg font-bold text-nibras-magenta">Rp {{ number_format($itemPrice, 0, ',', '.') }}</span>
+                            <div class="flex flex-col">
+                                <span class="text-lg font-bold text-nibras-magenta">Rp {{ number_format($itemPrice, 0, ',', '.') }}</span>
+                                @if($hasDiscount)
+                                    <span class="text-xs text-gray-400 line-through">Rp {{ number_format($originalPrice, 0, ',', '.') }}</span>
+                                @endif
+                            </div>
                             
                             <!-- Quantity Adjuster -->
                             <div class="flex items-center border border-gray-200 rounded-md w-32 h-10 bg-white">
@@ -109,11 +116,14 @@
                     <div class="space-y-4 mb-6">
                         <div class="flex justify-between text-gray-600">
                             <span id="summary-count-text">Total Harga ({{ $totalQty }} Barang)</span>
-                            <span class="font-medium text-gray-900" id="summary-subtotal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                            <span class="font-medium text-gray-900" id="summary-subtotal">Rp {{ number_format($baseSubtotal, 0, ',', '.') }}</span>
                         </div>
+                        @php
+                            $totalSavings = $baseSubtotal - $subtotal;
+                        @endphp
                         <div class="flex justify-between text-gray-600">
                             <span>Diskon Produk</span>
-                            <span class="font-medium text-green-600">- Rp 0</span>
+                            <span class="font-medium text-green-600">- Rp {{ number_format($totalSavings, 0, ',', '.') }}</span>
                         </div>
                     </div>
 

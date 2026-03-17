@@ -19,6 +19,7 @@
         }
     </script>
     @if($order->payment_method === 'Midtrans')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript"
       src="https://app.sandbox.midtrans.com/snap/snap.js"
       data-client-key="{{ config('services.midtrans.client_key') }}"></script>
@@ -55,8 +56,11 @@
                     <div class="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100">
                         @php
                             $statuses = ['Menunggu Pembayaran', 'Dibayar', 'Menunggu Konfirmasi', 'Diproses', 'Dikirim', 'Selesai'];
+                            if ($order->status == 'Dibatalkan') {
+                                // Find where it was cancelled (last active stage) or just append Dibatalkan
+                                $statuses[] = 'Dibatalkan';
+                            }
                             $currentIndex = array_search($order->status, $statuses);
-                            if ($order->status == 'Dibatalkan') $statuses = ['Dibatalkan'];
                         @endphp
 
                         @foreach($statuses as $index => $status)
@@ -78,8 +82,8 @@
                                         @php
                                             $time = null;
                                             if ($status == 'Menunggu Pembayaran') $time = $order->created_at;
-                                            if ($status == 'Dibayar' && in_array($order->status, ['Dibayar', 'Menunggu Konfirmasi', 'Diproses', 'Dikirim', 'Selesai'])) $time = $order->updated_at;
-                                            if ($status == 'Menunggu Konfirmasi' && in_array($order->status, ['Menunggu Konfirmasi', 'Diproses', 'Dikirim', 'Selesai'])) $time = $order->updated_at;
+                                            if ($status == 'Dibayar') $time = $order->paid_at;
+                                            if ($status == 'Menunggu Konfirmasi') $time = $order->confirmed_at;
                                             if ($status == 'Diproses') $time = $order->processed_at;
                                             if ($status == 'Dikirim') $time = $order->shipped_at;
                                             if ($status == 'Selesai') $time = $order->completed_at;
@@ -94,6 +98,18 @@
                                     @if($isCurrent)
                                         <p class="text-xs mt-1 text-nibras-magenta font-medium animate-pulse">Pesanan Anda saat ini sedang berada di tahap ini.</p>
                                     @endif
+
+                                    @if($status == 'Dibatalkan')
+                                        <div class="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 shadow-sm">
+                                            <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 shadow-sm border border-red-100 shrink-0">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-xs font-bold text-red-800 uppercase tracking-wider">Informasi Pengembalian Dana</h4>
+                                                <p class="text-[11px] text-red-600 mt-1 leading-relaxed">Admin akan mengirimi Anda pesan lewat nomor yang kamu berikan untuk proses pengembalian dana.</p>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -105,12 +121,31 @@
                             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
                                 <div>
                                     <p class="text-xs text-gray-500">Nomor Resi / No. Kurir</p>
-                                    <p class="font-bold text-gray-900">{{ $order->receipt_number ?? 'Sedang disiapkan' }}</p>
+                                    <p id="receipt-number" class="font-bold text-gray-900">{{ $order->receipt_number ?? 'Sedang disiapkan' }}</p>
                                 </div>
-                                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-nibras-magenta shadow-sm border border-gray-100">
+                                @if($order->receipt_number)
+                                <button onclick="copyReceipt()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-nibras-magenta shadow-sm border border-gray-100 hover:bg-pink-50 transition-colors" title="Salin Resi">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                    </svg>
+                                </button>
+                                @else
+                                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 shadow-sm border border-gray-100">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
                                 </div>
+                                @endif
                             </div>
+
+                            <script>
+                                function copyReceipt() {
+                                    const receipt = "{{ $order->receipt_number }}";
+                                    navigator.clipboard.writeText(receipt).then(() => {
+                                        alert('Nomor resi berhasil disalin!');
+                                    }).catch(err => {
+                                        console.error('Gagal menyalin: ', err);
+                                    });
+                                }
+                            </script>
 
                             @if($order->status === 'Dikirim')
                                 <div class="mt-6">
@@ -137,7 +172,14 @@
                     <div class="grid grid-cols-2 gap-4 text-left">
                         <div>
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Metode</p>
-                            <p class="text-sm font-bold text-gray-900">{{ $order->payment_method ?? 'Tidak ada' }}</p>
+                            <p class="text-sm font-bold text-gray-900">
+                                {{ $order->payment_method ?? 'Tidak ada' }}
+                                @if($order->payment_info)
+                                    <span class="text-[10px] font-medium text-gray-500 block">({{ $order->payment_info }})</span>
+                                @elseif($order->payment_type)
+                                    <span class="text-[10px] font-medium text-gray-500 block">({{ strtoupper(str_replace('_', ' ', $order->payment_type)) }})</span>
+                                @endif
+                            </p>
                         </div>
                         <div>
                             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Total Bayar</p>
@@ -191,7 +233,7 @@
                         </script>
                     @endif
 
-                    @if($order->payment_method === 'Midtrans' && ($order->status === 'Menunggu Konfirmasi' || $order->status === 'Menunggu Pembayaran'))
+                    @if($order->payment_method === 'Midtrans' && $order->status === 'Menunggu Pembayaran')
                         <div class="mt-6">
                             <button id="pay-button" class="w-full py-4 bg-nibras-magenta text-white rounded-2xl font-bold shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] hover:bg-pink-700 flex items-center justify-center gap-2">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -199,7 +241,6 @@
                             </button>
                         </div>
 
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
                         <script type="text/javascript">
                             $('#pay-button').on('click', function () {
                                 const btn = $(this);
@@ -251,16 +292,11 @@
                         <div class="p-6 flex items-center gap-4">
                             <div class="w-20 h-24 bg-gray-50 rounded-lg overflow-hidden shrink-0 border border-gray-100">
                                 @php
-                                    $product = \App\Models\Product::find($item->product_id);
-                                    $image = $product ? $product->images->first() : null;
+                                    $image = $item->product && $item->product->images->count() > 0 
+                                        ? asset('storage/' . $item->product->images->first()->image_path) 
+                                        : asset('images/no-image.png');
                                 @endphp
-                                @if($image)
-                                    <img src="{{ Storage::url($image->image_path) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    </div>
-                                @endif
+                                <img src="{{ $image }}" class="w-full h-full object-cover">
                             </div>
                             <div class="flex-grow">
                                 <h4 class="font-bold text-gray-900 leading-tight mb-1">{{ $item->product_name }}</h4>

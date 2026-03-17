@@ -46,10 +46,9 @@ class MidtransController extends Controller
                 $itemTotal += $item['price'] * $item['quantity'];
             }
 
-            // Persistence: Use existing midtrans_order_id if available, otherwise create new
-            if (!$order->midtrans_order_id) {
-                $order->update(['midtrans_order_id' => $order->id . '-' . time()]);
-            }
+            // Always generate a new unique ID for Midtrans to allow retries/re-clicks
+            // Midtrans rejects the same order_id if parameters or state changed (or in some sandbox cases)
+            $order->update(['midtrans_order_id' => $order->id . '-' . time()]);
 
             $params = [
                 'transaction_details' => [
@@ -124,8 +123,35 @@ class MidtransController extends Controller
                 $newStatus = 'Dibatalkan';
             }
 
+            // Extract payment info
+            $paymentInfo = '';
+            if ($type == 'bank_transfer') {
+                if (isset($status->va_numbers[0])) {
+                    $paymentInfo = strtoupper($status->va_numbers[0]->bank) . ' (VA: ' . $status->va_numbers[0]->va_number . ')';
+                } elseif (isset($status->permata_va_number)) {
+                    $paymentInfo = 'PERMATA (VA: ' . $status->permata_va_number . ')';
+                }
+            } elseif ($type == 'cstore') {
+                $paymentInfo = strtoupper($status->store);
+            } elseif ($type == 'credit_card') {
+                $paymentInfo = strtoupper($status->bank);
+            } elseif (in_array($type, ['gopay', 'shopeepay', 'qris'])) {
+                $paymentInfo = strtoupper($type);
+            }
+
+            $updateData = [
+                'status' => $newStatus,
+                'payment_type' => $type,
+                'payment_info' => $paymentInfo ?: null
+            ];
+
+            if ($newStatus === 'Dibayar' && $oldStatus !== 'Dibayar') {
+                $updateData['paid_at'] = now();
+            }
+
+            $order->update($updateData);
+
             if ($newStatus !== $oldStatus) {
-                $order->update(['status' => $newStatus]);
                 return response()->json([
                     'success' => true,
                     'message' => 'Status berhasil diperbarui menjadi: ' . $newStatus,
@@ -135,7 +161,7 @@ class MidtransController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Status sudah sesuai ('. $oldStatus .'). Tidak ada perubahan.',
+                'message' => 'Status sudah sesuai ('. $oldStatus .'). Data pembayaran diperbarui.',
                 'new_status' => $oldStatus
             ]);
 
@@ -147,35 +173,65 @@ class MidtransController extends Controller
     public function notification(Request $request)
     {
         \Log::info('Midtrans Notification Received:', $request->all());
-        $notif = new \Midtrans\Notification();
+        try {
+            $notif = new \Midtrans\Notification();
 
-        $transaction = $notif->transaction_status;
-        $type = $notif->payment_type;
-        $order_id = explode('-', $notif->order_id)[0];
-        $fraud = $notif->fraud_status;
+            $transaction = $notif->transaction_status;
+            $type = $notif->payment_type;
+            $order_id = explode('-', $notif->order_id)[0];
+            $fraud = $notif->fraud_status;
 
-        $order = Order::findOrFail($order_id);
+            $order = Order::findOrFail($order_id);
 
-        if ($transaction == 'capture') {
-            if ($type == 'credit_card') {
-                if ($fraud == 'challenge') {
-                    $order->update(['status' => 'Pending Midtrans']);
-                } else {
-                    $order->update(['status' => 'Dibayar']);
+            $newStatus = $order->status;
+            if ($transaction == 'capture') {
+                if ($type == 'credit_card') {
+                    if ($fraud == 'challenge') {
+                        $newStatus = 'Pending Midtrans';
+                    } else {
+                        $newStatus = 'Dibayar';
+                    }
                 }
+            } else if ($transaction == 'settlement') {
+                $newStatus = 'Dibayar';
+            } else if ($transaction == 'pending') {
+                $newStatus = 'Menunggu Pembayaran';
+            } else if (in_array($transaction, ['deny', 'expire', 'cancel'])) {
+                $newStatus = 'Dibatalkan';
             }
-        } else if ($transaction == 'settlement') {
-            $order->update(['status' => 'Dibayar']);
-        } else if ($transaction == 'pending') {
-            $order->update(['status' => 'Menunggu Pembayaran']);
-        } else if ($transaction == 'deny') {
-            $order->update(['status' => 'Dibatalkan']);
-        } else if ($transaction == 'expire') {
-            $order->update(['status' => 'Dibatalkan']);
-        } else if ($transaction == 'cancel') {
-            $order->update(['status' => 'Dibatalkan']);
-        }
 
-        return response()->json(['status' => 'success']);
+            // Extract payment info
+            $paymentInfo = '';
+            if ($type == 'bank_transfer') {
+                if (isset($notif->va_numbers[0])) {
+                    $paymentInfo = strtoupper($notif->va_numbers[0]->bank) . ' (VA: ' . $notif->va_numbers[0]->va_number . ')';
+                } elseif (isset($notif->permata_va_number)) {
+                    $paymentInfo = 'PERMATA (VA: ' . $notif->permata_va_number . ')';
+                }
+            } elseif ($type == 'cstore') {
+                $paymentInfo = strtoupper($notif->store);
+            } elseif ($type == 'credit_card') {
+                $paymentInfo = strtoupper($notif->bank);
+            } elseif (in_array($type, ['gopay', 'shopeepay', 'qris'])) {
+                $paymentInfo = strtoupper($type);
+            }
+
+            $updateData = [
+                'status' => $newStatus,
+                'payment_type' => $type,
+                'payment_info' => $paymentInfo ?: null
+            ];
+
+            if ($newStatus === 'Dibayar' && $order->status !== 'Dibayar') {
+                $updateData['paid_at'] = now();
+            }
+
+            $order->update($updateData);
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            \Log::error('Midtrans Notification Error: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 }

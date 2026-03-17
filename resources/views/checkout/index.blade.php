@@ -186,8 +186,17 @@
                     <div class="space-y-4 mb-6">
                         <div class="flex justify-between text-gray-600">
                             <span>Subtotal ({{ $totalQty }} Produk)</span>
-                            <span class="font-medium text-gray-900">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                            <span class="font-medium text-gray-900">Rp {{ number_format($baseSubtotal, 0, ',', '.') }}</span>
                         </div>
+                        @php
+                            $totalSavings = $baseSubtotal - $subtotal;
+                        @endphp
+                        @if($totalSavings > 0)
+                        <div class="flex justify-between text-green-600">
+                            <span>Hemat Produk</span>
+                            <span class="font-medium">- Rp {{ number_format($totalSavings, 0, ',', '.') }}</span>
+                        </div>
+                        @endif
                         <div class="flex justify-between text-gray-600">
                             <span>Estimasi Berat</span>
                             <span class="font-medium text-gray-900">{{ number_format($totalWeight, 0, ',', '.') }} gram</span>
@@ -211,7 +220,11 @@
             <!-- Hidden Data Cart Items For WA Template -->
             <div id="cart_wa_items" class="hidden">
                 @foreach($cartItems as $item)
-                    - {{ $item->product->name }} (Ukuran: {{ $item->size }}) - {{ $item->quantity }} pcs x {{ $item->product->variants->where('size', $item->size)->first()->price ?? $item->product->price }}
+                    @php
+                        $variant = $item->product->variants->where('size', $item->size)->first();
+                        $price = $variant ? $variant->effective_price : $item->product->price;
+                    @endphp
+                    - {{ $item->product->name }} (Ukuran: {{ $item->size }}) - {{ $item->quantity }} pcs x {{ $price }}
                 @endforeach
             </div>
 
@@ -233,7 +246,7 @@
                     currency: 'IDR',
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0
-                }).format(amount);
+                }).format(amount).replace('Rp', 'Rp ').replace(',00', '');
             }
 
             // Dropdown Provinsi
@@ -413,11 +426,11 @@
                                             window.snap.pay(tokenResponse.snap_token, {
                                                 onSuccess: function(result) {
                                                     console.log('Payment success:', result);
-                                                    window.location.href = "{{ route('home') }}?success=1";
+                                                    window.location.href = "{{ url('/pesanan') }}/" + response.order_id + "?success=1";
                                                 },
                                                 onPending: function(result) {
                                                     console.log('Payment pending:', result);
-                                                    window.location.href = "{{ route('orders.index') }}";
+                                                    window.location.href = "{{ url('/pesanan') }}/" + response.order_id;
                                                 },
                                                 onError: function(result) {
                                                     console.error('Payment error:', result);
@@ -426,8 +439,8 @@
                                                 },
                                                 onClose: function() {
                                                     console.log('Customer closed the popup without finishing the payment');
-                                                    alert('Anda menutup popup sebelum menyelesaikan pembayaran.');
-                                                    window.location.href = "{{ route('orders.index') }}";
+                                                    alert('Anda menutup popup sebelum menyelesaikan pembayaran. Anda dapat membayar nanti di halaman detail pesanan.');
+                                                    window.location.href = "{{ url('/pesanan') }}/" + response.order_id;
                                                 }
                                             });
                                         } else {

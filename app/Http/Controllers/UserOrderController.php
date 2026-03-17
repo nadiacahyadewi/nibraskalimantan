@@ -10,7 +10,8 @@ class UserOrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::with('items.product.images')
+            ->where('user_id', Auth::id())
             ->latest()
             ->paginate(10);
 
@@ -19,7 +20,7 @@ class UserOrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with('items')->findOrFail($id);
+        $order = Order::with('items.product.images')->findOrFail($id);
 
         // Authorization check
         if ($order->user_id !== Auth::id()) {
