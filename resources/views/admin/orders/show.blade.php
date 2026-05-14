@@ -56,10 +56,11 @@
             @endif
 
             @if(!in_array($order->status, ['Selesai', 'Dibatalkan']))
-            <form action="{{ route('admin.orders.update', $order) }}" method="POST">
+            <form action="{{ route('admin.orders.update', $order) }}" method="POST" class="swal-form" data-title="Batalkan Pesanan" data-text="Apakah Anda yakin ingin membatalkan pesanan ini?" data-confirm-text="Ya, Batalkan!">
                 @csrf
                 @method('PUT')
-                <button type="submit" name="status" value="Dibatalkan" onclick="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')" class="text-gray-500 hover:text-red-600 px-3 py-2 text-sm font-medium transition-colors">
+                <input type="hidden" name="status" value="Dibatalkan">
+                <button type="submit" class="text-gray-500 hover:text-red-600 px-3 py-2 text-sm font-medium transition-colors">
                     Batalkan
                 </button>
             </form>

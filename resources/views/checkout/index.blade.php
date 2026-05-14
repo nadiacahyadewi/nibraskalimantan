@@ -109,6 +109,7 @@
                             <label for="courier" class="block text-sm font-medium text-gray-700 mb-1">Pilih Kurir</label>
                             <select id="courier_select" name="courier" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta">
                                 <option value="">-- Pilih Kurir --</option>
+                                <option value="termurah" class="font-bold text-nibras-magenta">✨ Cari Kurir Termurah</option>
                                 <option value="jne">JNE</option>
                                 <option value="pos">POS Indonesia</option>
                                 <option value="tiki">TIKI</option>
@@ -323,15 +324,20 @@
                         $('#shipping-loader').addClass('hidden');
                         if (data && data.length > 0) {
                             $.each(data, function(key, value) {
+                                let badgeHtml = key === 0 ? '<span class="ml-2 bg-green-100 text-green-700 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-green-200">✨ Termurah</span>' : '';
+                                
                                 let serviceHtml = `
                                     <label class="relative flex items-center p-4 border-2 rounded-xl cursor-pointer hover:bg-pink-50 hover:border-pink-200 transition-all group">
-                                        <input type="radio" name="shipping_radio" value="${value.cost}" data-service="${value.service} (${value.description})" class="sr-only">
+                                        <input type="radio" name="shipping_radio" id="shipping-radio-${key}" value="${value.cost}" data-service="${value.service} (${value.description})" class="sr-only">
                                         <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 group-hover:border-nibras-magenta" id="radio-custom-${key}">
                                             <div class="w-2.5 h-2.5 rounded-full bg-nibras-magenta hidden"></div>
                                         </div>
                                         <div class="flex-grow">
                                             <div class="flex justify-between items-center mb-1">
-                                                <span class="font-bold text-gray-900">${value.service}</span>
+                                                <div class="flex items-center">
+                                                    <span class="font-bold text-gray-900">${(value.code || '').toUpperCase()} - ${value.service}</span>
+                                                    ${badgeHtml}
+                                                </div>
                                                 <span class="font-bold text-nibras-magenta text-lg">${formatCurrency(value.cost)}</span>
                                             </div>
                                             <div class="text-xs text-gray-500">${value.description} <span class="mx-1">•</span> Estimasi ${value.etd} hari</div>
@@ -340,6 +346,11 @@
                                 `;
                                 $('#shipping-services-list').append(serviceHtml);
                             });
+
+                            // Otomatis pilih opsi pertama (yang paling murah setelah disortir)
+                            setTimeout(() => {
+                                $('#shipping-radio-0').prop('checked', true).trigger('change');
+                            }, 100);
                         } else {
                             $('#shipping-services-list').append('<p class="text-sm text-red-500">Layanan tidak tersedia untuk kurir ini.</p>');
                         }

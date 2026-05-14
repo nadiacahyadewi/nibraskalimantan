@@ -8,7 +8,7 @@ class Product extends Model
 {
     protected $fillable = [
         'name', 'description', 'price', 'purchase_price', 
-        'color', 'category', 'category_id', 'brand_id'
+        'color', 'category', 'category_id', 'brand_id', 'weight'
         // size_xs to size_xxl is now deprecated in favor of variants
     ];
 

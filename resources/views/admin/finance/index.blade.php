@@ -132,7 +132,7 @@
                                     <button onclick="openEditModal({{ $finance->id }}, '{{ $finance->type }}', '{{ $finance->amount }}', '{{ $finance->description }}', '{{ $finance->date }}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors" title="Edit">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </button>
-                                    <form action="{{ route('admin.finance.destroy', $finance->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" class="inline-block">
+                                    <form action="{{ route('admin.finance.destroy', $finance->id) }}" method="POST" class="inline-block swal-form" data-title="Hapus Data" data-text="Apakah Anda yakin ingin menghapus data ini?" data-confirm-text="Ya, Hapus!">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus">

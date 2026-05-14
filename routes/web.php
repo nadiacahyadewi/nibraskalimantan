@@ -60,9 +60,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin protected routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // Category and Brand routes
     Route::get('/category-brand', [App\Http\Controllers\Admin\CategoryBrandController::class, 'index'])->name('category_brand.index');

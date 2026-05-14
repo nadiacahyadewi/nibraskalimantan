@@ -63,7 +63,7 @@
                                 <button onclick="openModal('categoryModal', 'edit', {{ $category->id }}, '{{ $category->name }}')" class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-1.5 rounded-md transition-colors mr-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
+                                <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="inline-block swal-form" data-title="Hapus Kategori" data-text="Yakin ingin menghapus kategori ini?" data-confirm-text="Ya, Hapus!">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-md transition-colors" {{ $category->products_count > 0 ? 'disabled' : '' }} title="{{ $category->products_count > 0 ? 'Tidak bisa dihapus (sedang digunakan)' : 'Hapus' }}">
@@ -117,7 +117,7 @@
                                 <button onclick="openModal('brandModal', 'edit', {{ $brand->id }}, '{{ $brand->name }}')" class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-1.5 rounded-md transition-colors mr-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus brand ini?');">
+                                <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="inline-block swal-form" data-title="Hapus Brand" data-text="Yakin ingin menghapus brand ini?" data-confirm-text="Ya, Hapus!">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-md transition-colors" {{ $brand->products_count > 0 ? 'disabled' : '' }} title="{{ $brand->products_count > 0 ? 'Tidak bisa dihapus (sedang digunakan)' : 'Hapus' }}">

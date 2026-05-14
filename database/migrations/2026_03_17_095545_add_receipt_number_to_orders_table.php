@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('receipt_number')->nullable()->after('status');
-            $table->timestamp('completed_at')->nullable()->after('shipped_at');
+            if (!Schema::hasColumn('orders', 'receipt_number')) {
+                $table->string('receipt_number')->nullable()->after('status');
+            }
+            if (!Schema::hasColumn('orders', 'completed_at')) {
+                $table->timestamp('completed_at')->nullable()->after('shipped_at');
+            }
         });
     }
 

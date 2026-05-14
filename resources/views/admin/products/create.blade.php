@@ -87,6 +87,13 @@
                         <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Warna</label>
                         <input type="text" name="color" id="color" value="{{ old('color') }}" placeholder="Contoh: Maroon" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta outline-none transition-all">
                     </div>
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Berat Produk (Gram)</label>
+                        <div class="relative">
+                            <input type="number" name="weight" id="weight" value="{{ old('weight', 500) }}" placeholder="500" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta outline-none transition-all pr-12">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-semibold">gram</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div>

@@ -146,18 +146,18 @@ class CartController extends Controller
 
         $categoryWeights = [
             'Jilbab' => 150,
-            'Koko Dewasa' => 300,
-            'Gamis Dewasa' => 700,
-            'Gamis Anak' => 400,
-            'Koko Anak' => 200,
+            'Koko Dewasa' => 500,
+            'Gamis Dewasa' => 500,
+            'Gamis Anak' => 500,
+            'Koko Anak' => 500,
             'Kaos Kaki' => 100,
             'Ciput' => 80,
             'Sarung' => 500,
-            'Baju Olahraga' => 350,
-            'Mukena' => 900,
+            'Baju Olahraga' => 500,
+            'Mukena' => 500,
             'Inner' => 120,
-            'Atasan Pria' => 300,
-            'Atasan Wanita' => 250,
+            'Atasan Pria' => 500,
+            'Atasan Wanita' => 500,
         ];
 
         foreach ($cartItems as $item) {
@@ -170,19 +170,22 @@ class CartController extends Controller
 
             $catName = $item->product->categoryData ? $item->product->categoryData->name : ($item->product->category ?? '');
             
-            $weightPerItem = 250; // Default weight jika murni tidak didefinisikan
-            foreach ($categoryWeights as $cat => $w) {
-                if (stripos($catName, $cat) !== false) {
-                    $weightPerItem = $w;
-                    break;
+            // Gunakan berat dari kolom produk jika tersedia, jika tidak gunakan logika kategori
+            $weightPerItem = $item->product->weight > 0 ? $item->product->weight : 500;
+            
+            if ($item->product->weight <= 0) {
+                foreach ($categoryWeights as $cat => $w) {
+                    if (stripos($catName, $cat) !== false) {
+                        $weightPerItem = $w;
+                        break;
+                    }
                 }
             }
             
             $totalWeight += $weightPerItem * $item->quantity;
         }
 
-        // Ekspedisi minimal dihitung 1kg (1000g)
-        $totalWeight = max($totalWeight, 1000);
+        // Biarkan RajaOngkir/Kurir yang menentukan minimal berat (biasanya 1kg otomatis dari API)
         $totalQty = $cartItems->sum('quantity');
 
         // Ambil data provinsi dari RajaOngkirController

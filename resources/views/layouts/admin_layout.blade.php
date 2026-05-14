@@ -113,6 +113,7 @@
     </main>
 
     <!-- Interactive Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
@@ -130,6 +131,34 @@
 
             if (mobileBtn) mobileBtn.addEventListener('click', toggleSidebar);
             if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+            // SweetAlert for Delete/Cancel Forms
+            const swalForms = document.querySelectorAll('.swal-form');
+            swalForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const title = form.getAttribute('data-title') || 'Apakah Anda Yakin?';
+                    const text = form.getAttribute('data-text') || 'Data ini akan dihapus!';
+                    const confirmText = form.getAttribute('data-confirm-text') || 'Ya, Lanjutkan!';
+                    
+                    Swal.fire({
+                        title: title,
+                        text: text,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#E32184',
+                        cancelButtonColor: '#6B7280',
+                        confirmButtonText: confirmText,
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true,
+                        heightAuto: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
         });
     </script>
     @stack('scripts')
