@@ -53,7 +53,10 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required'],
+            'password' => ['required', 'string', 'min:8', 'max:20'],
+        ], [
+            'password.min' => 'Password minimal 8 karakter',
+            'password.max' => 'Password maksimal 20 karakter',
         ]);
 
         $remember = $request->has('remember-me');
@@ -89,10 +92,14 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'min:3', 'max:50', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'max:20', 'confirmed'],
         ], [
+            'name.min' => 'Username minimal 3 karakter',
+            'name.max' => 'Username maksimal 50 karakter',
+            'name.unique' => 'Username sudah digunakan',
+            'email.unique' => 'Email sudah digunakan',
             'password.min' => 'Password minimal 8 karakter',
             'password.max' => 'Password maksimal 20 karakter',
         ]);
