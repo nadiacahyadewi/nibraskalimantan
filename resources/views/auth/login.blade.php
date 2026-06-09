@@ -140,7 +140,7 @@
                     </div>
 
                     <div class="text-sm">
-                        <a href="#" class="font-medium text-nibras-magenta hover:text-pink-700 transition-colors">
+                        <a href="{{ route('password.request') }}" class="font-medium text-nibras-magenta hover:text-pink-700 transition-colors">
                             Lupa password?
                         </a>
                     </div>
