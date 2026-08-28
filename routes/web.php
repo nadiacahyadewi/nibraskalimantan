@@ -21,38 +21,20 @@ Route::post('/keranjang/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/keranjang/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
-// RajaOngkir API routes untuk AJAX Frontend
-//route to get cities based on province ID
-Route::get('/cities/{provinceId}', [App\Http\Controllers\RajaOngkirController::class, 'getCities']);
-
-//route to get districts based on city ID
-Route::get('/districts/{cityId}', [App\Http\Controllers\RajaOngkirController::class, 'getDistricts']);
-
-//route to post shipping cost
-Route::post('/check-ongkir', [App\Http\Controllers\RajaOngkirController::class, 'checkOngkir']);
-
 
 // Checkout Route (Public / Guest accessible agar bisa beli tanpa login)
 Route::match(['get', 'post'], '/checkout', [CartController::class, 'checkout'])->name('checkout');
 Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/pesanan', [App\Http\Controllers\UserOrderController::class, 'index'])->name('orders.index');
-    Route::get('/pesanan/{id}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('orders.show');
-    Route::post('/pesanan/{id}/complete', [App\Http\Controllers\UserOrderController::class, 'complete'])->name('orders.complete');
-});
 
-// Midtrans routes
-Route::post('/midtrans/token', [App\Http\Controllers\MidtransController::class, 'getToken'])->name('midtrans.token');
-Route::post('/midtrans/status', [App\Http\Controllers\MidtransController::class, 'checkStatus'])->name('midtrans.status');
-Route::post('/midtrans/notification', [App\Http\Controllers\MidtransController::class, 'notification']);
+
 // Guest routes for login and register
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    // Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    // Route::post('/register', [AuthController::class, 'register']);
 
     // Password Reset Routes
     Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
@@ -79,6 +61,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
     Route::resource('finance', App\Http\Controllers\Admin\FinanceController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'update']);
-    Route::post('/orders/{order}/ship', [App\Http\Controllers\Admin\OrderController::class, 'ship'])->name('orders.ship');
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 });

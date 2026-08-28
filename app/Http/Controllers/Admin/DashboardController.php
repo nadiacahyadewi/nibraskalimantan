@@ -16,19 +16,12 @@ class DashboardController extends Controller
         // Statistics
         $totalProducts = Product::count();
         $activeOrders = Order::whereNotIn('status', ['Selesai', 'Dibatalkan'])->count();
-        $totalCustomers = User::where('role', '!=', 'admin')->count();
         
         // New Statistics
         $pendingConfirmation = Order::where('status', 'Menunggu Konfirmasi')->count();
 
         // Recent Orders
         $recentOrders = Order::with('user')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        // Recent Customers
-        $recentCustomers = User::where('role', '!=', 'admin')
             ->latest()
             ->take(5)
             ->get();
@@ -44,9 +37,7 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact(
             'totalProducts',
             'activeOrders',
-            'totalCustomers',
             'recentOrders',
-            'recentCustomers',
             'topProducts',
             'pendingConfirmation'
         ));

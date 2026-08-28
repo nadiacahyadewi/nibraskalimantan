@@ -185,20 +185,9 @@ class CartController extends Controller
             $totalWeight += $weightPerItem * $item->quantity;
         }
 
-        // Biarkan RajaOngkir/Kurir yang menentukan minimal berat (biasanya 1kg otomatis dari API)
         $totalQty = $cartItems->sum('quantity');
 
-        // Ambil data provinsi dari RajaOngkirController
-        $rajaOngkir = new \App\Http\Controllers\RajaOngkirController();
-        $provincesResponse = $rajaOngkir->index();
-        $provinces = $provincesResponse->getData()['provinces'] ?? [];
-        
-        // Cek jika return view (dari index() original) maka kita perlu extract data provinces-nya
-        if ($provincesResponse instanceof \Illuminate\View\View) {
-            $provinces = $provincesResponse->getData()['provinces'] ?? [];
-        }
-
-        return view('checkout.index', compact('cartItems', 'subtotal', 'baseSubtotal', 'totalQty', 'totalWeight', 'provinces'));
+        return view('checkout.index', compact('cartItems', 'subtotal', 'baseSubtotal', 'totalQty', 'totalWeight'));
     }
     public function processCheckout(Request $request)
     {
@@ -209,13 +198,6 @@ class CartController extends Controller
                 'name' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
                 'address' => 'required|string',
-                'payment_method' => 'required|string|in:Midtrans,QRIS,Bank Transfer',
-                'province' => 'required|string',
-                'city' => 'required|string',
-                'district' => 'required|string',
-                'courier' => 'required|string',
-                'shipping_service' => 'required|string',
-                'shipping_cost' => 'required|numeric',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Checkout Validation Failed:', $e->errors());
@@ -267,15 +249,15 @@ class CartController extends Controller
             'customer_name' => $request->name,
             'customer_phone' => $request->phone,
             'customer_address' => $request->address,
-            'province' => $request->province,
-            'city' => $request->city,
-            'district' => $request->district,
-            'courier' => $request->courier,
-            'shipping_service' => $request->shipping_service,
-            'shipping_cost' => $request->shipping_cost,
-            'total_amount' => $totalAmount + $request->shipping_cost,
-            'status' => 'Menunggu Pembayaran',
-            'payment_method' => $request->payment_method
+            'province' => '-',
+            'city' => '-',
+            'district' => '-',
+            'courier' => 'Manual',
+            'shipping_service' => 'WhatsApp',
+            'shipping_cost' => 0,
+            'total_amount' => $totalAmount,
+            'status' => 'Menunggu Konfirmasi',
+            'payment_method' => 'Manual Transfer'
         ]);
 
         // Create Order Items
@@ -291,10 +273,29 @@ class CartController extends Controller
                 'success' => true,
                 'message' => 'Pesanan berhasil dibuat.',
                 'order_id' => $order->id,
-                'redirect_url' => route('home')
+                'redirect_url' => url('/') // We might not have ajax redirect to WA directly, or we can. Let's return WA URL
             ]);
         }
 
-        return redirect()->route('home')->with('success', 'Pesanan Anda berhasil dibuat! Pesanan Anda akan segera diproses.');
+        // Create WhatsApp Message
+        $itemsText = "";
+        foreach ($orderItemsData as $item) {
+            $itemsText .= "- " . $item['product_name'] . " (" . $item['size'] . ") x" . $item['quantity'] . "\n";
+        }
+        $totalFmt = number_format($totalAmount, 0, ',', '.');
+        
+        $waMessage = "Halo Admin, saya tertarik dengan daftar produk berikut:\n\n";
+        $waMessage .= "Nama: {$request->name}\n";
+        $waMessage .= "No. HP: {$request->phone}\n";
+        $waMessage .= "Alamat: {$request->address}\n\n";
+        $waMessage .= "Daftar Produk:\n" . $itemsText . "\n";
+        $waMessage .= "Total Harga: Rp " . $totalFmt . "\n\n";
+        $waMessage .= "Mohon info ketersediaan stok, ongkos kirim, dan totalnya ya. Terima kasih.";
+        
+        // Ambil nomor admin dari database (tabel settings)
+        $adminPhone = \App\Models\Setting::where('key', 'wa_admin_1')->value('value') ?? '6289523195549';
+        $waUrl = "https://wa.me/{$adminPhone}?text=" . urlencode($waMessage);
+
+        return redirect()->away($waUrl);
     }
 }

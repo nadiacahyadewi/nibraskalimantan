@@ -187,6 +187,28 @@
                             </svg>
                             {{ $product->total_stock <= 0 ? 'Stok Habis' : 'Beli Sekarang' }}
                         </button>
+
+                        <!-- Tanya via WA (2 Admin) -->
+                        @php
+                            $wa_admin_1 = \App\Models\Setting::where('key', 'wa_admin_1')->value('value') ?? '6289523195549';
+                            $wa_admin_2 = \App\Models\Setting::where('key', 'wa_admin_2')->value('value') ?? '6282148882473';
+                        @endphp
+                        <div class="flex gap-3 mt-3 w-full">
+                            <button type="button" onclick="buyNowWA('{{ $wa_admin_1 }}')"
+                                    class="flex-1 bg-green-500 text-white h-12 rounded-md font-semibold text-sm hover:bg-green-600 transition-colors shadow-md flex items-center justify-center gap-2 group px-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 16 16">
+                                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c.003-3.625 2.952-6.575 6.575-6.575a6.56 6.56 0 0 1 4.646 1.928 6.56 6.56 0 0 1 1.923 4.651c-.003 3.625-2.952 6.575-6.575 6.575z"/>
+                                </svg>
+                                Admin 1
+                            </button>
+                            <button type="button" onclick="buyNowWA('{{ $wa_admin_2 }}')"
+                                    class="flex-1 bg-green-500 text-white h-12 rounded-md font-semibold text-sm hover:bg-green-600 transition-colors shadow-md flex items-center justify-center gap-2 group px-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 16 16">
+                                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c.003-3.625 2.952-6.575 6.575-6.575a6.56 6.56 0 0 1 4.646 1.928 6.56 6.56 0 0 1 1.923 4.651c-.003 3.625-2.952 6.575-6.575 6.575z"/>
+                                </svg>
+                                Admin 2
+                            </button>
+                        </div>
                     </form>
 
                 </div>
@@ -269,7 +291,7 @@
             return true;
         }
 
-        function buyNowWA() {
+        function buyNowWA(phone) {
             if (!selectedSize) {
                 alert('Silakan pilih ukuran terlebih dahulu.');
                 return;
@@ -277,10 +299,8 @@
             
             const name = "{{ $product->name }}";
             const qty = document.getElementById('qty').value;
-            const message = `Halo Admin Nibras, saya ingin memesan:\n\nProduk: ${name}\nUkuran: ${selectedSize}\nJumlah: ${qty}\n\nApakah stoknya masih tersedia?`;
+            const message = `Halo Admin Nibras, saya ingin bertanya tentang:\n\nProduk: ${name}\nUkuran: ${selectedSize}\nJumlah: ${qty}`;
             
-            // Replace with actual admin number
-            const phone = "6282148882473"; 
             const baseUrl = `https://wa.me/${phone}`;
             
             window.open(`${baseUrl}?text=${encodeURIComponent(message)}`, '_blank');

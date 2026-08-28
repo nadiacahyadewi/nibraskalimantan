@@ -80,8 +80,8 @@
         <div class="bg-white rounded-xl container-glow w-full max-w-md p-8 relative z-10 border-t-4 border-nibras-magenta">
             
             <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-900 mb-2">Selamat Datang Kembali</h1>
-                <p class="text-sm text-gray-500">Silakan masuk ke akun Anda</p>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">Login Admin</h1>
+                <p class="text-sm text-gray-500">Silakan masuk ke panel admin</p>
             </div>
 
             <form action="{{ route('login') }}" method="POST" class="space-y-5">
@@ -153,17 +153,7 @@
                 </div>
             </form>
 
-            <!-- Note about Roles constraint -->
-            <div class="mt-6 text-center text-xs text-gray-500 bg-gray-50 p-3 rounded border border-gray-100">
-                <p>Login sebagai <strong>Admin</strong> atau <strong>User</strong> menggunakan form ini. Sistem akan mendeteksi hak akses secara otomatis.</p>
-            </div>
 
-            <div class="mt-6 border-t border-gray-200 pt-6">
-                <p class="text-center text-sm text-gray-600">
-                    Belum punya akun? 
-                    <a href="/register" class="font-medium text-nibras-magenta hover:text-pink-700 transition-colors">Daftar sekarang</a>
-                </p>
-            </div>
         </div>
     </main>
 

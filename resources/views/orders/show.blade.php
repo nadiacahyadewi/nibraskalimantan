@@ -18,12 +18,7 @@
             }
         }
     </script>
-    @if($order->payment_method === 'Midtrans')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script type="text/javascript"
-      src="https://app.sandbox.midtrans.com/snap/snap.js"
-      data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-    @endif
+
 </head>
 <body class="text-gray-800 bg-gray-50 flex flex-col min-h-screen">
     @include('layouts.navbar')
@@ -187,99 +182,7 @@
                         </div>
                     </div>
 
-                    @if($order->payment_method === 'Midtrans' && $order->status === 'Menunggu Pembayaran')
-                        <div class="mt-4 pt-4 border-t border-gray-50">
-                            <button id="check-status-button" class="w-full py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                Perbarui Status Pembayaran
-                            </button>
-                            <p class="text-[9px] text-gray-400 mt-2 text-center italic">Klik jika Anda sudah membayar tapi status belum berubah.</p>
-                        </div>
 
-                        <script>
-                            $(document).ready(function() {
-                                $('#check-status-button').on('click', function() {
-                                    const btn = $(this);
-                                    btn.prop('disabled', true).addClass('opacity-70').html('Memproses...');
-
-                                    $.ajax({
-                                        url: "{{ route('midtrans.status') }}",
-                                        method: 'POST',
-                                        data: {
-                                            _token: "{{ csrf_token() }}",
-                                            order_id: "{{ $order->id }}"
-                                        },
-                                        success: function(response) {
-                                            alert(response.message);
-                                            if (response.success) {
-                                                window.location.reload();
-                                            } else {
-                                                btn.prop('disabled', false).removeClass('opacity-70').html('Perbarui Status Pembayaran');
-                                            }
-                                        },
-                                        error: function(xhr) {
-                                            let msg = 'Gagal memperbarui status.';
-                                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                                msg = xhr.responseJSON.message;
-                                            }
-                                            alert(msg);
-                                            btn.prop('disabled', false).removeClass('opacity-70').html('Perbarui Status Pembayaran');
-                                        }
-                                    });
-                                });
-                            });
-                        </script>
-                    @endif
-
-                    @if($order->payment_method === 'Midtrans' && $order->status === 'Menunggu Pembayaran')
-                        <div class="mt-6">
-                            <button id="pay-button" class="w-full py-4 bg-nibras-magenta text-white rounded-2xl font-bold shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] hover:bg-pink-700 flex items-center justify-center gap-2">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                Bayar Sekarang
-                            </button>
-                        </div>
-
-                        <script type="text/javascript">
-                            $('#pay-button').on('click', function () {
-                                const btn = $(this);
-                                btn.prop('disabled', true).addClass('opacity-70').html('Memproses...');
-                                
-                                $.ajax({
-                                    url: "{{ route('midtrans.token') }}",
-                                    method: 'POST',
-                                    data: {
-                                        _token: "{{ csrf_token() }}",
-                                        order_id: "{{ $order->id }}"
-                                    },
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    success: function(data) {
-                                        if (data.snap_token) {
-                                            window.snap.pay(data.snap_token, {
-                                                onSuccess: function(result) { window.location.reload(); },
-                                                onPending: function(result) { window.location.reload(); },
-                                                onError: function(result) { window.location.reload(); },
-                                                onClose: function() { 
-                                                    btn.prop('disabled', false).removeClass('opacity-70').html('<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Bayar Sekarang');
-                                                }
-                                            });
-                                        } else {
-                                            alert('Gagal mendapatkan token pembayaran.');
-                                            btn.prop('disabled', false).removeClass('opacity-70').html('Bayar Sekarang');
-                                        }
-                                    },
-                                    error: function(xhr) {
-                                        console.error('Error fetching snap token:', xhr.responseText);
-                                        alert('Terjadi kesalahan saat memproses pembayaran.');
-                                        btn.prop('disabled', false).removeClass('opacity-70').html('Bayar Sekarang');
-                                    }
-                                });
-                            });
-                        </script>
-                    @endif
                 </div>
 
                 <!-- Items Card -->

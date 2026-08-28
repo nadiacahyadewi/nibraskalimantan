@@ -3,13 +3,13 @@
         <!-- Branding & Address -->
         <div class="flex flex-col items-center md:items-start text-center md:text-left">
             <img src="{{ asset('assets/logo.png') }}" alt="Nibras Kalimantan" class="h-12 object-contain mb-4 brightness-0 invert opacity-90">
-            <p class="text-gray-400 max-w-md leading-relaxed text-sm mb-3 text-balance">Menyediakan Koleksi Baju Muslim & Muslimah Terlengkap dan Berkualitas di Kalimantan. Melayani satuan dan partai besar.</p>
+            <p class="text-gray-400 max-w-md leading-relaxed text-sm mb-3 text-balance">{{ \App\Models\Setting::where('key', 'tentang_kami')->value('value') ?? 'Menyediakan Koleksi Baju Muslim & Muslimah Terlengkap dan Berkualitas di Kalimantan. Melayani satuan dan partai besar.' }}</p>
             <div class="flex items-start gap-2 text-gray-500 text-sm max-w-md">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 flex-shrink-0 mt-0.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                 </svg>
-                <p>Alamat :<br/>Jl. Karang Anyar 1, Nomor 31, Loktabat Utara, Banjarbaru</p>
+                <p>Alamat :<br/>{{ \App\Models\Setting::where('key', 'alamat')->value('value') ?? 'Jl. Karang Anyar 1, Nomor 31, Loktabat Utara, Banjarbaru' }}</p>
             </div>
         </div>
 

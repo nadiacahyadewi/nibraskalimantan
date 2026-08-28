@@ -30,19 +30,13 @@
                                 @if(Auth::user()->role === 'admin')
                                     <a href="{{ url('/admin/dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Dashboard Admin</a>
                                 @endif
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Pesanan Saya</a>
+
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors">Keluar</button>
                                 </form>
                             </div>
                         </div>
-                    @else
-                        <a href="{{ route('login') }}" class="text-black hover:text-nibras-magenta transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
-                                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
                     @endauth
                 </div>
 
@@ -154,7 +148,7 @@
                                         <p class="font-medium text-gray-800">{{ Auth::user()->name }}</p>
                                         <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
                                     </div>
-                                    <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Pesanan Saya</a>
+
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors">Keluar</button>
@@ -162,14 +156,6 @@
                                 </div>
                             </div>
                         </div>
-                    @else
-                        <!-- Profile Guest -->
-                        <a href="{{ route('login') }}" class="flex items-center gap-2 group">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9 text-black group-hover:text-nibras-magenta transition-colors">
-                                <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-black font-medium text-[16px] group-hover:text-nibras-magenta transition-colors hidden sm:block">Masuk</span>
-                        </a>
                     @endauth
                 </div>
             </div>
@@ -178,9 +164,7 @@
             <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg px-6 py-4 flex flex-col gap-4 text-base font-medium z-40 md:hidden">
                 <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Home</a>
                 <a href="{{ url('/produk') }}" class="{{ request()->is('produk') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Produk</a>
-                @auth
-                    <a href="{{ route('orders.index') }}" class="{{ request()->is('pesanan*') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Pesanan Saya</a>
-                @endauth
+
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Tentang Kami</a>
                 
 

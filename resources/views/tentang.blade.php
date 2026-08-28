@@ -64,8 +64,16 @@
 
         <!-- Main Content -->
         <main class="flex-grow pt-[70px] md:pt-[100px] w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <h1 class="text-3xl font-bold text-center text-gray-900 mb-8 mt-4 md:mt-8">Tentang Kami</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-900 mb-6 mt-4 md:mt-8">Tentang Kami</h1>
             
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-10 text-center relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-50 rounded-full mix-blend-multiply opacity-50 pointer-events-none"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-50 rounded-full mix-blend-multiply opacity-50 pointer-events-none"></div>
+                <p class="text-gray-700 leading-relaxed md:text-lg max-w-4xl mx-auto relative z-10 italic">
+                    "{{ \App\Models\Setting::where('key', 'tentang_kami')->value('value') ?? 'Menyediakan Koleksi Baju Muslim & Muslimah Terlengkap dan Berkualitas di Kalimantan. Melayani satuan dan partai besar.' }}"
+                </p>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Kontak & Sosial Media -->
                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 h-fit">
@@ -81,7 +89,7 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-gray-900">Alamat</h3>
-                                <p class="text-gray-600 mt-1">Jl. Karang Anyar 1, Nomor 31, Loktabat Utara, Banjarbaru</p>
+                                <p class="text-gray-600 mt-1">{{ \App\Models\Setting::where('key', 'alamat')->value('value') ?? 'Jl. Karang Anyar 1, Nomor 31, Loktabat Utara, Banjarbaru' }}</p>
                             </div>
                         </div>
 
@@ -156,7 +164,7 @@
                     <!-- Google Maps Iframe -->
                     <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-[400px]">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.650678307639!2d114.8136408!3d-3.4349013000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de6813466be6fdf%3A0x88ff5990fc0fa984!2sNIBRAS%20BANJARBARU!5e0!3m2!1sid!2sid!4v1772500565133!5m2!1sid!2sid" 
+                            src="{{ \App\Models\Setting::where('key', 'google_maps_url')->value('value') ?? 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.650678307639!2d114.8136408!3d-3.4349013000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de6813466be6fdf%3A0x88ff5990fc0fa984!2sNIBRAS%20BANJARBARU!5e0!3m2!1sid!2sid!4v1772500565133!5m2!1sid!2sid' }}" 
                             width="100%" 
                             height="100%" 
                             style="border:0; border-radius: 12px;" 

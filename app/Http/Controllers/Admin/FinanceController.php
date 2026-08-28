@@ -81,7 +81,7 @@ class FinanceController extends Controller
 
         $validated = $request->validate([
             'type' => 'required|in:pemasukan,pengeluaran',
-            'amount' => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:-200000',
             'description' => 'nullable|string|max:1000',
             'date' => 'required|date',
         ]);
