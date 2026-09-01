@@ -33,8 +33,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    // Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-    // Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 
     // Password Reset Routes
     Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
@@ -45,6 +45,18 @@ Route::middleware('guest')->group(function () {
 
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// User protected routes
+Route::middleware('auth')->group(function () {
+    // Profil Pelanggan
+    Route::get('/profil', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profil', [App\Http\Controllers\UserProfileController::class, 'update'])->name('profile.update');
+
+    // Pesanan Saya
+    Route::get('/pesanan', [App\Http\Controllers\UserOrderController::class, 'index'])->name('orders.index');
+    Route::get('/pesanan/{id}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('orders.show');
+    Route::post('/pesanan/{id}/complete', [App\Http\Controllers\UserOrderController::class, 'complete'])->name('orders.complete');
+});
 
 // Admin protected routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

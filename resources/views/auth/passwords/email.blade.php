@@ -4,124 +4,103 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lupa Password - Febia Nibras Kalsel</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        nibras: {
-                            magenta: '#E32184',
-                            gray: '#EEEEEE',
-                            text: '#706f6c',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                        brand: ['Pacifico', 'cursive'],
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #F8F8F8;
-            background-image: radial-gradient(#E32184 0.5px, transparent 0.5px), radial-gradient(#E32184 0.5px, #F8F8F8 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            background-attachment: fixed;
-            opacity: 0.95;
-        }
-        .container-glow {
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
-        }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="text-gray-800 min-h-screen flex flex-col">
+<body class="bg-white m-0 p-0 min-h-screen flex text-gray-800">
 
-    <!-- Header / Navbar -->
-    <header class="bg-white border-b border-gray-100 px-6 py-4 shadow-sm z-10 w-full relative">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <a href="/" class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
-                <span class="text-nibras-magenta font-brand text-3xl tracking-tight leading-none">Nibra's</span>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 sm:mt-0">Kalimantan</span>
-            </a>
+    <div class="w-full flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Left Banner: Image (Hidden on small screens) -->
+        <div class="hidden md:flex md:w-1/2 relative bg-gray-100 overflow-hidden">
+            <!-- Background Image -->
+            <img src="{{ asset('assets/loginbg.png') }}" class="absolute inset-0 w-full h-full object-cover object-center" alt="Forgot Password Banner">
             
-            <a href="/login" class="text-sm font-medium text-gray-500 hover:text-nibras-magenta transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Kembali ke Login
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-grow flex items-center justify-center p-6 relative w-full">
-        <!-- Decoration SVG behind card -->
-        <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden opacity-10 pointer-events-none">
-            <svg class="w-full max-w-4xl text-nibras-magenta" viewBox="0 0 24 24" fill="currentColor">
-               <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2ZM11,19.93C7.05,19.43 4,16.05 4,12C4,7.95 7.05,4.57 11,4.07V19.93ZM13,4.07C16.95,4.57 20,7.95 20,12C20,16.05 16.95,19.43 13,19.93V4.07Z"/>
-            </svg>
-        </div>
-
-        <!-- Card -->
-        <div class="bg-white rounded-xl container-glow w-full max-w-md p-8 relative z-10 border-t-4 border-nibras-magenta">
+            <div class="absolute inset-0 bg-black/10"></div>
             
-            <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-gray-900 mb-2">Lupa Password?</h1>
-                <p class="text-sm text-gray-500">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
+            <!-- Branding -->
+            <div class="absolute inset-x-0 top-10 z-10 flex justify-center drop-shadow-lg">
+                <img src="{{ asset('assets/logo.png') }}" alt="Nibras Logo" class="h-12 w-auto">
             </div>
+            
+            <div class="absolute bottom-10 left-10 right-10 z-10 text-white drop-shadow-md">
+                <p class="text-sm font-medium leading-relaxed max-w-lg">
+                    Temukan koleksi busana muslimah terbaik dan berkualitas untuk menemani aktivitas harian Anda.
+                </p>
+            </div>
+        </div>
 
-            @if (session('status'))
-                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-                    {{ session('status') }}
-                </div>
-            @endif
+        <!-- Right Side: Form Container -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20 relative">
+            
+            <!-- Back Button -->
+            <a href="{{ url('/') }}" class="absolute top-6 right-8 text-sm font-medium text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
+                Kembali ke beranda
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
 
-            <form action="{{ route('password.email') }}" method="POST" class="space-y-5">
-                @csrf
+            <!-- Form Wrapper -->
+            <div class="w-full max-w-md">
                 
-                @if ($errors->any())
-                    <div class="p-3 bg-red-50 text-red-600 border border-red-200 rounded text-sm mb-4">
-                        <ul class="list-disc pl-4 space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                <h1 class="text-[28px] font-bold text-gray-900 mb-1 tracking-tight">Lupa Password?</h1>
+                <p class="text-gray-500 mb-8 text-sm">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
+
+                @if (session('status'))
+                    <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 border border-green-200 rounded-lg" role="alert">
+                        {{ session('status') }}
                     </div>
                 @endif
-                
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                            </svg>
-                        </div>
-                        <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}" class="pl-10 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nibras-magenta focus:border-nibras-magenta sm:text-sm transition-colors" placeholder="Masukkan email Anda">
-                    </div>
-                </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-semibold text-white bg-nibras-magenta hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nibras-magenta transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg shadow-pink-200 tracking-wide">
-                        Kirim Link Reset Password
-                    </button>
+                <form action="{{ route('password.email') }}" method="POST" class="space-y-5">
+                    @csrf
+                    
+                    @if ($errors->any())
+                        <div class="p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm mb-4">
+                            <ul class="list-disc pl-4 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- Email Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                            </div>
+                            <input name="email" type="email" value="{{ old('email') }}" required class="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 text-sm placeholder-gray-400 transition-colors" placeholder="Masukkan email">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button type="submit" class="w-full flex justify-center py-3.5 px-4 rounded-lg shadow-sm text-sm font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors">
+                            Kirim Link Reset Password
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Login Link -->
+                <div class="mt-8 text-center text-sm text-gray-600">
+                    <a href="{{ route('login') }}" class="font-medium text-[#de232c] hover:text-red-700 transition-colors">Kembali ke halaman Login</a>
                 </div>
-            </form>
+                
+            </div>
         </div>
-    </main>
+    </div>
+
 </body>
 </html>

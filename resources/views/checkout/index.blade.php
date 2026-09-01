@@ -50,23 +50,37 @@
             
             <!-- Left: Formulir Data Diri -->
             <div class="w-full lg:w-2/3 flex flex-col gap-8">
+                @php
+                    $user = auth()->user();
+                    $defaultName = $user ? $user->name : '';
+                    $defaultPhone = $user ? $user->phone : '';
+                    $defaultAddress = $user ? $user->address : '';
+                @endphp
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 container-glow">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-full bg-nibras-magenta text-white flex items-center justify-center text-sm">1</span>
-                        Data Penerima
-                    </h2>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-nibras-magenta text-white flex items-center justify-center text-sm">1</span>
+                            Data Penerima
+                        </h2>
+                        @auth
+                            <button type="button" id="toggle-profile-data" class="text-sm text-nibras-magenta hover:text-pink-700 font-medium bg-pink-50 px-4 py-2 rounded-lg transition-colors border border-pink-100 focus:outline-none">
+                                Kirim ke alamat lain (Kosongkan form)
+                            </button>
+                        @endauth
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="col-span-1 md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                            <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Masukkan nama lengkap penerima">
+                            <input type="text" id="checkout-name" name="name" value="{{ $defaultName }}" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Masukkan nama lengkap penerima">
                         </div>
                         <div class="col-span-1 md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP / WhatsApp</label>
-                            <input type="text" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Contoh: 081234567890">
+                            <input type="text" id="checkout-phone" name="phone" value="{{ $defaultPhone }}" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Contoh: 081234567890">
                         </div>
                         <div class="col-span-1 md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap (Provinsi, Kota, Kecamatan, Jalan, No Rumah)</label>
-                            <textarea name="address" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Alamat lengkap tujuan pengiriman..."></textarea>
+                            <textarea id="checkout-address" name="address" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-nibras-magenta focus:border-nibras-magenta" placeholder="Alamat lengkap tujuan pengiriman...">{{ $defaultAddress }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -114,6 +128,78 @@
         </form>
     </main>
 
+    @guest
+    <!-- Modal Tawaran Buat Akun -->
+    <div id="guest-register-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" id="guest-modal-backdrop"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 transform scale-95 transition-transform duration-300" id="guest-modal-content">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-nibras-magenta">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Ingin Simpan Data Anda?</h3>
+            <p class="text-sm text-gray-500 text-center mb-8">
+                Buat akun sekarang untuk mempermudah penyimpanan nama, alamat, dan nomor HP. Anda tidak perlu repot mengisi form lagi untuk pesanan berikutnya!
+            </p>
+            
+            <div class="flex flex-col gap-3">
+                <a href="{{ route('register') }}" class="w-full bg-nibras-magenta hover:bg-pink-700 text-white font-medium py-3 rounded-xl text-center transition-colors">
+                    Ya, Buat Akun
+                </a>
+                <button type="button" id="btn-close-modal" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-3 rounded-xl text-center transition-colors">
+                    Tidak, Lanjut Pesan Saja
+                </button>
+            </div>
+        </div>
+    </div>
+    @endguest
+    
+    @auth
+    @php
+        $user = auth()->user();
+        $profileIncomplete = empty($user->phone) || empty($user->address);
+    @endphp
+    @if($profileIncomplete)
+    <!-- Modal Profil Belum Lengkap -->
+    <div id="incomplete-profile-modal" class="fixed inset-0 z-[100] flex items-center justify-center">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-nibras-magenta">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Profil Belum Lengkap!</h3>
+            <p class="text-sm text-gray-500 text-center mb-8">
+                Silakan lengkapi Nomor HP dan Alamat Lengkap Pengiriman Anda di halaman Profil sebelum dapat melanjutkan pemesanan ini.
+            </p>
+            
+            <div class="flex flex-col gap-3">
+                <a href="{{ route('profile.edit') }}" class="w-full bg-nibras-magenta hover:bg-pink-700 text-white font-medium py-3 rounded-xl text-center transition-colors shadow-lg shadow-pink-900/20">
+                    Lengkapi Profil Sekarang
+                </a>
+                <a href="{{ route('cart.index') }}" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-3 rounded-xl text-center transition-colors">
+                    Kembali ke Keranjang
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endauth
+
     <!-- Footer -->
     @include('layouts.footer')
 
@@ -124,6 +210,82 @@
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             // Form akan submit secara normal dan controller mereturn redirect()->away(waUrl)
         });
+
+        @auth
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnToggleData = document.getElementById('toggle-profile-data');
+            const inputName = document.getElementById('checkout-name');
+            const inputPhone = document.getElementById('checkout-phone');
+            const inputAddress = document.getElementById('checkout-address');
+
+            let usingProfileData = true;
+            // Decode html entities if necessary, but Blade already handles XSS safely with e() implicitly.
+            // Using backticks for address to handle multiline.
+            const profileName = `{!! addslashes($defaultName ?? '') !!}`;
+            const profilePhone = `{!! addslashes($defaultPhone ?? '') !!}`;
+            const profileAddress = `{!! addslashes($defaultAddress ?? '') !!}`;
+
+            if(btnToggleData) {
+                btnToggleData.addEventListener('click', function() {
+                    usingProfileData = !usingProfileData;
+                    if (usingProfileData) {
+                        inputName.value = profileName;
+                        inputPhone.value = profilePhone;
+                        inputAddress.value = profileAddress;
+                        this.innerHTML = 'Kirim ke alamat lain (Kosongkan form)';
+                        this.classList.replace('bg-gray-100', 'bg-pink-50');
+                        this.classList.replace('text-gray-600', 'text-nibras-magenta');
+                        this.classList.replace('border-gray-200', 'border-pink-100');
+                    } else {
+                        inputName.value = '';
+                        inputPhone.value = '';
+                        inputAddress.value = '';
+                        this.innerHTML = 'Gunakan data profil saya';
+                        this.classList.replace('bg-pink-50', 'bg-gray-100');
+                        this.classList.replace('text-nibras-magenta', 'text-gray-600');
+                        this.classList.replace('border-pink-100', 'border-gray-200');
+                    }
+                });
+            }
+        });
+        @endauth
+
+        @guest
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek session storage agar pop up tidak muncul berulang-ulang terus menerus
+            const hasSeenModal = sessionStorage.getItem('hasSeenGuestModal');
+            
+            if (!hasSeenModal) {
+                const modal = document.getElementById('guest-register-modal');
+                const modalContent = document.getElementById('guest-modal-content');
+                const btnClose = document.getElementById('btn-close-modal');
+                const backdrop = document.getElementById('guest-modal-backdrop');
+
+                // Fungsi tutup modal
+                const closeModal = () => {
+                    modal.classList.add('opacity-0');
+                    modalContent.classList.replace('scale-100', 'scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 300);
+                    // Simpan status bahwa user sudah melihat pop-up
+                    sessionStorage.setItem('hasSeenGuestModal', 'true');
+                };
+
+                // Tampilkan modal
+                modal.classList.remove('hidden');
+                // Beri sedikit jeda agar transisi terlihat
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.replace('scale-95', 'scale-100');
+                }, 100);
+
+                // Event Listener Close
+                if (btnClose) btnClose.addEventListener('click', closeModal);
+                if (backdrop) backdrop.addEventListener('click', closeModal);
+            }
+        });
+        @endguest
     </script>
 </body>
 </html>

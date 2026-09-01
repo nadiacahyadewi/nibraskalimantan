@@ -45,31 +45,83 @@
         @include('layouts.navbar')
 
         <!-- Main Content -->
-        <main class="flex-grow pt-[70px] md:pt-[88px]">
+        <main class="flex-grow -mt-[70px] md:-mt-[88px]">
             <!-- Banner Section -->
-            <section class="w-full relative bg-gradient-to-r from-nibras-magenta to-pink-800 text-white overflow-hidden shadow-inner flex flex-col justify-end">
-                <div class="absolute inset-0 opacity-20 mix-blend-overlay">
-                    <img src="https://picsum.photos/1920/600?blur=2" alt="Background" class="w-full h-full object-cover">
-                </div>
-                <div class="absolute inset-0 opacity-30">
-                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                        <defs><pattern id="a" patternUnits="userSpaceOnUse" width="40" height="40"><path d="M0 40L40 0H20L0 20M40 40V20L20 40" fill="currentColor" fill-opacity=".1"/></pattern></defs>
-                        <rect width="100%" height="100%" fill="url(#a)"/>
-                    </svg>
-                </div>
-                <div class="relative z-10 px-6 lg:px-24 py-12 md:py-16 max-w-4xl pb-12 md:pb-16 text-center md:text-left mt-8 md:mt-0">
-                    <span class="inline-block py-1 px-4 rounded-full bg-white/20 backdrop-blur-sm text-xs md:text-sm font-semibold tracking-wider mb-6 md:mb-8 border border-white/30 uppercase shadow-sm">Koleksi Terbaru 2026</span>
-                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-lg tracking-tight">Menjual Perlengkapan <br class="hidden md:block"/><span class="font-brand text-pink-200 font-light drop-shadow-md">Baju Muslim & Muslimah</span></h1>
-                    <div class="w-24 md:w-32 h-1.5 bg-gradient-to-r from-white to-pink-300 mb-6 md:mb-8 rounded-full mx-auto md:mx-0"></div>
-                    <ul class="text-sm sm:text-base md:text-lg lg:text-xl space-y-3 md:space-y-4 opacity-100 font-medium drop-shadow-md text-left inline-block">
-                        <li class="flex items-center gap-2 md:gap-3"><svg class="w-5 md:w-6 h-5 md:h-6 text-pink-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> Menerima Pemesanan Agen & Reseller Resmi</li>
-                        <li class="flex items-center gap-2 md:gap-3"><svg class="w-5 md:w-6 h-5 md:h-6 text-pink-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> Melayani Pembelian Baju Seragaman Partai Besar</li>
-                        <li class="flex items-start gap-2 md:gap-3"><svg class="w-5 md:w-6 h-5 md:h-6 text-pink-200 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> <span class="leading-relaxed">Brand Unggulan: Ethica, Endomoda, Lubi, Raunapride, Aurany...</span></li>
-                    </ul>
-                    <div class="mt-8 md:mt-12 flex flex-col sm:flex-row flex-wrap gap-4 relative z-30 justify-center md:justify-start">
-                        <a href="#produk" class="bg-white text-nibras-magenta px-6 md:px-8 py-3 md:py-3.5 rounded-full font-bold shadow-xl shadow-pink-900/50 hover:bg-gray-50 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center">Lihat Koleksi</a>
-                        <a href="{{ url('/tentang') }}" class="bg-transparent border-2 border-white text-white px-6 md:px-8 py-3 md:py-3.5 rounded-full font-bold hover:bg-white/10 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center">Hubungi Admin</a>
+            <section class="w-full relative overflow-hidden shadow-inner flex items-center justify-start bg-pink-50">
+                <!-- Full Background Image -->
+                <img src="{{ asset('assets/bakcground.png') }}" alt="Promo Nibras Kalimantan" class="w-full h-auto object-cover min-h-[500px] md:min-h-0">
+                
+                <!-- Text Content Overlay -->
+                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full pt-[80px] md:pt-[100px]">
+                    <div class="max-w-xl md:max-w-2xl lg:max-w-3xl">
+                        <span class="block text-gray-600 font-semibold text-lg mb-4 tracking-wide">Katalog Produk</span>
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-nibras-magenta leading-tight" style="font-family: 'Times New Roman', Times, serif;">
+                            Busana Muslim <br/>
+                            Modern & Elegan
+                        </h1>
+                        <p class="text-gray-600 text-lg md:text-xl mb-10 leading-relaxed max-w-lg hidden sm:block">
+                            Temukan koleksi busana muslim terbaik dari Nibras Kalimantan untuk Anda dan keluarga tercinta.
+                        </p>
+                        
+                        <div class="flex flex-col sm:flex-row flex-wrap gap-4 relative z-30 mb-8 md:mb-16">
+                            <a href="#produk" class="bg-nibras-magenta text-white px-8 py-3.5 rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center flex items-center justify-center gap-2">
+                                Belanja Sekarang 
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                            <a href="#koleksi" class="bg-white border-2 border-nibras-magenta text-nibras-magenta px-8 py-3.5 rounded-full font-bold shadow-md hover:bg-gray-50 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                </svg>
+                                Lihat Koleksi
+                            </a>
+                        </div>
                     </div>
+                </div>
+            </section>
+            
+            <!-- Kategori Shortcut Section -->
+            <section class="py-6 md:py-12 bg-pink-50/30 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-16 text-center">
+                    <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-8">Kategori Pilihan</h2>
+                    <div class="grid grid-cols-4 gap-2 md:gap-6">
+                        <!-- Shortcut 1 -->
+                        <a href="{{ url('/produk') }}?kategori=gamis" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
+                                <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis<span class="hidden md:inline"> Wanita</span></h3>
+                        </a>
+                        <!-- Shortcut 2 -->
+                        <a href="{{ url('/produk') }}?kategori=koko" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
+                                <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Koko</h3>
+                        </a>
+                        <!-- Shortcut 3 -->
+                        <a href="{{ url('/produk') }}?kategori=anak" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
+                                <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Anak</h3>
+                        </a>
+                        <!-- Shortcut 4 -->
+                        <a href="{{ url('/produk') }}?kategori=sarimbit" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                            <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
+                                <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Sarimbit</h3>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Promo Banner Section -->
+            <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 mb-8 sm:mb-16">
+                <div class="w-full flex justify-center">
+                    <img src="{{ asset('assets/promobg.png') }}" alt="Promo Spesial Nibras" class="w-full h-auto rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 </div>
             </section>
 
@@ -84,65 +136,72 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
                     
                     @forelse($products as $p)
-                    <div class="group relative bg-white transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 overflow-hidden flex flex-col h-full rounded-2xl border border-gray-100">
-                        <!-- Image Area -->
-                        <div class="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden">
-                            @if($p->images->count() > 0)
-                                <img src="{{ $p->images->first()->url }}" 
-                                     alt="{{ $p->name }}" 
-                                     class="w-full h-full object-cover relative z-10 group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                </div>
-                            @endif
+                        <div class="group relative bg-white transition-all duration-300 hover:shadow-lg rounded-md overflow-hidden flex flex-col h-full border border-transparent hover:border-gray-100 pb-3">
+                            <!-- Image Area -->
+                            <div class="relative aspect-[3/4] w-full bg-gray-50/50 overflow-hidden">
+                                @if($p->images->count() > 0)
+                                    <a href="{{ route('product.show', $p->id) }}">
+                                        <img src="{{ $p->images->first()->url }}" 
+                                             alt="{{ $p->name }}" 
+                                             class="w-full h-full object-cover relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
+                                    </a>
+                                @else
+                                    <a href="{{ route('product.show', $p->id) }}" class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </a>
+                                @endif
 
-                            @if($p->total_stock <= 0)
-                                <!-- Out of Stock Badge -->
-                                <div class="absolute inset-0 z-20 flex items-center justify-center">
-                                    <div class="bg-gray-900/80 backdrop-blur-sm text-white px-6 py-2 rounded-lg font-bold text-sm tracking-widest uppercase shadow-xl transform -rotate-12 border border-white/20">
-                                        Habis
-                                    </div>
-                                </div>
-                            @else
+                                <!-- Discount Badge -->
                                 @if($p->has_discount)
-                                    <div class="absolute top-4 left-4 z-20">
-                                        <div class="bg-red-500 text-white px-3 py-1 rounded-full font-black text-[10px] tracking-widest uppercase shadow-lg animate-pulse">
-                                            DISKON
+                                    <div class="absolute top-3 left-0 z-20">
+                                        @php
+                                            // Menghitung % diskon sederhana untuk display
+                                            $original = (int)str_replace(['Rp', '.', ','], '', $p->original_min_price);
+                                            $current = (int)str_replace(['Rp', '.', ','], '', $p->min_price);
+                                            $percent = $original > 0 ? round((($original - $current) / $original) * 100) : 0;
+                                        @endphp
+                                        <div class="bg-[#ff4057] text-white px-2 py-0.5 rounded-r-md font-bold text-[10px] sm:text-xs shadow-sm">
+                                            {{ $percent > 0 ? 'DISKON ' . $percent . '%' : 'SALE' }}
                                         </div>
                                     </div>
                                 @endif
-                                <!-- Overlay CTA -->
-                                <a href="{{ route('product.show', $p->id) }}" class="absolute inset-0 bg-nibras-magenta/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
-                                    <span class="bg-white text-nibras-magenta px-6 py-2.5 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">Lihat Detail</span>
-                                </a>
-                            @endif
-                        </div>
-                        
-                        <div class="p-5 md:p-6 text-center flex-grow flex flex-col justify-start relative z-30 bg-white">
-                            <h3 class="text-xs sm:text-sm font-bold text-gray-900 mb-2 tracking-widest group-hover:text-nibras-magenta transition-colors break-words leading-snug">
-                                <a href="{{ route('product.show', $p->id) }}">
-                                    <span aria-hidden="true" class="absolute inset-0 z-40"></span>
-                                    {{ $p->name }}
-                                </a>
-                            </h3>
-                            <div class="mb-3">
-                                <span class="text-[9px] sm:text-[10px] font-bold text-gray-500 bg-gray-100 rounded-sm px-2 py-0.5 border border-gray-200 uppercase tracking-widest">{{ $p->color ?? 'Sesuai Gambar' }}</span>
-                            </div>
-                            <div class="mt-auto pt-4 border-t border-gray-50 flex flex-col justify-end h-full">
-                                @if($p->has_discount)
-                                    <p class="text-[10px] text-gray-400 line-through font-medium">{{ $p->original_min_price }}</p>
-                                @endif
-                                <p class="text-xl font-bold text-nibras-magenta mb-1 truncate">{{ $p->min_price }}</p>
-                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest truncate mb-1" title="{{ $p->categoryData ? $p->categoryData->name : ($p->category ?? 'Tanpa Kategori') }}">
-                                    {{ $p->categoryData ? $p->categoryData->name : ($p->category ?? '-') }}
-                                </p>
-                                @if($p->brand)
-                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 rounded-sm inline-block px-1.5 py-0.5 mx-auto border border-gray-100">{{ $p->brand->name }}</p>
+
+                                <!-- Wishlist Icon -->
+                                <button class="absolute top-3 right-3 z-20 text-gray-500 hover:text-[#ff4057] transition-colors focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-sm">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                    </svg>
+                                </button>
+
+                                @if($p->total_stock <= 0)
+                                    <!-- Out of Stock Badge -->
+                                    <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/50 backdrop-blur-[2px]">
+                                        <div class="bg-gray-800 text-white px-4 py-1.5 font-bold text-xs uppercase tracking-widest shadow-md">
+                                            Habis
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
+
+                            <div class="pt-4 px-3 text-center flex-grow flex flex-col justify-between relative z-30">
+                                <h3 class="text-[10px] sm:text-[11px] md:text-xs font-medium text-gray-600 mb-2 uppercase tracking-wider line-clamp-2 leading-relaxed">
+                                    <a href="{{ route('product.show', $p->id) }}" class="hover:text-nibras-magenta transition-colors">
+                                        {{ $p->name }}
+                                    </a>
+                                </h3>
+                                
+                                <div class="mt-auto flex flex-col items-center justify-center pt-1">
+                                    @if($p->has_discount)
+                                        <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                            <span class="text-[10px] sm:text-[11px] md:text-xs text-gray-400 line-through">{{ $p->original_min_price }}</span>
+                                            <span class="text-xs sm:text-sm md:text-base font-bold text-[#de232c]">{{ $p->min_price }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-xs sm:text-sm md:text-base font-bold text-gray-800">{{ $p->min_price }}</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     @empty
                         <div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-12">
                             <p class="text-gray-500">Belum ada koleksi produk tersedia.</p>
@@ -188,3 +247,4 @@
     </script>
 </body>
 </html>
+
