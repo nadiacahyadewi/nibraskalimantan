@@ -3,7 +3,7 @@
         
         <!-- Logo -->
         <div class="flex-shrink-0">
-            <img src="{{ asset('assets/logo.png') }}" alt="Nibras Kalimantan" class="h-10 md:h-12 object-contain brightness-0 invert opacity-100">
+            <img src="{{ asset('assets/logo.png') }}" alt="Nibras Kalimantan" class="h-20 md:h-30 object-contain brightness-0 invert opacity-100">
         </div>
         
         <!-- Description -->
@@ -30,7 +30,7 @@
     <!-- Footer Bottom -->
     <div class="border-t border-white/20 px-6 lg:px-16 py-4 flex flex-col md:flex-row items-center justify-center gap-4">
     <p class="text-white/70 text-xs text-center">
-        &copy; 2026 Nibras Kalimantan. Dibuat oleh SebatasWeb.
+        &copy; 2026 Nibras Kalimantan. Dibuat oleh <a href="https://sebatasweb.com" target="_blank" class="hover:text-white underline transition-colors font-medium">SebatasWeb</a>.
     </p>
 </div>
 </footer>

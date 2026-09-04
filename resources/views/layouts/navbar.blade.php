@@ -85,36 +85,45 @@
                     Koleksi
                 </a>
                 
-                <!-- Dropdown Kategori (Desktop) -->
                 <div class="relative group">
                     <button class="text-gray-800 group-hover:text-nibras-magenta transition-colors px-2 py-1 flex items-center gap-1 focus:outline-none relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-nibras-magenta after:transition-transform after:duration-300 group-hover:after:origin-bottom-left group-hover:after:scale-x-100">
                         Kategori
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                     </button>
-                    <div class="absolute left-0 mt-2 w-48 bg-white border border-gray-100 shadow-xl rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden">
-                        <div class="py-2 max-h-96 overflow-y-auto">
-                            <div class="px-4 py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</div>
-                            @if(isset($globalCategories) && $globalCategories->count() > 0)
-                                @foreach($globalCategories as $cat)
-                                    <a href="{{ url('/produk?category_id=' . $cat->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-nibras-magenta transition-colors">
-                                        {{ $cat->name }}
-                                    </a>
-                                @endforeach
-                            @else
-                                <span class="block px-4 py-2 text-sm text-gray-500 italic">Belum ada kategori</span>
-                            @endif
+                    <!-- Mega Menu Dropdown -->
+                    <div class="absolute left-1/2 -translate-x-1/2 mt-2 w-max max-w-[90vw] bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 overflow-hidden">
+                        <div class="p-6 flex gap-8">
+                            <!-- Kategori Column -->
+                            <div class="min-w-[200px]">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2 border-b border-gray-100 pb-2">Kategori</div>
+                                @if(isset($globalCategories) && $globalCategories->count() > 0)
+                                    <div class="grid grid-cols-2 gap-x-6 gap-y-1">
+                                        @foreach($globalCategories as $cat)
+                                            <a href="{{ url('/produk?category_id=' . $cat->id) }}" class="block px-2 py-1.5 text-sm uppercase text-gray-700 hover:text-nibras-magenta hover:bg-pink-50 rounded-md transition-colors">
+                                                {{ $cat->name }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="block px-2 py-1.5 text-sm text-gray-500 italic">Belum ada kategori</span>
+                                @endif
+                            </div>
 
-                            <div class="border-t border-gray-100 my-1"></div>
-                            <div class="px-4 py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Brand</div>
-                            @if(isset($globalBrands) && $globalBrands->count() > 0)
-                                @foreach($globalBrands as $brand)
-                                    <a href="{{ url('/produk?brand_id=' . $brand->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-50 hover:text-nibras-magenta transition-colors">
-                                        {{ $brand->name }}
-                                    </a>
-                                @endforeach
-                            @else
-                                <span class="block px-4 py-2 text-sm text-gray-500 italic">Belum ada brand</span>
-                            @endif
+                            <!-- Brand Column -->
+                            <div class="min-w-[150px] border-l border-gray-100 pl-8">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-2 border-b border-gray-100 pb-2">Brand</div>
+                                @if(isset($globalBrands) && $globalBrands->count() > 0)
+                                    <div class="flex flex-col gap-1">
+                                        @foreach($globalBrands as $brand)
+                                            <a href="{{ url('/produk?brand_id=' . $brand->id) }}" class="block px-2 py-1.5 text-sm uppercase text-gray-700 hover:text-nibras-magenta hover:bg-pink-50 rounded-md transition-colors">
+                                                {{ $brand->name }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="block px-2 py-1.5 text-sm text-gray-500 italic">Belum ada brand</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,7 +196,7 @@
             </div>
             
             <!-- Mobile Menu Dropdown (Hidden by default) -->
-            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg px-6 py-4 flex flex-col gap-4 text-base font-medium z-40 md:hidden">
+            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg px-6 py-4 flex flex-col gap-4 text-base font-medium z-40 md:hidden overflow-y-auto max-h-[calc(100vh-80px)]">
                 <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Beranda</a>
                 <a href="{{ url('/produk') }}" class="{{ request()->is('produk') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Koleksi</a>
                 
@@ -197,29 +206,40 @@
                         Kategori
                         <svg id="mobile-kategori-icon" class="h-4 w-4 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
                     </button>
-                    <div id="mobile-kategori-menu" class="hidden flex-col pl-4 pb-2 mt-1 space-y-1">
-                        <div class="py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</div>
-                        @if(isset($globalCategories) && $globalCategories->count() > 0)
-                            @foreach($globalCategories as $cat)
-                                <a href="{{ url('/produk?category_id=' . $cat->id) }}" class="block py-1.5 text-sm text-gray-600 hover:text-nibras-magenta pl-2 border-l-2 border-transparent hover:border-nibras-magenta transition-colors">
-                                    {{ $cat->name }}
-                                </a>
-                            @endforeach
-                        @else
-                            <span class="block py-1.5 text-sm text-gray-500 italic pl-2">Belum ada kategori</span>
-                        @endif
+                    <div id="mobile-kategori-menu" class="hidden flex-col mt-2 pb-2">
+                        <div class="flex gap-4 w-full">
+                            <!-- Kolom Kategori -->
+                            <div class="flex-1 pl-2 pr-2 border-r border-gray-100">
+                                <div class="py-1 text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kategori</div>
+                                <div class="flex flex-col space-y-1">
+                                    @if(isset($globalCategories) && $globalCategories->count() > 0)
+                                        @foreach($globalCategories as $cat)
+                                            <a href="{{ url('/produk?category_id=' . $cat->id) }}" class="block py-1.5 text-sm uppercase text-gray-600 hover:text-nibras-magenta pl-2 border-l-2 border-transparent hover:border-nibras-magenta transition-colors">
+                                                {{ $cat->name }}
+                                            </a>
+                                        @endforeach
+                                    @else
+                                        <span class="block py-1.5 text-sm text-gray-500 italic pl-2">Belum ada kategori</span>
+                                    @endif
+                                </div>
+                            </div>
 
-                        <div class="border-t border-gray-50 my-1 mr-4"></div>
-                        <div class="py-1 text-xs font-bold text-gray-400 uppercase tracking-wider">Brand</div>
-                        @if(isset($globalBrands) && $globalBrands->count() > 0)
-                            @foreach($globalBrands as $brand)
-                                <a href="{{ url('/produk?brand_id=' . $brand->id) }}" class="block py-1.5 text-sm text-gray-600 hover:text-nibras-magenta pl-2 border-l-2 border-transparent hover:border-nibras-magenta transition-colors">
-                                    {{ $brand->name }}
-                                </a>
-                            @endforeach
-                        @else
-                            <span class="block py-1.5 text-sm text-gray-500 italic pl-2">Belum ada brand</span>
-                        @endif
+                            <!-- Kolom Brand -->
+                            <div class="flex-1 pr-2">
+                                <div class="py-1 text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Brand</div>
+                                <div class="flex flex-col space-y-1">
+                                    @if(isset($globalBrands) && $globalBrands->count() > 0)
+                                        @foreach($globalBrands as $brand)
+                                            <a href="{{ url('/produk?brand_id=' . $brand->id) }}" class="block py-1.5 text-sm uppercase text-gray-600 hover:text-nibras-magenta pl-2 border-l-2 border-transparent hover:border-nibras-magenta transition-colors">
+                                                {{ $brand->name }}
+                                            </a>
+                                        @endforeach
+                                    @else
+                                        <span class="block py-1.5 text-sm text-gray-500 italic pl-2">Belum ada brand</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Tentang Kami</a>

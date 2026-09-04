@@ -36,18 +36,20 @@
         </div>
 
         <!-- Right Side: Form Container -->
-        <div class="w-full md:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20 relative">
+        <div class="w-full md:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-20">
             
-            <!-- Back Button -->
-            <a href="{{ url('/') }}" class="absolute top-6 right-8 text-sm font-medium text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
-                Kembali ke beranda
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </a>
-
             <!-- Form Wrapper -->
-            <div class="w-full max-w-md">
+            <div class="w-full max-w-md relative">
+                
+                <!-- Back Button -->
+                <div class="flex justify-end mb-6">
+                    <a href="{{ url('/') }}" class="text-xs sm:text-sm font-medium text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1">
+                        Kembali ke beranda
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                </div>
                 
                 <h1 class="text-[28px] font-bold text-gray-900 mb-1 tracking-tight">Lupa Password?</h1>
                 <p class="text-gray-500 mb-8 text-sm">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
@@ -87,7 +89,7 @@
 
                     <!-- Submit Button -->
                     <div class="pt-4">
-                        <button type="submit" class="w-full flex justify-center py-3.5 px-4 rounded-lg shadow-sm text-sm font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 focus:outline-none transition-colors">
+                        <button type="submit" class="w-full flex justify-center py-3.5 px-4 rounded-lg shadow-sm text-sm font-semibold text-white bg-[#E32184] hover:bg-pink-700 focus:outline-none transition-colors">
                             Kirim Link Reset Password
                         </button>
                     </div>

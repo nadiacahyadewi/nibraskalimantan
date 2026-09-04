@@ -69,10 +69,37 @@
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-10 text-center relative overflow-hidden">
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-50 rounded-full mix-blend-multiply opacity-50 pointer-events-none"></div>
                 <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-50 rounded-full mix-blend-multiply opacity-50 pointer-events-none"></div>
-                <p class="text-gray-700 leading-relaxed md:text-lg max-w-4xl mx-auto relative z-10 italic">
+                <p class="text-gray-700 leading-relaxed md:text-lg max-w-4xl mx-auto relative z-10 italic font-medium">
                     "{{ \App\Models\Setting::where('key', 'tentang_kami')->value('value') ?? 'Menyediakan Koleksi Baju Muslim & Muslimah Terlengkap dan Berkualitas di Kalimantan. Melayani satuan dan partai besar.' }}"
                 </p>
             </div>
+
+            <!-- SEO Optimized Comprehensive Details -->
+            <article class="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-gray-100 mb-10 text-gray-700 space-y-6 leading-relaxed">
+                <h2 class="text-2xl font-bold text-nibras-magenta mb-4">Pusat Busana Muslim Terlengkap: Nibras House Banjarbaru, Kalimantan Selatan</h2>
+                
+                <p>
+                    Selamat datang di <strong>Nibras Kalimantan</strong>, destinasi belanja pakaian muslim dan muslimah terbaik dan terlengkap yang berpusat di <strong>Banjarbaru, Kalimantan Selatan</strong>. Sebagai distributor dan agen resmi produk busana muslim berkualitas, kami berdedikasi untuk memenuhi segala kebutuhan pakaian islami Anda, mulai dari pakaian harian, seragam pengajian, hingga koleksi eksklusif hari raya.
+                </p>
+
+                <p>
+                    Kami bangga menjadi <strong>Toko Baju Muslim terpercaya di Banjarbaru</strong> yang menghadirkan brand-brand ternama seperti <em>Nibras, Alnita, Inspire, dan HaiHai</em>. Koleksi kami meliputi berbagai macam pilihan busana, antara lain:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4 text-gray-600">
+                    <li><strong>Gamis & Tunik Dewasa:</strong> Hadir dengan desain modern, bahan adem, dan *syar'i* yang cocok untuk berbagai aktivitas di cuaca tropis Kalimantan.</li>
+                    <li><strong>Koko Pria:</strong> Koko lengan panjang dan pendek yang elegan untuk ibadah maupun acara formal.</li>
+                    <li><strong>Sarimbit Keluarga:</strong> Pakaian kembar keluarga (ayah, ibu, anak) yang selalu menjadi *best-seller* menjelang Lebaran dan Idul Adha.</li>
+                    <li><strong>Pakaian Anak & Hijab/Mukena:</strong> Koleksi nyaman dan lucu untuk si kecil serta perlengkapan ibadah premium.</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">Mengapa Memilih Nibras House Banjarbaru?</h3>
+                <p>
+                    Berlokasi strategis di Jl. Karang Anyar 1, Loktabat Utara, Banjarbaru, toko kami sangat mudah diakses baik oleh warga Banjarbaru, Martapura, hingga Banjarmasin. Kami menyediakan layanan penjualan <strong>Eceran (Satuan) maupun Partai Besar (Grosir)</strong> dengan penawaran harga dan diskon terbaik se-Kalimantan. Jika Anda mencari agen seragam majelis taklim atau baju keluarga dengan stok berlimpah, <strong>Nibras Kalimantan</strong> adalah jawaban yang tepat.
+                </p>
+                <p>
+                    Kami berkomitmen menghadirkan pengalaman belanja yang nyaman, pelayanan yang ramah, serta kemudahan berbelanja baik secara *offline* di toko maupun pemesanan *online*. Kunjungi kami sekarang juga dan temukan pesona busana muslim impian Anda bersama Nibras House Banjarbaru!
+                </p>
+            </article>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Kontak & Sosial Media -->
@@ -207,7 +234,7 @@
                                         ['name' => 'Budi S.', 'text' => 'Pelayanan ramah, baju-bajunya lengkap dan bagus kualitasnya.', 'rating' => 5],
                                         ['name' => 'Siti A.', 'text' => 'Toko Nibras terlengkap di Banjarbaru. Selalu puas belanja disini.', 'rating' => 5],
                                         ['name' => 'Rina M.', 'text' => 'Tempatnya nyaman, mbak penjaganya sabar mencarikan ukuran yang pas.', 'rating' => 5],
-                                        ['name' => 'Ahmad F.', 'text' => 'Sering ada diskon. Alhamdulillah kebutuhan seragam keluarga terpenuhi.', 'rating' => 4],
+                                        ['name' => 'Atama F.', 'text' => 'Sering ada diskon. Alhamdulillah kebutuhan seragam keluarga terpenuhi.', 'rating' => 4],
                                         ['name' => 'Lina D.', 'text' => 'Banyak pilihan gamis terbaru, warnanya cantik-cantik. Recommended!', 'rating' => 5],
                                     ];
                                     // Duplicate array to create a seamless infinite scroll loop illusion

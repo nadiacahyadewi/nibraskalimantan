@@ -178,42 +178,56 @@
 
         <!-- Product Images -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                 <h4 class="font-semibold text-gray-800">Foto Produk</h4>
+                <button type="button" id="add-image-btn" class="text-sm text-nibras-magenta hover:text-pink-700 font-semibold flex items-center gap-1 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Tambah Foto
+                </button>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="image-slots-container">
                     @php $existingImages = $product->images; @endphp
-                    @for($i = 1; $i <= 4; $i++)
-                        @php
-                            $hasExisting = $i <= $existingImages->count();
-                            $existingImage = $hasExisting ? $existingImages[$i-1] : null;
-                        @endphp
-                        <div class="relative group aspect-[3/4] rounded-xl border-2 border-dashed {{ $hasExisting ? 'border-transparent' : 'border-gray-200' }} bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-nibras-magenta transition-all" id="box-{{ $i }}">
+                    
+                    @foreach($existingImages as $index => $image)
+                        @php $slotId = 'existing-'.$image->id; @endphp
+                        <div class="relative group aspect-[3/4] rounded-xl border-2 border-dashed border-transparent bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-nibras-magenta transition-all image-slot" id="box-{{ $slotId }}">
+                            <input type="checkbox" name="remove_images[]" value="{{ $image->id }}" id="remove-img-{{ $slotId }}" class="hidden">
+                            <span class="label-text hidden">Upload Foto {{ $index + 1 }}</span>
                             
-                            @if($hasExisting)
-                                <input type="checkbox" name="remove_images[]" value="{{ $existingImage->id }}" id="remove-img-{{ $i }}" class="hidden">
-                            @endif
-
-                            <input type="file" name="images[]" id="input-{{ $i }}" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 {{ $hasExisting ? 'hidden' : '' }}" accept="image/*" onchange="previewSlotImage(this, '{{ $i }}')">
+                            <img id="preview-{{ $slotId }}" src="{{ $image->url }}" class="absolute inset-0 w-full h-full object-cover z-0">
                             
-                            <div class="text-gray-400 flex flex-col items-center pointer-events-none transition-opacity {{ $hasExisting ? 'hidden' : '' }}" id="icon-{{ $i }}">
-                                <svg class="h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                <span class="text-[10px] font-bold uppercase tracking-wider">Upload Foto {{ $i }}</span>
-                            </div>
-                            
-                            <img id="preview-{{ $i }}" src="{{ $hasExisting ? $existingImage->url : '' }}" class="absolute inset-0 w-full h-full object-cover z-0 {{ $hasExisting ? '' : 'hidden' }}">
-                            
-                            <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 {{ $hasExisting ? '' : 'hidden' }} backdrop-blur-[2px]" id="overlay-{{ $i }}">
-                                <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full transition-all transform hover:scale-105" onclick="{{ $hasExisting ? "removeExisting('$i')" : "clearSlot('$i')" }}" id="btn-hapus-{{ $i }}">
+                            <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 backdrop-blur-[2px]" id="overlay-{{ $slotId }}">
+                                <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-red-500 hover:bg-red-600 px-4 py-2 mt-2 rounded-full transition-all transform hover:scale-105" onclick="removeExistingImage('{{ $slotId }}')">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                    Hapus
+                                    Hapus Foto
                                 </button>
                             </div>
                         </div>
-                    @endfor
+                    @endforeach
+                    
+                    @if($existingImages->count() == 0)
+                        <!-- Initial Empty Slot if no images -->
+                        <div class="relative group aspect-[3/4] rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-nibras-magenta transition-all image-slot" id="box-empty-1">
+                            <input type="file" name="images[]" id="input-empty-1" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewSlotImage(this, 'empty-1')">
+                            <div class="text-gray-400 flex flex-col items-center pointer-events-none transition-opacity" id="icon-empty-1">
+                                <svg class="h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span class="text-[10px] font-bold uppercase tracking-wider label-text">Upload Foto 1</span>
+                            </div>
+                            <img id="preview-empty-1" src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden">
+                            <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 hidden backdrop-blur-[2px]" id="overlay-empty-1">
+                                <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full transition-all transform hover:scale-105" onclick="clearSlot('empty-1')">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    Ganti
+                                </button>
+                                <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-gray-700 hover:bg-gray-800 px-4 py-2 mt-2 rounded-full transition-all transform hover:scale-105 remove-image-btn" data-slot="empty-1" style="display: none;">
+                                    Hapus Kotak
+                                </button>
+                            </div>
+                        </div>
+                    @endif
                 </div>
-                <p class="text-[11px] text-gray-400 mt-4">* Foto pertama (1) otomatis jadi foto utama. Format: JPG, PNG, WEBP (Maks 2MB).</p>
+                <p class="text-[11px] text-gray-400 mt-4">* Foto pertama otomatis jadi foto utama. Format: JPG, PNG, WEBP (Maks 2MB).</p>
             </div>
         </div>
 
@@ -358,7 +372,81 @@
             }
         }
 
-        // Image Management
+        // Image Management Dynamic Adding
+        const imageSlotsContainer = document.getElementById('image-slots-container');
+        const addImageBtn = document.getElementById('add-image-btn');
+
+        if (addImageBtn) {
+            addImageBtn.addEventListener('click', function() {
+                const newSlotId = Date.now().toString(); // unique ID
+                
+                const newSlot = document.createElement('div');
+                newSlot.className = 'relative group aspect-[3/4] rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-nibras-magenta transition-all image-slot';
+                newSlot.id = 'box-' + newSlotId;
+                
+                // Calculate display number based on total current slots + 1
+                const displayNumber = imageSlotsContainer.querySelectorAll('.image-slot').length + 1;
+                
+                newSlot.innerHTML = `
+                    <input type="file" name="images[]" id="input-${newSlotId}" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" onchange="previewSlotImage(this, '${newSlotId}')">
+                    
+                    <div class="text-gray-400 flex flex-col items-center pointer-events-none transition-opacity" id="icon-${newSlotId}">
+                        <svg class="h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        <span class="text-[10px] font-bold uppercase tracking-wider label-text">Upload Foto ${displayNumber}</span>
+                    </div>
+                    
+                    <img id="preview-${newSlotId}" src="" class="absolute inset-0 w-full h-full object-cover z-0 hidden">
+                    
+                    <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 hidden backdrop-blur-[2px]" id="overlay-${newSlotId}">
+                        <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full transition-all transform hover:scale-105" onclick="clearSlot('${newSlotId}')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            Ganti
+                        </button>
+                        <button type="button" class="text-white text-xs font-bold flex items-center gap-1.5 bg-gray-700 hover:bg-gray-800 px-4 py-2 mt-2 rounded-full transition-all transform hover:scale-105 remove-image-btn" data-slot="${newSlotId}">
+                            Hapus Kotak
+                        </button>
+                    </div>
+                `;
+                
+                imageSlotsContainer.appendChild(newSlot);
+                updateImageLabels();
+            });
+        }
+        
+        // Remove Image Box
+        if (imageSlotsContainer) {
+            imageSlotsContainer.addEventListener('click', function(e) {
+                if (e.target.closest('.remove-image-btn')) {
+                    const slotId = e.target.closest('.remove-image-btn').getAttribute('data-slot');
+                    const slotElement = document.getElementById('box-' + slotId);
+                    if (slotElement) {
+                        slotElement.remove();
+                        updateImageLabels();
+                    }
+                }
+            });
+        }
+        
+        function updateImageLabels() {
+            const slots = document.querySelectorAll('.image-slot');
+            slots.forEach((slot, index) => {
+                const label = slot.querySelector('.label-text');
+                if (label) {
+                    label.textContent = 'UPLOAD FOTO ' + (index + 1);
+                }
+                
+                // Show/hide remove button on first box if there are no existing images (but existing images can be deleted so it's fine to leave remove box)
+                const removeBtn = slot.querySelector('.remove-image-btn');
+                if (removeBtn) {
+                    if (slots.length === 1 && !slot.id.includes('existing')) {
+                        removeBtn.style.display = 'none';
+                    } else {
+                        removeBtn.style.display = 'flex';
+                    }
+                }
+            });
+        }
+
         window.previewSlotImage = function(input, slotId) {
             const preview = document.getElementById('preview-' + slotId);
             const icon = document.getElementById('icon-' + slotId);
@@ -397,12 +485,17 @@
             box.classList.add('border-gray-200');
         };
 
-        window.removeExisting = function(slotId) {
-            const removeCheckbox = document.getElementById('remove-img-' + slotId);
-            if (removeCheckbox) removeCheckbox.checked = true;
-            window.clearSlot(slotId);
-            const btn = document.getElementById('btn-hapus-' + slotId);
-            btn.setAttribute('onclick', "clearSlot('" + slotId + "')");
+        window.removeExistingImage = function(slotId) {
+            const box = document.getElementById('box-' + slotId);
+            const checkbox = document.getElementById('remove-img-' + slotId);
+            if (checkbox) {
+                checkbox.checked = true; // Mark for deletion in backend
+            }
+            if (box) {
+                box.style.display = 'none'; // Hide it visually
+                box.classList.remove('image-slot'); // Remove from slots calculation
+            }
+            updateImageLabels();
         };
     });
 </script>

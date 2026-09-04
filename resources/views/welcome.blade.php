@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -49,13 +52,16 @@
             <!-- Banner Section -->
             <section class="w-full relative overflow-hidden shadow-inner flex items-center justify-start bg-pink-50">
                 <!-- Full Background Image -->
-                <img src="{{ asset('assets/bakcground.png') }}" alt="Promo Nibras Kalimantan" class="w-full h-auto object-cover min-h-[500px] md:min-h-0">
+                <img src="{{ asset('assets/bakcground.png') }}" alt="Promo Nibras Kalimantan" class="w-full h-[400px] md:h-auto object-cover object-[70%_top] md:object-center">
+                
+                <!-- White Overlay 60% (Mobile Only) -->
+                <div class="absolute inset-0 bg-white/60 md:hidden z-0 pointer-events-none"></div>
                 
                 <!-- Text Content Overlay -->
-                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full pt-[80px] md:pt-[100px]">
+                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full pt-[120px] sm:pt-[100px]">
                     <div class="max-w-xl md:max-w-2xl lg:max-w-3xl">
-                        <span class="block text-gray-600 font-semibold text-lg mb-4 tracking-wide">Katalog Produk</span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-nibras-magenta leading-tight" style="font-family: 'Times New Roman', Times, serif;">
+                        <span class="block text-gray-600 font-semibold text-base md:text-lg mb-1 md:mb-4 tracking-wide">Katalog Produk</span>
+                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-nibras-magenta leading-tight" style="font-family: 'Times New Roman', Times, serif;">
                             Busana Muslim <br/>
                             Modern & Elegan
                         </h1>
@@ -63,18 +69,12 @@
                             Temukan koleksi busana muslim terbaik dari Nibras Kalimantan untuk Anda dan keluarga tercinta.
                         </p>
                         
-                        <div class="flex flex-col sm:flex-row flex-wrap gap-4 relative z-30 mb-8 md:mb-16">
-                            <a href="#produk" class="bg-nibras-magenta text-white px-8 py-3.5 rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center flex items-center justify-center gap-2">
+                        <div class="flex flex-row flex-wrap gap-3 relative z-30 mb-8 md:mb-16">
+                            <a href="#produk" class="bg-nibras-magenta text-white px-5 py-2.5 md:px-8 md:py-3.5 text-sm md:text-base rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-auto text-center flex items-center justify-center gap-2">
                                 Belanja Sekarang 
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                            </a>
-                            <a href="#koleksi" class="bg-white border-2 border-nibras-magenta text-nibras-magenta px-8 py-3.5 rounded-full font-bold shadow-md hover:bg-gray-50 hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                </svg>
-                                Lihat Koleksi
                             </a>
                         </div>
                     </div>
@@ -82,33 +82,39 @@
             </section>
             
             <!-- Kategori Shortcut Section -->
-            <section class="py-6 md:py-12 bg-pink-50/30 overflow-hidden">
+            <section class="py-6 md:py-12 bg-pink-50/30 overflow-hidden" data-aos="fade-up">
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-16 text-center">
                     <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-8">Kategori Pilihan</h2>
+                    @php
+                        $gamisCat = \App\Models\Category::where('name', 'like', '%Gamis%')->first();
+                        $kokoCat = \App\Models\Category::where('name', 'like', '%Koko%')->first();
+                        $anakCat = \App\Models\Category::where('name', 'like', '%Anak%')->first();
+                        $sarimbitCat = \App\Models\Category::where('name', 'like', '%Sarimbit%')->first();
+                    @endphp
                     <div class="grid grid-cols-4 gap-2 md:gap-6">
                         <!-- Shortcut 1 -->
-                        <a href="{{ url('/produk') }}?kategori=gamis" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $gamisCat ? '?category_id='.$gamisCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis<span class="hidden md:inline"> Wanita</span></h3>
                         </a>
                         <!-- Shortcut 2 -->
-                        <a href="{{ url('/produk') }}?kategori=koko" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $kokoCat ? '?category_id='.$kokoCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Koko</h3>
                         </a>
                         <!-- Shortcut 3 -->
-                        <a href="{{ url('/produk') }}?kategori=anak" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $anakCat ? '?category_id='.$anakCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Anak</h3>
                         </a>
                         <!-- Shortcut 4 -->
-                        <a href="{{ url('/produk') }}?kategori=sarimbit" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $sarimbitCat ? '?category_id='.$sarimbitCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </div>
@@ -119,7 +125,7 @@
             </section>
             
             <!-- Promo Banner Section -->
-            <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 mb-8 sm:mb-16">
+            <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 mb-8 sm:mb-16" data-aos="zoom-in" data-aos-delay="200">
                 <div class="w-full flex justify-center">
                     <img src="{{ asset('assets/promobg.png') }}" alt="Promo Spesial Nibras" class="w-full h-auto rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 </div>
@@ -127,16 +133,16 @@
 
             <!-- Product Section -->
             <section id="produk" class="px-6 lg:px-16 py-16 md:py-24 bg-gray-50">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Koleksi Unggulan & Terlaris</h2>
-                    <div class="w-24 h-1.5 bg-nibras-magenta mx-auto rounded-full"></div>
-                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto text-lg hover:text-gray-700 transition-colors">Beberapa produk terfavorit, kekinian, dan paling banyak dicari oleh pelanggan kami saat ini.</p>
+                <div class="text-center mb-8 md:mb-12" data-aos="fade-up">
+                    <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-6">Koleksi Unggulan & Terlaris</h2>
+                    <div class="w-16 md:w-24 h-1 md:h-1.5 bg-nibras-magenta mx-auto rounded-full"></div>
+                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto text-sm md:text-base hover:text-gray-700 transition-colors">Beberapa produk terfavorit, kekinian, dan paling banyak dicari oleh pelanggan kami saat ini.</p>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
                     
                     @forelse($products as $p)
-                        <div class="group relative bg-white transition-all duration-300 hover:shadow-lg rounded-md overflow-hidden flex flex-col h-full border border-transparent hover:border-gray-100 pb-3">
+                        <div class="group relative bg-white transition-all duration-300 hover:shadow-lg rounded-md overflow-hidden flex flex-col h-full border border-transparent hover:border-gray-100 pb-3" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 4) * 100 }}">
                             <!-- Image Area -->
                             <div class="relative aspect-[3/4] w-full bg-gray-50/50 overflow-hidden">
                                 @if($p->images->count() > 0)
@@ -211,8 +217,8 @@
                 </div>
 
                 <!-- Button to Products Page -->
-                <div class="mt-16 flex justify-center">
-                    <a href="{{ url('/produk') }}" class="px-8 py-3 bg-white text-nibras-magenta border-2 border-nibras-magenta hover:bg-nibras-magenta hover:text-white font-bold rounded-full transition-all duration-300 shadow-sm hover:shadow-pink-500/30 flex items-center gap-2 group">
+                <div class="mt-12 md:mt-16 flex justify-center">
+                    <a href="{{ url('/produk') }}" class="px-8 py-3.5 bg-white border-2 border-nibras-magenta text-nibras-magenta hover:bg-nibras-magenta hover:text-white font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 flex items-center gap-2 group text-center">
                         Lihat Selengkapnya
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -232,8 +238,18 @@
     
     <!-- SweetAlert2 for Success Messages -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- AOS Animation Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Init AOS
+            AOS.init({
+                once: true,
+                offset: 50,
+                duration: 800,
+                easing: 'ease-in-out-cubic',
+            });
+
             @if(session('success'))
                 Swal.fire({
                     icon: 'success',
