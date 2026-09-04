@@ -135,8 +135,39 @@
             </table>
         </div>
         @if($products->hasPages())
-        <div class="px-6 py-4 border-t border-gray-100">
-            {{ $products->links() }}
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-center">
+            <div class="flex items-center justify-center space-x-2 font-medium">
+                <!-- Previous Page Link -->
+                @if ($products->onFirstPage())
+                    <span class="px-4 py-2 text-gray-400 bg-gray-50 border border-gray-200 rounded-md cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </span>
+                @else
+                    <a href="{{ $products->previousPageUrl() }}" class="px-4 py-2 text-nibras-magenta bg-white border border-gray-200 rounded-md hover:bg-pink-50 hover:border-nibras-magenta transition-colors shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </a>
+                @endif
+
+                <!-- Pagination Elements -->
+                @for ($i = 1; $i <= $products->lastPage(); $i++)
+                    @if ($i == $products->currentPage())
+                        <span class="px-4 py-2 text-white bg-nibras-magenta border border-nibras-magenta rounded-md shadow-md">{{ $i }}</span>
+                    @else
+                        <a href="{{ $products->url($i) }}" class="px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-md hover:text-nibras-magenta hover:bg-pink-50 hover:border-nibras-magenta transition-colors shadow-sm">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                <!-- Next Page Link -->
+                @if ($products->hasMorePages())
+                    <a href="{{ $products->nextPageUrl() }}" class="px-4 py-2 text-nibras-magenta bg-white border border-gray-200 rounded-md hover:bg-pink-50 hover:border-nibras-magenta transition-colors shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                    </a>
+                @else
+                    <span class="px-4 py-2 text-gray-400 bg-gray-50 border border-gray-200 rounded-md cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                    </span>
+                @endif
+            </div>
         </div>
         @endif
     </div>

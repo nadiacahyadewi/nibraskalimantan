@@ -3,7 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Febia Nibras Kalsel</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Katalog Lengkap Febia Nibras Kalsel - Tersedia berbagai macam gamis, baju koko, busana anak, dan sarimbit keluarga.">
+    <meta name="keywords" content="katalog nibras, produk nibras, busana muslim, gamis nibras, koko nibras, sarimbit keluarga, busana muslim kalsel, febia nibras, nibras kalimantan selatan">
+    <meta name="author" content="Febia Nibras Kalsel">
+    <meta name="robots" content="index, follow">
+    
+    <title>Katalog Produk | Febia Nibras Kalsel</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -3,7 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Febia Nibras Kalsel</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Febia Nibras Kalsel - Temukan koleksi busana muslim modern, gamis, baju koko, baju anak, dan sarimbit keluarga terlengkap dan berkualitas di Kalimantan Selatan.">
+    <meta name="keywords" content="busana muslim, gamis nibras, koko nibras, sarimbit keluarga, busana muslim kalsel, febia nibras, nibras kalimantan selatan, baju muslim modern, nibras original, toko busana muslim banjarmasin">
+    <meta name="author" content="Febia Nibras Kalsel">
+    <meta name="robots" content="index, follow">
+    
+    <title>Febia Nibras Kalsel | Busana Muslim Modern</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

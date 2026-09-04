@@ -3,6 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Beli {{ $product->name }} di Febia Nibras Kalsel. Dapatkan harga terbaik {{ $product->price_range }}. Kualitas original dari Nibras.">
+    <meta name="keywords" content="{{ $product->name }}, {{ $product->categoryData ? $product->categoryData->name : ($product->category ?? 'Busana Muslim') }}, {{ $product->brand ? $product->brand->name : 'Nibras' }}, febia nibras, busana muslim kalimantan selatan">
+    <meta name="author" content="Febia Nibras Kalsel">
+    <meta name="robots" content="index, follow">
+    
     <title>{{ $product->name }} - Febia Nibras Kalsel</title>
 
     <!-- Google Fonts -->

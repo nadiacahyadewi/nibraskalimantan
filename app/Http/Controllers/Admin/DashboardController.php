@@ -15,31 +15,21 @@ class DashboardController extends Controller
     {
         // Statistics
         $totalProducts = Product::count();
-        $activeOrders = Order::whereNotIn('status', ['Selesai', 'Dibatalkan'])->count();
+        $totalCategories = \App\Models\Category::count();
+        $totalBrands = \App\Models\Brand::count();
         
-        // New Statistics
-        $pendingConfirmation = Order::where('status', 'Menunggu Konfirmasi')->count();
-
-        // Recent Orders
-        $recentOrders = Order::with('user')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        // Top Selling Products
-        $topProducts = \App\Models\OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
-            ->groupBy('product_id')
-            ->orderByDesc('total_sold')
-            ->with(['product.images'])
-            ->take(5)
+        // Stok yang sedang menipis
+        $lowStockProducts = Product::with(['images', 'categoryData', 'brand'])
+            ->withSum('variants', 'stock')
+            ->orderBy('variants_sum_stock', 'asc')
+            ->take(8)
             ->get();
 
         return view('admin.dashboard', compact(
             'totalProducts',
-            'activeOrders',
-            'recentOrders',
-            'topProducts',
-            'pendingConfirmation'
+            'totalCategories',
+            'totalBrands',
+            'lowStockProducts'
         ));
     }
 }
