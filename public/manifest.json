@@ -1,0 +1,17 @@
+{
+    "name": "Nibras Kalsel",
+    "short_name": "Nibras Kalsel",
+    "description": "Katalog Lengkap Nibras Kalsel - Busana muslim berkualitas",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F8F8F8",
+    "theme_color": "#E32184",
+    "icons": [
+        {
+            "src": "/assets/pwa-icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

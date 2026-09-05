@@ -12,6 +12,11 @@
     <meta name="robots" content="index, follow">
     
     <title>{{ $product->name }} - Febia Nibras Kalsel</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#E32184">
+    <link rel="apple-touch-icon" href="{{ asset('assets/pwa-icon.png') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -151,6 +151,11 @@
 
                 <!-- Desktop Icons & Profile -->
                 <div class="flex items-center gap-4">
+                    <!-- Install App Desktop Button -->
+                    <button id="desktopInstallBtn" class="hidden bg-gradient-to-r from-nibras-magenta to-pink-600 text-white text-sm font-semibold px-4 py-1.5 rounded-full shadow-sm hover:shadow-md hover:from-pink-600 hover:to-pink-700 transition-all flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        Install App
+                    </button>
                     <!-- Cart -->
                     <a href="{{ url('/keranjang') }}" class="relative text-black hover:text-nibras-magenta transition-colors group flex items-center justify-center p-1">
                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transform group-hover:scale-105 transition-transform">
@@ -249,6 +254,12 @@
                     </div>
                 </div>
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Tentang Kami</a>
+            
+                <!-- Install App Mobile Button -->
+                <button id="mobileInstallBtn" class="hidden w-full mt-2 mb-1 bg-gradient-to-r from-nibras-magenta to-pink-600 text-white py-2.5 rounded-lg font-bold text-center shadow-md hover:from-pink-600 hover:to-pink-700 transition-all flex justify-center items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    Install Aplikasi
+                </button>
             
                 <!-- Mobile Search Box -->
                 <form action="{{ url('/produk') }}" method="GET" class="flex flex-col gap-2 w-full mt-2 mb-2">
@@ -467,4 +478,49 @@
                     console.error('Error in toggleFavorite:', err);
                 });
             }
+
+            // PWA Logic
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    }, function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
+
+            let deferredPrompt;
+            const desktopInstallBtn = document.getElementById('desktopInstallBtn');
+            const mobileInstallBtn = document.getElementById('mobileInstallBtn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (desktopInstallBtn) desktopInstallBtn.classList.remove('hidden');
+                if (mobileInstallBtn) mobileInstallBtn.classList.remove('hidden');
+            });
+
+            function installPWA() {
+                if (!deferredPrompt) return;
+                
+                // Hide buttons
+                if (desktopInstallBtn) desktopInstallBtn.classList.add('hidden');
+                if (mobileInstallBtn) mobileInstallBtn.classList.add('hidden');
+                
+                // Show prompt
+                deferredPrompt.prompt();
+                
+                // Wait for choice
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+
+            if (desktopInstallBtn) desktopInstallBtn.addEventListener('click', installPWA);
+            if (mobileInstallBtn) mobileInstallBtn.addEventListener('click', installPWA);
+
         </script>
