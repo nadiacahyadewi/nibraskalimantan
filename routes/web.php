@@ -9,7 +9,8 @@ use App\Http\Controllers\FavoriteController;
 
 Route::get('/', function () {
     $products = \App\Models\Product::with(['images', 'categoryData', 'brand'])->latest()->take(8)->get();
-    return view('welcome', compact('products'));
+    $banners = \App\Models\Banner::where('is_active', true)->orderBy('order')->get();
+    return view('welcome', compact('products', 'banners'));
 })->name('home');
 
 Route::get('/produk', [ProductController::class, 'index'])->name('produk');
@@ -82,6 +83,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
     Route::resource('finance', App\Http\Controllers\Admin\FinanceController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('banners', App\Http\Controllers\Admin\BannerController::class)->except(['show']);
+    
     Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 });

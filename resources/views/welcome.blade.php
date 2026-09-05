@@ -22,6 +22,9 @@
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -47,6 +50,25 @@
         body { font-family: 'Poppins', sans-serif; background-color: #F8F8F8; overflow-x: hidden; }
         html { overflow-x: hidden; }
         .container-glow { box-shadow: 0 0 40px rgba(0, 0, 0, 0.08); }
+        
+        /* Custom Swiper Styles */
+        :root {
+            --swiper-navigation-size: 20px; /* Lebih kecil di mobile */
+        }
+        @media (min-width: 768px) {
+            :root {
+                --swiper-navigation-size: 32px; /* Ukuran normal di desktop */
+            }
+        }
+        .swiper-pagination-bullet {
+            background-color: #000000 !important;
+            opacity: 0.5 !important;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #ffffff !important;
+            border: 1px solid #000000;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -134,8 +156,25 @@
             
             <!-- Promo Banner Section -->
             <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 mb-8 sm:mb-16" data-aos="zoom-in" data-aos-delay="200">
-                <div class="w-full flex justify-center">
-                    <img src="{{ asset('assets/promobg.png') }}" alt="Promo Spesial Nibras" class="w-full h-auto rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <!-- Swiper Slider -->
+                <div class="swiper promoSwiper rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden w-full group relative">
+                    <div class="swiper-wrapper">
+                        @forelse($banners as $banner)
+                            <div class="swiper-slide w-full flex justify-center">
+                                <img src="{{ asset('storage/' . $banner->image) }}" alt="{{ $banner->title ?? 'Promo Nibras' }}" class="w-full h-full object-cover aspect-[21/9] sm:aspect-[3/1] md:aspect-[4/1]">
+                            </div>
+                        @empty
+                            <!-- Fallback Slide (Tampil jika belum ada banner di admin) -->
+                            <div class="swiper-slide w-full flex justify-center">
+                                <img src="{{ asset('assets/promobg.png') }}" alt="Promo Spesial Nibras" class="w-full h-full object-cover aspect-[21/9] sm:aspect-[3/1] md:aspect-[4/1]">
+                            </div>
+                        @endforelse
+                    </div>
+                    <!-- Navigation Buttons -->
+                    <div class="swiper-button-next !text-nibras-magenta opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md"></div>
+                    <div class="swiper-button-prev !text-nibras-magenta opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md"></div>
+                    <!-- Pagination -->
+                    <div class="swiper-pagination !bottom-2"></div>
                 </div>
             </section>
 
@@ -150,14 +189,14 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
                     
                     @forelse($products as $p)
-                        <div class="group relative bg-white transition-all duration-300 hover:shadow-lg rounded-md overflow-hidden flex flex-col h-full border border-transparent hover:border-gray-100 pb-3" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 4) * 100 }}">
+                        <div class="group relative bg-white transition-all duration-300 hover:shadow-lg rounded-xl overflow-hidden flex flex-col h-full border border-transparent hover:border-gray-100 pb-3" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 4) * 100 }}">
                             <!-- Image Area -->
-                            <div class="relative aspect-[3/4] w-full bg-gray-50/50 overflow-hidden">
+                            <div class="relative aspect-[3/4] w-full bg-gray-50/50 overflow-hidden rounded-t-xl">
                                 @if($p->images->count() > 0)
                                     <a href="{{ route('product.show', $p->id) }}">
                                         <img src="{{ $p->images->first()->url }}" 
-                                             alt="{{ $p->name }}" 
-                                             class="w-full h-full object-cover relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
+                                            alt="{{ $p->name }}" 
+                                            class="w-full h-full object-cover relative z-10 group-hover:scale-105 transition-transform duration-500 ease-in-out {{ $p->total_stock <= 0 ? 'grayscale opacity-60' : '' }}">
                                     </a>
                                 @else
                                     <a href="{{ route('product.show', $p->id) }}" class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
@@ -165,13 +204,21 @@
                                     </a>
                                 @endif
 
+                                <!-- Brand Badge (Like the image reference N'BRS) -->
+                                @if($p->brand)
+                                    <div class="absolute top-0 right-0 z-20">
+                                        <div class="bg-gray-800 text-white px-2 py-1 rounded-bl-lg font-bold text-[10px] sm:text-xs shadow-sm uppercase tracking-wider">
+                                            {{ $p->brand->name }}
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <!-- Discount Badge -->
                                 @if($p->has_discount)
                                     <div class="absolute top-3 left-0 z-20">
                                         @php
-                                            // Menghitung % diskon sederhana untuk display
-                                            $original = (int)str_replace(['Rp', '.', ','], '', $p->original_min_price);
-                                            $current = (int)str_replace(['Rp', '.', ','], '', $p->min_price);
+                                            $original = (int) str_replace(['Rp', '.', ','], '', $p->original_min_price);
+                                            $current = (int) str_replace(['Rp', '.', ','], '', $p->min_price);
                                             $percent = $original > 0 ? round((($original - $current) / $original) * 100) : 0;
                                         @endphp
                                         <div class="bg-[#ff4057] text-white px-2 py-0.5 rounded-r-md font-bold text-[10px] sm:text-xs shadow-sm">
@@ -187,22 +234,22 @@
                                 <button type="button"
                                         onclick="toggleFavorite(event, {{ $p->id }})"
                                         data-product-id="{{ $p->id }}"
-                                        class="favorite-btn {{ $isFav ? 'active text-[#ff4057]' : 'text-gray-400' }} hover:text-[#ff4057] absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center transition-all duration-200 focus:outline-none hover:scale-110"
+                                        class="favorite-btn {{ $isFav ? 'active text-[#ff4057]' : 'text-gray-400' }} hover:text-[#ff4057] absolute bottom-3 right-3 z-20 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center transition-all duration-200 focus:outline-none hover:scale-110"
                                         title="{{ $isFav ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" 
-                                         fill="{{ $isFav ? 'currentColor' : 'none' }}" 
-                                         viewBox="0 0 24 24" 
-                                         stroke-width="1.5" 
-                                         stroke="currentColor" 
-                                         class="w-5 h-5 drop-shadow-sm transition-transform duration-200 {{ $isFav ? 'fill-[#ff4057] text-[#ff4057]' : 'text-gray-400' }}">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                        fill="{{ $isFav ? 'currentColor' : 'none' }}" 
+                                        viewBox="0 0 24 24" 
+                                        stroke-width="1.5" 
+                                        stroke="currentColor" 
+                                        class="w-5 h-5 drop-shadow-sm transition-transform duration-200 {{ $isFav ? 'fill-[#ff4057] text-[#ff4057]' : 'text-gray-400' }}">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                                     </svg>
                                 </button>
 
                                 @if($p->total_stock <= 0)
                                     <!-- Out of Stock Badge -->
                                     <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/50 backdrop-blur-[2px]">
-                                        <div class="bg-gray-800 text-white px-4 py-1.5 font-bold text-xs uppercase tracking-widest shadow-md">
+                                        <div class="bg-gray-800 text-white px-4 py-1.5 font-bold text-xs uppercase tracking-widest shadow-md rounded-md">
                                             Habis
                                         </div>
                                     </div>
@@ -210,12 +257,12 @@
                             </div>
 
                             <div class="pt-4 px-3 text-center flex-grow flex flex-col justify-between relative z-30">
-                                <h3 class="text-[10px] sm:text-[11px] md:text-xs font-medium text-gray-600 mb-2 uppercase tracking-wider line-clamp-2 leading-relaxed">
+                                <h3 class="text-[11px] md:text-sm font-bold text-gray-800 mb-2 uppercase tracking-wide line-clamp-2 leading-relaxed">
                                     <a href="{{ route('product.show', $p->id) }}" class="hover:text-nibras-magenta transition-colors">
                                         {{ $p->name }}
                                     </a>
                                 </h3>
-                                
+
                                 <div class="mt-auto flex flex-col items-center justify-center pt-1">
                                     @if($p->has_discount)
                                         <div class="flex items-center justify-center gap-1.5 flex-wrap">
@@ -260,6 +307,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- AOS Animation Script -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Init AOS
@@ -268,6 +317,23 @@
                 offset: 50,
                 duration: 800,
                 easing: 'ease-in-out-cubic',
+            });
+
+            // Init Swiper for Promo Banner
+            var swiper = new Swiper(".promoSwiper", {
+                loop: true,
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                }
             });
 
             @if(session('success'))

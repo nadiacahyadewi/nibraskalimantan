@@ -77,7 +77,17 @@
                     <!-- Main Image -->
                     <div class="aspect-[3/4] w-full max-w-sm bg-gray-100 rounded-xl overflow-hidden relative group shadow-sm border border-gray-100">
                         @if($product->images->count() > 0)
-                            <img id="main-image" src="{{ $product->images->first()->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <img id="main-image" src="{{ $product->images->first()->url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500">
+                            
+                            @if($product->images->count() > 1)
+                                <!-- Navigation Arrows -->
+                                <button type="button" onclick="prevImage()" class="absolute left-1 md:left-2 top-1/2 -translate-y-1/2 bg-transparent md:bg-white/90 md:hover:bg-white text-gray-800 md:p-2 rounded-full shadow-none md:shadow-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 focus:outline-none z-20 hover:scale-110">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 md:w-4 md:h-4 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] md:drop-shadow-none"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                                </button>
+                                <button type="button" onclick="nextImage()" class="absolute right-1 md:right-2 top-1/2 -translate-y-1/2 bg-transparent md:bg-white/90 md:hover:bg-white text-gray-800 md:p-2 rounded-full shadow-none md:shadow-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 focus:outline-none z-20 hover:scale-110">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 md:w-4 md:h-4 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] md:drop-shadow-none"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                                </button>
+                            @endif
                         @else
                             <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-200">
                                 <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -248,8 +258,13 @@
     @include('layouts.footer')
 
     <script>
-        // Gallery Image Changer
-        function changeImage(src) {
+        // Gallery Logic
+        const productImages = @json($product->images->pluck('url'));
+        let currentImageIndex = 0;
+
+        function updateMainImage() {
+            if(productImages.length === 0) return;
+            const src = productImages[currentImageIndex];
             document.getElementById('main-image').src = src;
             
             // Update active state on thumbnails
@@ -262,6 +277,26 @@
                     btn.classList.add('border-transparent');
                 }
             });
+        }
+
+        function changeImage(src) {
+            const index = productImages.findIndex(url => url.includes(src) || src.includes(url));
+            if (index !== -1) {
+                currentImageIndex = index;
+                updateMainImage();
+            }
+        }
+
+        function nextImage() {
+            if(productImages.length <= 1) return;
+            currentImageIndex = (currentImageIndex + 1) % productImages.length;
+            updateMainImage();
+        }
+
+        function prevImage() {
+            if(productImages.length <= 1) return;
+            currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
+            updateMainImage();
         }
 
         // Quantity counter
