@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Beli {{ $product->name }} di Febia Nibras Kalsel. Dapatkan harga terbaik {{ $product->price_range }}. Kualitas original dari Nibras.">
@@ -104,7 +105,26 @@
                             <span class="text-[10px] font-bold text-gray-400 tracking-widest uppercase border border-gray-200 px-2 py-0.5 rounded">{{ $product->brand->name }}</span>
                         @endif
                     </div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ $product->name }}</h1>
+                        @php
+                            $isFav = in_array($product->id, $favoriteProductIds ?? []);
+                        @endphp
+                        <button type="button"
+                                onclick="toggleFavorite(event, {{ $product->id }})"
+                                data-product-id="{{ $product->id }}"
+                                class="favorite-btn {{ $isFav ? 'active text-[#ff4057]' : 'text-gray-400' }} hover:text-[#ff4057] p-2.5 rounded-full border border-gray-200 hover:border-red-200 hover:bg-pink-50/50 shadow-sm transition-all focus:outline-none flex-shrink-0"
+                                title="{{ $isFav ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" 
+                                 fill="{{ $isFav ? 'currentColor' : 'none' }}" 
+                                 viewBox="0 0 24 24" 
+                                 stroke-width="1.5" 
+                                 stroke="currentColor" 
+                                 class="w-6 h-6 transition-transform duration-200 {{ $isFav ? 'fill-[#ff4057] text-[#ff4057]' : 'text-gray-400' }}">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                        </button>
+                    </div>
                     
                     <div class="flex flex-col gap-1 mb-6">
                         <div class="flex items-center gap-3">

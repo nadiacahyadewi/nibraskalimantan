@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Models\Cart;
+use App\Models\Favorite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,18 +45,33 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layouts.navbar', function ($view) {
             $cartItemsCount = 0;
+            $favoritesCount = 0;
             
             if (Auth::check()) {
                 $cart = Cart::with('items')->where('user_id', Auth::id())->first();
+                $favoritesCount = Favorite::where('user_id', Auth::id())->count();
             } else {
                 $cart = Cart::with('items')->where('session_id', Session::getId())->first();
+                $favoritesCount = Favorite::where('session_id', Session::getId())->count();
             }
 
             if ($cart) {
                 $cartItemsCount = $cart->items->sum('quantity');
             }
 
-            $view->with('cartItemsCount', $cartItemsCount);
+            $view->with([
+                'cartItemsCount' => $cartItemsCount,
+                'favoritesCount' => $favoritesCount,
+            ]);
+        });
+
+        View::composer(['welcome', 'products.*', 'favorites.index'], function ($view) {
+            if (Auth::check()) {
+                $favoriteProductIds = Favorite::where('user_id', Auth::id())->pluck('product_id')->toArray();
+            } else {
+                $favoriteProductIds = Favorite::where('session_id', Session::getId())->pluck('product_id')->toArray();
+            }
+            $view->with('favoriteProductIds', $favoriteProductIds);
         });
     }
 }

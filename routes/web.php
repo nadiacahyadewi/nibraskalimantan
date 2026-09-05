@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoriteController;
 
 Route::get('/', function () {
     $products = \App\Models\Product::with(['images', 'categoryData', 'brand'])->latest()->take(8)->get();
@@ -46,14 +47,22 @@ Route::middleware('guest')->group(function () {
 // Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Favorit Produk
+Route::get('/favorit', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/favorit/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+Route::delete('/favorit/remove/{id}', [FavoriteController::class, 'remove'])->name('favorites.remove');
+
+// Redirect pesanan ke favorit (Pengganti Pesanan Saya)
+Route::get('/pesanan', function () {
+    return redirect()->route('favorites.index');
+})->name('orders.index');
+
 // User protected routes
 Route::middleware('auth')->group(function () {
     // Profil Pelanggan
     Route::get('/profil', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profil', [App\Http\Controllers\UserProfileController::class, 'update'])->name('profile.update');
 
-    // Pesanan Saya
-    Route::get('/pesanan', [App\Http\Controllers\UserOrderController::class, 'index'])->name('orders.index');
     Route::get('/pesanan/{id}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('orders.show');
     Route::post('/pesanan/{id}/complete', [App\Http\Controllers\UserOrderController::class, 'complete'])->name('orders.complete');
 });

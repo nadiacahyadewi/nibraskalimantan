@@ -25,7 +25,7 @@
 
     <main class="flex-grow pt-[100px] mb-20 px-6 lg:px-16 container mx-auto max-w-5xl">
         <div class="mb-8 flex items-center gap-4">
-            <a href="{{ route('orders.index') }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-nibras-magenta shadow-sm border border-gray-100 transition-colors">
+            <a href="{{ route('favorites.index') }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-nibras-magenta shadow-sm border border-gray-100 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>

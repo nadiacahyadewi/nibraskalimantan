@@ -59,7 +59,10 @@
                                     <a href="{{ url('/admin/dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Dashboard Admin</a>
                                 @endif
                                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Edit Profil</a>
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Pesanan Anda</a>
+                                <a href="{{ route('favorites.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                    <span>Produk Favorit</span>
+                                    <span class="favorite-pill bg-pink-50 text-nibras-magenta text-xs font-semibold px-2 py-0.5 rounded-full {{ (isset($favoritesCount) && $favoritesCount > 0) ? '' : 'hidden' }}">{{ $favoritesCount ?? 0 }}</span>
+                                </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors">Keluar</button>
@@ -178,7 +181,10 @@
                                     <a href="{{ url('/admin/dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Dashboard Admin</a>
                                 @endif
                                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Edit Profil</a>
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Pesanan Anda</a>
+                                <a href="{{ route('favorites.index') }}" class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                    <span>Produk Favorit</span>
+                                    <span class="favorite-pill bg-pink-50 text-nibras-magenta text-xs font-semibold px-2 py-0.5 rounded-full {{ (isset($favoritesCount) && $favoritesCount > 0) ? '' : 'hidden' }}">{{ $favoritesCount ?? 0 }}</span>
+                                </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors">Keluar</button>
@@ -331,5 +337,134 @@
             function toggleMobileFilter() {
                 const panel = document.getElementById('mobile-filter-panel');
                 if (panel) panel.classList.toggle('hidden');
+            }
+
+            // Global Favorite Toggle Functionality
+            function showFavoriteToast(message, isFav = true) {
+                let toast = document.getElementById('global-favorite-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'global-favorite-toast';
+                    toast.className = 'fixed bottom-6 right-6 z-[9999] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none';
+                    toast.innerHTML = `
+                        <div class="bg-gray-900/95 backdrop-blur-md text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-gray-800 text-sm">
+                            <span id="global-toast-icon" class="text-[#ff4057]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                            </span>
+                            <span id="global-toast-message" class="font-medium"></span>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+                }
+                
+                const toastMsg = toast.querySelector('#global-toast-message');
+                const toastIcon = toast.querySelector('#global-toast-icon');
+                if (toastMsg) toastMsg.innerText = message;
+                if (toastIcon) {
+                    toastIcon.className = isFav ? 'text-[#ff4057]' : 'text-gray-400';
+                }
+
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+
+                clearTimeout(window._favToastTimeout);
+                window._favToastTimeout = setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 2500);
+            }
+
+            function updateFavoriteBadges(count) {
+                const badges = document.querySelectorAll('.favorite-badge');
+                const pills = document.querySelectorAll('.favorite-pill');
+                badges.forEach(badge => {
+                    badge.innerText = count;
+                    if (count > 0) badge.classList.remove('hidden');
+                    else badge.classList.add('hidden');
+                });
+                pills.forEach(pill => {
+                    pill.innerText = count;
+                    if (count > 0) pill.classList.remove('hidden');
+                    else pill.classList.add('hidden');
+                });
+
+                const totalText = document.getElementById('fav-total-text');
+                if (totalText) {
+                    totalText.innerText = count + ' Produk Tersimpan';
+                }
+            }
+
+            function toggleFavorite(event, productId) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const buttons = document.querySelectorAll(`.favorite-btn[data-product-id="${productId}"]`);
+                buttons.forEach(btn => {
+                    btn.classList.add('scale-125');
+                    setTimeout(() => btn.classList.remove('scale-125'), 250);
+                });
+
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+                    || '{{ csrf_token() }}';
+
+                fetch("{{ route('favorites.toggle') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify({ product_id: productId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        buttons.forEach(btn => {
+                            const svg = btn.querySelector('svg');
+                            if (data.is_favorited) {
+                                btn.classList.add('active', 'text-[#ff4057]');
+                                btn.classList.remove('text-gray-400', 'text-gray-500');
+                                if (svg) {
+                                    svg.setAttribute('fill', 'currentColor');
+                                    svg.classList.add('fill-[#ff4057]', 'text-[#ff4057]');
+                                    svg.classList.remove('text-gray-400', 'text-gray-500');
+                                }
+                            } else {
+                                btn.classList.remove('active', 'text-[#ff4057]');
+                                btn.classList.add('text-gray-400');
+                                if (svg) {
+                                    svg.setAttribute('fill', 'none');
+                                    svg.classList.remove('fill-[#ff4057]', 'text-[#ff4057]');
+                                    svg.classList.add('text-gray-400');
+                                }
+                            }
+                        });
+
+                        updateFavoriteBadges(data.count);
+                        showFavoriteToast(data.message, data.is_favorited);
+
+                        // If on favorites page and untoggled, remove card smoothly
+                        const favCard = document.getElementById('fav-card-' + productId);
+                        if (favCard && !data.is_favorited) {
+                            favCard.style.transition = 'all 0.4s ease';
+                            favCard.style.opacity = '0';
+                            favCard.style.transform = 'scale(0.9)';
+                            setTimeout(() => {
+                                favCard.remove();
+                                const grid = document.getElementById('favorites-grid');
+                                if (grid && grid.children.length === 0) {
+                                    location.reload();
+                                }
+                            }, 400);
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error('Error in toggleFavorite:', err);
+                });
             }
         </script>

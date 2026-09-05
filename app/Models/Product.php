@@ -32,6 +32,11 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
     public function getTotalStockAttribute()
     {
         // Calculate total stock from variants
