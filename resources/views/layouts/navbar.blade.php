@@ -256,7 +256,7 @@
                 <a href="{{ url('/tentang') }}" class="{{ request()->is('tentang') ? 'text-nibras-magenta hover:text-pink-700' : 'text-gray-800 hover:text-nibras-magenta' }} py-2 border-b border-gray-50">Tentang Kami</a>
             
                 <!-- Install App Mobile Button -->
-                <button id="mobileInstallBtn" class="hidden w-full mt-2 mb-1 bg-gradient-to-r from-nibras-magenta to-pink-600 text-white py-2.5 rounded-lg font-bold text-center shadow-md hover:from-pink-600 hover:to-pink-700 transition-all flex justify-center items-center gap-2">
+                <button id="mobileInstallBtn" class="w-full mt-2 mb-1 bg-gradient-to-r from-nibras-magenta to-pink-600 text-white py-2.5 rounded-lg font-bold text-center shadow-md hover:from-pink-600 hover:to-pink-700 transition-all flex justify-center items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
                     Install Aplikasi
                 </button>
