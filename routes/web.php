@@ -38,6 +38,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
+    Route::get('/register/verify', [AuthController::class, 'showVerifyOtpForm'])->name('register.verify');
+    Route::post('/register/verify', [AuthController::class, 'verifyOtp'])->name('register.verify.post');
+    Route::post('/register/resend-otp', [AuthController::class, 'resendOtp'])->name('register.resend');
+
     // Password Reset Routes
     Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
     Route::post('/forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -63,6 +67,7 @@ Route::middleware('auth')->group(function () {
     // Profil Pelanggan
     Route::get('/profil', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profil', [App\Http\Controllers\UserProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profil', [App\Http\Controllers\UserProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/pesanan/{id}', [App\Http\Controllers\UserOrderController::class, 'show'])->name('orders.show');
     Route::post('/pesanan/{id}/complete', [App\Http\Controllers\UserOrderController::class, 'complete'])->name('orders.complete');

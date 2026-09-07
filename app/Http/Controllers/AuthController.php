@@ -104,17 +104,95 @@ class AuthController extends Controller
             'password.max' => 'Password maksimal 20 karakter',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', // Default role
+        $this->generateAndSendOtp($request->email, $request->all());
+
+        return redirect()->route('register.verify')->with('email', $request->email);
+    }
+
+    private function generateAndSendOtp($email, $data = null)
+    {
+        $otp = rand(100000, 999999);
+        
+        // If data is null, fetch existing data from cache
+        if ($data === null) {
+            $data = \Illuminate\Support\Facades\Cache::get('register_data_' . $email);
+        }
+
+        // Cache the OTP for 1 minute
+        \Illuminate\Support\Facades\Cache::put('register_otp_' . $email, (string) $otp, now()->addMinutes(1));
+        
+        // Cache the registration data for 60 minutes
+        if ($data) {
+            \Illuminate\Support\Facades\Cache::put('register_data_' . $email, $data, now()->addMinutes(60));
+        }
+
+        \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\RegisterOtpMail($otp));
+    }
+
+    public function showVerifyOtpForm(Request $request)
+    {
+        $email = session('email') ?? $request->old('email');
+        if (!$email) {
+            return redirect()->route('register')->withErrors(['email' => 'Silakan daftar terlebih dahulu.']);
+        }
+        return view('auth.verify-otp', compact('email'));
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|string|size:6'
         ]);
+
+        $cachedOtp = \Illuminate\Support\Facades\Cache::get('register_otp_' . $request->email);
+        $cachedData = \Illuminate\Support\Facades\Cache::get('register_data_' . $request->email);
+
+        if (!$cachedData) {
+            return back()->withErrors(['otp' => 'Sesi pendaftaran tidak ditemukan. Silakan daftar ulang.'])->withInput(['email' => $request->email]);
+        }
+
+        if (!$cachedOtp) {
+            return back()->withErrors(['otp' => 'Kode OTP telah kedaluwarsa. Silakan kirim ulang OTP.'])->withInput(['email' => $request->email]);
+        }
+
+        if ($cachedOtp !== $request->otp) {
+            return back()->withErrors(['otp' => 'Kode OTP salah.'])->withInput(['email' => $request->email]);
+        }
+
+        // OTP is correct, create the user
+        $data = $cachedData;
+        
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'user',
+        ]);
+
+        \Illuminate\Support\Facades\Cache::forget('register_otp_' . $request->email);
+        \Illuminate\Support\Facades\Cache::forget('register_data_' . $request->email);
 
         Auth::login($user);
         $this->syncCart();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Akun berhasil dibuat dan email telah terverifikasi.');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $data = \Illuminate\Support\Facades\Cache::get('register_data_' . $request->email);
+        
+        if (!$data) {
+            // Data lost from cache (expired > 60 min). They must re-register.
+            return back()->withErrors(['otp' => 'Sesi pendaftaran telah kedaluwarsa. Silakan daftar ulang dari awal.'])->withInput(['email' => $request->email]);
+        }
+
+        $this->generateAndSendOtp($request->email, $data);
+
+        return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.')->withInput(['email' => $request->email]);
     }
 
     /**

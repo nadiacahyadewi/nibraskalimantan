@@ -63,14 +63,10 @@
 
         <!-- Main Content -->
         <!-- Start right after header without the hero banner -->
-        <main class="flex-grow pt-[100px] md:pt-[120px]">
+        <main class="flex-grow pt-[50px] md:pt-[120px]">
             <!-- Product Section -->
             <section id="produk" class="px-6 lg:px-16 pb-16 md:pb-24 bg-gray-50 min-h-screen">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Semua Koleksi</h2>
-                    <div class="w-24 h-1.5 bg-nibras-magenta mx-auto rounded-full"></div>
-                    <p class="text-gray-500 mt-4 max-w-2xl mx-auto text-lg hover:text-gray-700 transition-colors">Telusuri seluruh katalog produk terbaik kami di sini.</p>
-                </div>
+                
 
                 <div class="flex flex-col md:flex-row gap-8 items-start">
                     
@@ -81,9 +77,6 @@
                             @if(request('search'))
                                 <input type="hidden" name="search" value="{{ request('search') }}">
                             @endif
-                            <!-- Hidden sort input to preserve sorting -->
-                            <input type="hidden" name="sort" id="sort-hidden" value="{{ request('sort', 'terbaru') }}">
-                            
                             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                                 <h3 class="font-bold text-gray-800 text-lg">Saring</h3>
                                 <a href="{{ url('/produk') }}" class="text-xs bg-pink-100 text-nibras-magenta px-3 py-1.5 rounded-md font-semibold hover:bg-nibras-magenta hover:text-white transition-colors">
@@ -91,8 +84,20 @@
                                 </a>
                             </div>
 
+                            <!-- Urutan (Sorting) -->
+                            <div class="p-4 border-b border-gray-100 bg-white">
+                                <label class="block text-sm font-bold text-gray-800 mb-2">Urutan</label>
+                                <select name="sort" onchange="document.getElementById('filter-form').submit();" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta bg-white cursor-pointer shadow-sm">
+                                    <option value="terbaru" {{ $sort == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                                    <option value="terlama" {{ $sort == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                                    <option value="nama_a_z" {{ $sort == 'nama_a_z' ? 'selected' : '' }}>Nama (A - Z)</option>
+                                    <option value="nama_z_a" {{ $sort == 'nama_z_a' ? 'selected' : '' }}>Nama (Z - A)</option>
+                                    <option value="diskon" {{ $sort == 'diskon' ? 'selected' : '' }}>Promo Diskon</option>
+                                </select>
+                            </div>
+
                             <!-- Brand Accordion (sebagai pengganti Grup di referensi gambar) -->
-                            <div class="border-b border-gray-100" x-data="{ open: true }">
+                            <div class="border-b border-gray-100" x-data="{ open: window.innerWidth >= 768 }">
                                 <button type="button" @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-bold text-gray-800 hover:text-nibras-magenta transition-colors focus:outline-none">
                                     <span>Brand</span>
                                     <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -112,7 +117,7 @@
                             </div>
 
                             <!-- Kategori Accordion -->
-                            <div class="border-b border-gray-100" x-data="{ open: true }">
+                            <div class="border-b border-gray-100" x-data="{ open: window.innerWidth >= 768 }">
                                 <button type="button" @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-bold text-gray-800 hover:text-nibras-magenta transition-colors focus:outline-none">
                                     <span>Kategori</span>
                                     <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -130,26 +135,35 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Harga Accordion -->
+                            <div class="border-b border-gray-100" x-data="{ open: window.innerWidth >= 768 }">
+                                <button type="button" @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-bold text-gray-800 hover:text-nibras-magenta transition-colors focus:outline-none">
+                                    <span>Rentang Harga</span>
+                                    <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div x-show="open" x-collapse>
+                                    <div class="px-4 pb-4 space-y-3">
+                                        <div>
+                                            <label class="text-xs text-gray-500 mb-1 block">Harga Minimum (Rp)</label>
+                                            <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="0" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500 mb-1 block">Harga Maksimum (Rp)</label>
+                                            <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Tanpa batas" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta">
+                                        </div>
+                                        <button type="submit" class="w-full bg-nibras-magenta hover:bg-pink-700 text-white text-sm font-semibold py-2 rounded-lg transition-colors mt-2 shadow-sm">
+                                            Terapkan Harga
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </aside>
 
                     <!-- Main Content (Products Grid) -->
                     <div class="flex-1 w-full">
-                        <!-- Top Bar: Result count and Sorting -->
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-100 gap-4">
-                            <div class="text-sm text-gray-600 font-medium">
-                                Menampilkan <span class="font-bold text-gray-900">{{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }}</span> produk dari total <span class="font-bold text-gray-900">{{ $products->total() }}</span> produk
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm font-bold text-gray-800">Urutan</span>
-                                <select onchange="document.getElementById('sort-hidden').value = this.value; document.getElementById('filter-form').submit();" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-nibras-magenta focus:ring-1 focus:ring-nibras-magenta bg-white cursor-pointer shadow-sm">
-                                    <option value="terbaru" {{ $sort == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
-                                    <option value="terlama" {{ $sort == 'terlama' ? 'selected' : '' }}>Terlama</option>
-                                    <option value="nama_a_z" {{ $sort == 'nama_a_z' ? 'selected' : '' }}>Nama (A - Z)</option>
-                                    <option value="nama_z_a" {{ $sort == 'nama_z_a' ? 'selected' : '' }}>Nama (Z - A)</option>
-                                </select>
-                            </div>
-                        </div>
+                        <!-- Top Bar removed -->
 
                         <!-- Grid -->
                         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 gap-y-8 md:gap-y-10">
@@ -169,28 +183,30 @@
                                             </a>
                                         @endif
 
-                                        <!-- Brand Badge (Like the image reference N'BRS) -->
-                                        @if($p->brand)
-                                            <div class="absolute top-0 right-0 z-20">
-                                                <div class="bg-gray-800 text-white px-2 py-1 rounded-bl-lg font-bold text-[10px] sm:text-xs shadow-sm uppercase tracking-wider">
-                                                    {{ $p->brand->name }}
-                                                </div>
-                                            </div>
-                                        @endif
-
-                                        <!-- Discount Badge -->
-                                        @if($p->has_discount)
-                                            <div class="absolute top-3 left-0 z-20">
+                                        <!-- Top Badges (Discount + Brand) -->
+                                        <div class="absolute top-0 left-0 w-full z-20 flex">
+                                            <!-- Discount Badge -->
+                                            @if($p->has_discount)
                                                 @php
                                                     $original = (int) str_replace(['Rp', '.', ','], '', $p->original_min_price);
                                                     $current = (int) str_replace(['Rp', '.', ','], '', $p->min_price);
                                                     $percent = $original > 0 ? round((($original - $current) / $original) * 100) : 0;
                                                 @endphp
-                                                <div class="bg-[#ff4057] text-white px-2 py-0.5 rounded-r-md font-bold text-[10px] sm:text-xs shadow-sm">
+                                                <div class="bg-[#ff4057] text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider flex-grow flex items-center {{ !$p->brand ? 'rounded-br-lg shadow-sm' : '' }}">
                                                     {{ $percent > 0 ? 'DISKON ' . $percent . '%' : 'SALE' }}
                                                 </div>
-                                            </div>
-                                        @endif
+                                            @else
+                                                <!-- Empty space to push brand to right if no discount -->
+                                                <div class="flex-grow"></div>
+                                            @endif
+                                            
+                                            <!-- Brand Badge -->
+                                            @if($p->brand)
+                                                <div class="bg-gray-800 text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-sm flex items-center justify-center {{ !$p->has_discount ? 'rounded-bl-lg' : '' }}">
+                                                    {{ $p->brand->name }}
+                                                </div>
+                                            @endif
+                                        </div>
 
                                         <!-- Wishlist / Favorite Icon -->
                                         @php
@@ -253,7 +269,11 @@
                 </div>
 
                 <!-- Custom Pagination UI -->
-                <div class="mt-12 flex justify-end">
+                <div class="mt-12 flex flex-col items-center justify-center gap-6">
+                    <div class="text-[11px] md:text-sm text-gray-500 font-medium bg-white px-3 py-1.5 md:px-4 md:py-2 rounded-full shadow-sm border border-gray-100 text-center mx-4 md:mx-0">
+                        Menampilkan <span class="font-bold text-gray-900">{{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }}</span> produk dari total <span class="font-bold text-gray-900">{{ $products->total() }}</span> produk
+                    </div>
+
                     @if ($products->hasPages())
                         <div class="flex items-center justify-center space-x-2 font-medium">
                             <!-- Previous Page Link -->
@@ -303,6 +323,8 @@
         </button>
     </div>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Scroll to Top Logic
         const scrollToTopBtn = document.getElementById('scrollToTopBtn');

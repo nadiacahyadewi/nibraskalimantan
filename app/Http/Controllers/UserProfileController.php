@@ -25,18 +25,46 @@ class UserProfileController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
         ]);
 
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
 
         return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    /**
+     * Hapus akun pengguna.
+     */
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return back()->withErrors(['error' => 'Admin tidak dapat menghapus akunnya sendiri.']);
+        }
+
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password yang Anda masukkan salah.']);
+        }
+
+        Auth::logout();
+
+        if ($user->delete()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/')->with('success', 'Akun Anda berhasil dihapus.');
+        }
+
+        return back()->withErrors(['error' => 'Gagal menghapus akun.']);
     }
 }

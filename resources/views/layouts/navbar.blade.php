@@ -6,8 +6,9 @@
 @endphp
 
         <!-- Header -->
-        <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-white via-white/90 to-transparent px-6 lg:px-16 py-4 flex flex-col md:flex-row justify-between items-center transition-all duration-300 gap-6 border-transparent">
+        <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 max-md:bg-white max-md:border-b max-md:border-gray-100 bg-gradient-to-b from-white via-white/90 to-transparent px-6 lg:px-16 py-4 flex flex-col md:flex-row justify-between items-center transition-all duration-300 gap-6 border-transparent">
             <!-- Mobile Left: Profile/Login | Mobile Center: Logo | Mobile Right: Cart & Hamburger -->
+
             
             <div class="flex items-center justify-between w-full md:w-auto relative">
                 <!-- Mobile Left: Hamburger & Profile -->
@@ -281,18 +282,20 @@
                 const navbar = document.getElementById('main-navbar');
                 
                 function checkScroll() {
-                    if (window.scrollY > 20) {
-                        // Saat discroll: Solid putih dengan bayangan
+                    const isMobile = window.innerWidth < 768;
+                    if (window.scrollY > 20 || isMobile) {
+                        // Saat discroll atau di mobile: Solid putih dengan bayangan
                         navbar.classList.remove('bg-gradient-to-b', 'from-white', 'via-white/90', 'to-transparent', 'border-transparent');
                         navbar.classList.add('bg-white', 'shadow-md', 'border-gray-100');
                     } else {
-                        // Paling atas: Gradient membaur
+                        // Paling atas dan desktop: Gradient membaur
                         navbar.classList.add('bg-gradient-to-b', 'from-white', 'via-white/90', 'to-transparent', 'border-transparent');
                         navbar.classList.remove('bg-white', 'shadow-md', 'border-gray-100');
                     }
                 }
                 
                 window.addEventListener('scroll', checkScroll);
+                window.addEventListener('resize', checkScroll);
                 checkScroll(); // Check on load
 
                 // Mobile Menu Toggling
@@ -412,6 +415,30 @@
                     event.preventDefault();
                     event.stopPropagation();
                 }
+
+                @guest
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Oops!',
+                        text: 'Anda harus login terlebih dahulu untuk menyimpan produk ke favorit.',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login Sekarang',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#E32184',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ route('login') }}";
+                        }
+                    });
+                } else {
+                    if (confirm('Anda harus login terlebih dahulu. Lanjutkan ke halaman login?')) {
+                        window.location.href = "{{ route('login') }}";
+                    }
+                }
+                return;
+                @endguest
 
                 const buttons = document.querySelectorAll(`.favorite-btn[data-product-id="${productId}"]`);
                 buttons.forEach(btn => {

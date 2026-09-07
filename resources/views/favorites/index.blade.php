@@ -121,19 +121,30 @@
                                     </a>
                                 @endif
 
-                                <!-- Discount Badge -->
-                                @if($p->has_discount)
-                                    <div class="absolute top-3 left-0 z-20">
+                                <!-- Top Badges (Discount + Brand) -->
+                                <div class="absolute top-0 left-0 w-full z-20 flex">
+                                    <!-- Discount Badge -->
+                                    @if($p->has_discount)
                                         @php
-                                            $original = (int)str_replace(['Rp', '.', ','], '', $p->original_min_price);
-                                            $current = (int)str_replace(['Rp', '.', ','], '', $p->min_price);
+                                            $original = (int) str_replace(['Rp', '.', ','], '', $p->original_min_price);
+                                            $current = (int) str_replace(['Rp', '.', ','], '', $p->min_price);
                                             $percent = $original > 0 ? round((($original - $current) / $original) * 100) : 0;
                                         @endphp
-                                        <div class="bg-[#ff4057] text-white px-2 py-0.5 rounded-r-md font-bold text-[10px] sm:text-xs shadow-sm">
+                                        <div class="bg-[#ff4057] text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider flex-grow flex items-center {{ !$p->brand ? 'rounded-br-lg shadow-sm' : '' }}">
                                             {{ $percent > 0 ? 'DISKON ' . $percent . '%' : 'SALE' }}
                                         </div>
-                                    </div>
-                                @endif
+                                    @else
+                                        <!-- Empty space to push brand to right if no discount -->
+                                        <div class="flex-grow"></div>
+                                    @endif
+                                    
+                                    <!-- Brand Badge -->
+                                    @if($p->brand)
+                                        <div class="bg-gray-800 text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-sm flex items-center justify-center {{ !$p->has_discount ? 'rounded-bl-lg' : '' }}">
+                                            {{ $p->brand->name }}
+                                        </div>
+                                    @endif
+                                </div>
 
                                 <!-- Love / Favorite Button (Active Red) -->
                                 <button type="button"

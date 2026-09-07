@@ -83,7 +83,7 @@
         @include('layouts.navbar')
 
         <!-- Main Content -->
-        <main class="flex-grow -mt-[70px] md:-mt-[88px]">
+        <main class="flex-grow pt-[50px] md:pt-0">
             <!-- Banner Section -->
             <section class="w-full relative overflow-hidden shadow-inner flex items-center justify-start bg-pink-50">
                 <!-- Full Background Image -->
@@ -93,7 +93,7 @@
                 <div class="absolute inset-0 bg-white/60 md:hidden z-0 pointer-events-none"></div>
                 
                 <!-- Text Content Overlay -->
-                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full pt-[120px] sm:pt-[100px]">
+                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full">
                     <div class="max-w-xl md:max-w-2xl lg:max-w-3xl">
                         <span class="block text-gray-600 font-semibold text-base md:text-lg mb-1 md:mb-4 tracking-wide">Katalog Produk</span>
                         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-nibras-magenta leading-tight" style="font-family: 'Times New Roman', Times, serif;">
@@ -104,7 +104,7 @@
                             Temukan koleksi busana muslim terbaik dari Nibras Kalimantan untuk Anda dan keluarga tercinta.
                         </p>
                         
-                        <div class="flex flex-row flex-wrap gap-3 relative z-30 mb-8 md:mb-16">
+                        <div class="flex flex-row flex-wrap gap-3 relative z-30">
                             <a href="#produk" class="bg-nibras-magenta text-white px-5 py-2.5 md:px-8 md:py-3.5 text-sm md:text-base rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-auto text-center flex items-center justify-center gap-2">
                                 Belanja Sekarang 
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,28 +128,28 @@
                     @endphp
                     <div class="grid grid-cols-4 gap-2 md:gap-6">
                         <!-- Shortcut 1 -->
-                        <a href="{{ url('/produk') }}{{ $gamisCat ? '?category_id='.$gamisCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $gamisCat ? '?category_id=' . $gamisCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis<span class="hidden md:inline"> Wanita</span></h3>
                         </a>
                         <!-- Shortcut 2 -->
-                        <a href="{{ url('/produk') }}{{ $kokoCat ? '?category_id='.$kokoCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $kokoCat ? '?category_id=' . $kokoCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Koko</h3>
                         </a>
                         <!-- Shortcut 3 -->
-                        <a href="{{ url('/produk') }}{{ $anakCat ? '?category_id='.$anakCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $anakCat ? '?category_id=' . $anakCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Anak</h3>
                         </a>
                         <!-- Shortcut 4 -->
-                        <a href="{{ url('/produk') }}{{ $sarimbitCat ? '?category_id='.$sarimbitCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $sarimbitCat ? '?category_id=' . $sarimbitCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </div>
@@ -209,28 +209,30 @@
                                     </a>
                                 @endif
 
-                                <!-- Brand Badge (Like the image reference N'BRS) -->
-                                @if($p->brand)
-                                    <div class="absolute top-0 right-0 z-20">
-                                        <div class="bg-gray-800 text-white px-2 py-1 rounded-bl-lg font-bold text-[10px] sm:text-xs shadow-sm uppercase tracking-wider">
-                                            {{ $p->brand->name }}
-                                        </div>
-                                    </div>
-                                @endif
-
-                                <!-- Discount Badge -->
-                                @if($p->has_discount)
-                                    <div class="absolute top-3 left-0 z-20">
+                                <!-- Top Badges (Discount + Brand) -->
+                                <div class="absolute top-0 left-0 w-full z-20 flex">
+                                    <!-- Discount Badge -->
+                                    @if($p->has_discount)
                                         @php
                                             $original = (int) str_replace(['Rp', '.', ','], '', $p->original_min_price);
                                             $current = (int) str_replace(['Rp', '.', ','], '', $p->min_price);
                                             $percent = $original > 0 ? round((($original - $current) / $original) * 100) : 0;
                                         @endphp
-                                        <div class="bg-[#ff4057] text-white px-2 py-0.5 rounded-r-md font-bold text-[10px] sm:text-xs shadow-sm">
+                                        <div class="bg-[#ff4057] text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider flex-grow flex items-center {{ !$p->brand ? 'rounded-br-lg shadow-sm' : '' }}">
                                             {{ $percent > 0 ? 'DISKON ' . $percent . '%' : 'SALE' }}
                                         </div>
-                                    </div>
-                                @endif
+                                    @else
+                                        <!-- Empty space to push brand to right if no discount -->
+                                        <div class="flex-grow"></div>
+                                    @endif
+
+                                    <!-- Brand Badge -->
+                                    @if($p->brand)
+                                        <div class="bg-gray-800 text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-sm flex items-center justify-center {{ !$p->has_discount ? 'rounded-bl-lg' : '' }}">
+                                            {{ $p->brand->name }}
+                                        </div>
+                                    @endif
+                                </div>
 
                                 <!-- Wishlist / Favorite Icon -->
                                 @php

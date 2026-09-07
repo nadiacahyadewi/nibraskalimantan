@@ -29,9 +29,42 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        // Filter Range Harga
+        if ($request->filled('min_price') || $request->filled('max_price')) {
+            $minPrice = $request->input('min_price', 0);
+            $maxPrice = $request->input('max_price', 999999999);
+            
+            // Clean up formatting if user inputs like 100.000
+            $minPrice = (int) str_replace(['Rp', '.', ',', ' '], '', $minPrice);
+            $maxPrice = (int) str_replace(['Rp', '.', ',', ' '], '', $maxPrice);
+
+            $query->whereHas('variants', function ($q) use ($minPrice, $maxPrice) {
+                $q->where('stock', '>', 0)
+                  ->where(function ($subQ) use ($minPrice, $maxPrice) {
+                      // Cek harga diskon jika ada diskon
+                      $subQ->where(function ($q2) use ($minPrice, $maxPrice) {
+                          $q2->where('discount_price', '>', 0)
+                             ->whereBetween('discount_price', [$minPrice, $maxPrice]);
+                      })
+                      // Cek harga normal jika tidak ada diskon
+                      ->orWhere(function ($q2) use ($minPrice, $maxPrice) {
+                          $q2->where(function ($q3) {
+                              $q3->whereNull('discount_price')->orWhere('discount_price', 0);
+                          })->whereBetween('price', [$minPrice, $maxPrice]);
+                      });
+                  });
+            });
+        }
+
         // Sorting logic
         $sort = $request->input('sort', 'terbaru');
-        if ($sort == 'terlama') {
+        
+        if ($sort == 'diskon') {
+            $query->whereHas('variants', function ($q) {
+                $q->where('discount_price', '>', 0)->where('stock', '>', 0);
+            });
+            $query->latest();
+        } elseif ($sort == 'terlama') {
             $query->oldest();
         } elseif ($sort == 'nama_a_z') {
             $query->orderBy('name', 'asc');

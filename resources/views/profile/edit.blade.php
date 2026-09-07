@@ -66,10 +66,8 @@
                             <!-- Email -->
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
-                                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-red-500 focus:border-red-500 transition-colors @error('email') border-red-500 @enderror" required>
-                                @error('email')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                <input type="email" id="email" value="{{ $user->email }}" readonly class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed">
+                                <p class="mt-1 text-xs text-gray-500">Email telah diverifikasi dengan OTP dan tidak dapat diubah lagi.</p>
                             </div>
                         </div>
 
@@ -102,9 +100,71 @@
                     </form>
                 </div>
             </div>
+            @if($user->role !== 'admin')
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8 border-red-200">
+                <div class="px-6 py-6 border-b border-red-100 bg-red-50">
+                    <h2 class="text-lg font-bold text-red-700">Hapus Akun</h2>
+                    <p class="mt-1 text-sm text-red-600">Peringatan: Setelah akun Anda dihapus, semua sumber daya dan data Anda akan dihapus secara permanen. Sebelum menghapus akun Anda, harap unduh data atau informasi apa pun yang ingin Anda simpan.</p>
+                </div>
+                
+                <div class="px-6 py-6">
+                    @error('error')
+                        <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
+                            <span class="block sm:inline">{{ $message }}</span>
+                        </div>
+                    @enderror
+
+                    <form id="deleteAccountForm" action="{{ route('profile.destroy') }}" method="POST" class="space-y-4">
+                        @csrf
+                        @method('DELETE')
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Anda</label>
+                            <input type="password" name="password" id="password" class="w-full md:w-1/2 px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-red-500 focus:border-red-500 transition-colors @error('password') border-red-500 @enderror" required placeholder="Masukkan password Anda untuk verifikasi">
+                            @error('password')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-sm transition-colors focus:ring-4 focus:ring-red-500/20">
+                                Hapus Akun Secara Permanen
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @endif
         </div>
     </main>
 
     @include('layouts.footer')
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteForm = document.getElementById('deleteAccountForm');
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Hapus Akun?',
+                        text: 'Apakah Anda yakin ingin menghapus akun Anda secara permanen? Tindakan ini tidak dapat dibatalkan.',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#de232c',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            deleteForm.submit();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

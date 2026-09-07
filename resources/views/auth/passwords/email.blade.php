@@ -51,8 +51,12 @@
                     </a>
                 </div>
                 
-                <h1 class="text-[28px] font-bold text-gray-900 mb-1 tracking-tight">Lupa Password?</h1>
-                <p class="text-gray-500 mb-8 text-sm">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
+                <!-- Logo & Heading -->
+                <div class="flex justify-center md:justify-start mb-6">
+                    <img src="{{ asset('assets/logo.png') }}" alt="Nibras Logo" class="h-10 sm:h-12 w-auto drop-shadow-sm">
+                </div>
+                <h1 class="text-[28px] font-bold text-gray-900 mb-1 tracking-tight text-center md:text-left">Lupa Password?</h1>
+                <p class="text-gray-500 mb-8 text-sm text-center md:text-left">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.</p>
 
                 @if (session('status'))
                     <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 border border-green-200 rounded-lg" role="alert">
