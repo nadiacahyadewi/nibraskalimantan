@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Mencegah bot merayapi halaman admin atau halaman yang tidak penting
+Disallow: /wp-admin/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /profile/
+
+# Menunjukkan letak sitemap kepada bot pencari (Ganti dengan URL sitemap Anda)
+Sitemap: https://nibraskalimantan.com/sitemap.xml

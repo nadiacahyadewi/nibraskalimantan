@@ -23,6 +23,9 @@ Route::post('/keranjang/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/keranjang/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
+// Sitemap Route for SEO
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 
 // Checkout Route (Public / Guest accessible agar bisa beli tanpa login)
 Route::match(['get', 'post'], '/checkout', [CartController::class, 'checkout'])->name('checkout');

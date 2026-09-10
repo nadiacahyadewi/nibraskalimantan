@@ -76,28 +76,30 @@
 
             <!-- SEO Optimized Comprehensive Details -->
             <article class="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-gray-100 mb-10 text-gray-700 space-y-6 leading-relaxed">
-                <h2 class="text-2xl font-bold text-nibras-magenta mb-4">Pusat Busana Muslim Terlengkap: Nibras House Banjarbaru, Kalimantan Selatan</h2>
+                <!-- H2 Super Brutal Keyword -->
+                <h2 class="text-2xl font-bold text-nibras-magenta mb-4">Pusat Grosir & Agen Resmi Nibras House Terbesar se-Kalimantan</h2>
                 
                 <p>
-                    Selamat datang di <strong>Nibras Kalimantan</strong>, destinasi belanja pakaian muslim dan muslimah terbaik dan terlengkap yang berpusat di <strong>Banjarbaru, Kalimantan Selatan</strong>. Sebagai distributor dan agen resmi produk busana muslim berkualitas, kami berdedikasi untuk memenuhi segala kebutuhan pakaian islami Anda, mulai dari pakaian harian, seragam pengajian, hingga koleksi eksklusif hari raya.
+                    Selamat datang di <strong>Nibras Kalimantan</strong>, pusat kulakan dan destinasi belanja pakaian muslim dan muslimah terbaik, terlengkap, dan termurah. Sebagai <strong>distributor baju koko kalimantan</strong> dan agen resmi produk busana muslim berkualitas, kami melayani penjualan eceran maupun partai besar ke seluruh penjuru pulau, mulai dari <em>Kalimantan Timur, Kalimantan Selatan, Kalimantan Barat, Kalimantan Tengah, hingga Kalimantan Utara</em>.
                 </p>
 
                 <p>
-                    Kami bangga menjadi <strong>Toko Baju Muslim terpercaya di Banjarbaru</strong> yang menghadirkan brand-brand ternama seperti <em>Nibras, Alnita, Inspire, dan HaiHai</em>. Koleksi kami meliputi berbagai macam pilihan busana, antara lain:
+                    Kami adalah <strong>Toko Busana Muslim Terlengkap</strong> yang menjadi supplier utama bagi para reseller, dropshipper, dan pelanggan setia di berbagai kota besar seperti <strong>Balikpapan, Samarinda, Pontianak, Banjarmasin, Palangkaraya, Tarakan, hingga Bontang</strong>. Koleksi <em>brand</em> unggulan kami meliputi Nibras, Alnita, Inspire, dan HaiHai. Kami menyediakan:
                 </p>
                 <ul class="list-disc list-inside space-y-2 ml-4 text-gray-600">
-                    <li><strong>Gamis & Tunik Dewasa:</strong> Hadir dengan desain modern, bahan adem, dan *syar'i* yang cocok untuk berbagai aktivitas di cuaca tropis Kalimantan.</li>
-                    <li><strong>Koko Pria:</strong> Koko lengan panjang dan pendek yang elegan untuk ibadah maupun acara formal.</li>
-                    <li><strong>Sarimbit Keluarga:</strong> Pakaian kembar keluarga (ayah, ibu, anak) yang selalu menjadi *best-seller* menjelang Lebaran dan Idul Adha.</li>
-                    <li><strong>Pakaian Anak & Hijab/Mukena:</strong> Koleksi nyaman dan lucu untuk si kecil serta perlengkapan ibadah premium.</li>
+                    <li><strong>Gamis Nibras & Busana Syari Kalimantan:</strong> Hadir dengan desain terbaru, bahan adem berkualitas, cocok untuk berbagai acara formal dan pengajian. Tersedia pilihan <em>dress nibras</em> dan <em>outfit muslimah</em> kekinian.</li>
+                    <li><strong>Baju Koko Nibras Pria:</strong> Koko elegan lengan panjang dan pendek yang dicari banyak jamaah dan instansi untuk seragam.</li>
+                    <li><strong>Sarimbit Keluarga Nibras Kalimantan:</strong> Baju muslim <em>couple</em> dan seragam kembar keluarga yang selalu menjadi incaran dan <em>best-seller</em> untuk lebaran dan hari raya.</li>
+                    <li><strong>Pakaian Anak, Mukena, & Jilbab Nibras:</strong> Koleksi <em>koko anak</em> dan <em>gamis anak nibras</em> yang super nyaman dipakai si kecil.</li>
                 </ul>
 
-                <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">Mengapa Memilih Nibras House Banjarbaru?</h3>
+                <!-- H3 Lanjutan Brutal Keyword -->
+                <h3 class="text-xl font-semibold text-gray-900 mt-8 mb-3">Grosir Busana Muslim Balikpapan, Samarinda, Banjarmasin & Sekitarnya</h3>
                 <p>
-                    Berlokasi strategis di Jl. Karang Anyar 1, Loktabat Utara, Banjarbaru, toko kami sangat mudah diakses baik oleh warga Banjarbaru, Martapura, hingga Banjarmasin. Kami menyediakan layanan penjualan <strong>Eceran (Satuan) maupun Partai Besar (Grosir)</strong> dengan penawaran harga dan diskon terbaik se-Kalimantan. Jika Anda mencari agen seragam majelis taklim atau baju keluarga dengan stok berlimpah, <strong>Nibras Kalimantan</strong> adalah jawaban yang tepat.
+                    Berpusat strategis dan memiliki jaringan pengiriman super cepat, Nibras Kalimantan memudahkan Anda yang ingin <strong>beli baju muslim online di Kalimantan</strong> tanpa harus repot dan menunggu lama dari pulau Jawa. Kami selalu memberikan <strong>promo Nibras diskon besar-besaran</strong> bagi Anda yang mendaftar sebagai agen, reseller, atau dropshipper kami.
                 </p>
                 <p>
-                    Kami berkomitmen menghadirkan pengalaman belanja yang nyaman, pelayanan yang ramah, serta kemudahan berbelanja baik secara *offline* di toko maupun pemesanan *online*. Kunjungi kami sekarang juga dan temukan pesona busana muslim impian Anda bersama Nibras House Banjarbaru!
+                    Percayakan kebutuhan <strong>busana muslim wanita, busana muslim pria, hingga seragam keluarga</strong> Anda pada agen resmi Nibras Kalimantan. Jangan lewatkan <em>koleksi lebaran Nibras terbaru</em> tahun ini. Kunjungi kami atau hubungi admin pemesanan online kami untuk mendapatkan katalog terlengkap dan harga grosir terbaik!
                 </p>
             </article>
 

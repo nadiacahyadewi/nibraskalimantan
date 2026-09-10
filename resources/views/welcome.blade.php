@@ -6,12 +6,34 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Febia Nibras Kalsel - Temukan koleksi busana muslim modern, gamis, baju koko, baju anak, dan sarimbit keluarga terlengkap dan berkualitas di Kalimantan Selatan.">
-    <meta name="keywords" content="busana muslim, gamis nibras, koko nibras, sarimbit keluarga, busana muslim kalsel, febia nibras, nibras kalimantan selatan, baju muslim modern, nibras original, toko busana muslim banjarmasin">
-    <meta name="author" content="Febia Nibras Kalsel">
+    <title>Nibras Kalimantan | Pusat Grosir & Agen Busana Muslim Terbesar di Kalimantan</title>
+    <meta name="description" content="Cari busana muslim & gamis Nibras terbaru di Kalimantan? Kami adalah agen dan distributor resmi Nibras House terlengkap untuk wilayah Balikpapan, Samarinda, Banjarmasin, Pontianak & sekitarnya. Dapatkan promo diskon dan koleksi terbaru di sini!">
+    <meta name="keywords" content="jual baju muslim kalimantan, busana muslimah kalimantan timur, nibras house kalimantan, gamis nibras kalimantan, agen nibras kalimantan, distributor baju koko kalimantan, grosir busana muslim balikpapan, toko baju muslim samarinda, nibras pontianak, agen gamis banjarmasin, nibras kalimantan selatan, nibras kalimantan barat, nibras kalimantan tengah, nibras kalimantan utara, baju koko nibras tarakan, grosir gamis palangkaraya, distributor nibras bontang, busana syari kalimantan, baju muslim keluarga kalimantan, sarimbit keluarga nibras kalimantan, koko anak kalimantan, gamis anak nibras kalimantan, mukena nibras kalimantan, jilbab nibras kalimantan, tunik nibras kalimantan, baju muslim pria kalimantan, busana muslim wanita kalimantan, agen resmi nibras kalimantan, toko busana muslim terlengkap kalimantan, beli baju muslim online kalimantan, nibras diskon kalimantan, promo nibras kalimantan, reseller nibras kalimantan, dropship baju muslim kalimantan, supplier baju muslim kalimantan, gamis terbaru nibras kalimantan, koleksi lebaran nibras kalimantan, baju muslim couple kalimantan, dress nibras kalimantan, outfit muslimah kalimantan, fashion muslim kalimantan">
+    <meta name="author" content="Nibras Kalimantan">
     <meta name="robots" content="index, follow">
-    
-    <title>Febia Nibras Kalsel | Busana Muslim Modern</title>
+
+    <!-- GEO-TAGGING LOCAL SEO (Fokus Pulau Kalimantan) -->
+    <meta name="geo.region" content="ID-KI" /> 
+    <meta name="geo.placename" content="Balikpapan" /> 
+    <meta name="geo.position" content="-1.2379;116.8529" /> 
+    <meta name="ICBM" content="-1.2379, 116.8529" />
+
+    <!-- OPEN GRAPH CARDS -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:title" content="Nibras Kalimantan | Pusat Busana Muslim Terbesar">
+    <meta property="og:description" content="Tampil syar'i dan elegan dengan koleksi terbaru Nibras. Agen resmi & distributor Nibras terlengkap se-Kalimantan. Klik untuk melihat katalog terbaru!">
+    <meta property="og:image" content="{{ asset('assets/promobg.png') }}"> 
+
+    <!-- TWITTER CARDS -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url('/') }}">
+    <meta name="twitter:title" content="Nibras Kalimantan | Pusat Busana Muslim Terbesar">
+    <meta name="twitter:description" content="Tampil syar'i dan elegan dengan koleksi terbaru Nibras. Agen resmi & distributor Nibras terlengkap se-Kalimantan.">
+    <meta name="twitter:image" content="{{ asset('assets/promobg.png') }}"> 
+
+    <!-- CANONICAL URL -->
+    <link rel="canonical" href="{{ url('/') }}" />
     
     <!-- PWA -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -83,35 +105,58 @@
         @include('layouts.navbar')
 
         <!-- Main Content -->
-        <main class="flex-grow pt-[50px] md:pt-0">
+        <main class="flex-grow pt-[20px] md:pt-0">
             <!-- Banner Section -->
             <section class="w-full relative overflow-hidden shadow-inner flex items-center justify-start bg-pink-50">
                 <!-- Full Background Image -->
-                <img src="{{ asset('assets/bakcground.png') }}" alt="Promo Nibras Kalimantan" class="w-full h-[400px] md:h-auto object-cover object-[70%_top] md:object-center">
+                <img src="{{ asset('assets/background9.png') }}" alt="Promo Nibras Kalimantan" class="w-full h-[400px] md:h-[790px] object-cover object-[70%_top] md:object-center">
                 
                 <!-- White Overlay 60% (Mobile Only) -->
-                <div class="absolute inset-0 bg-white/60 md:hidden z-0 pointer-events-none"></div>
+                <div class="absolute inset-0 bg-white/40 md:hidden z-0 pointer-events-none"></div>
                 
                 <!-- Text Content Overlay -->
-                <div class="absolute inset-0 z-10 flex flex-col justify-center px-6 lg:px-24 w-full h-full">
+                <div class="absolute inset-0 z-10 flex items-center justify-center px-6 lg:px-24 w-full h-full text-center">
                     <div class="max-w-xl md:max-w-2xl lg:max-w-3xl">
-                        <span class="block text-gray-600 font-semibold text-base md:text-lg mb-1 md:mb-4 tracking-wide">Katalog Produk</span>
-                        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-nibras-magenta leading-tight" style="font-family: 'Times New Roman', Times, serif;">
-                            Busana Muslim <br/>
-                            Modern & Elegan
+                        
+                        <span class="block text-gray-600 font-semibold text-base md:text-lg mb-1 md:mb-4 tracking-wide">
+                            Katalog Produk
+                        </span>
+                
+                        <h1 
+                            class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-nibras-magenta leading-tight"
+                            style="font-family: 'Times New Roman', Times, serif;"
+                        >
+                            Busana Muslim Nibras Kalimantan
                         </h1>
-                        <p class="text-gray-600 text-lg md:text-xl mb-10 leading-relaxed max-w-lg hidden sm:block">
+                
+                        <p class="text-gray-600 text-lg md:text-xl mb-10 leading-relaxed max-w-lg mx-auto hidden sm:block">
                             Temukan koleksi busana muslim terbaik dari Nibras Kalimantan untuk Anda dan keluarga tercinta.
                         </p>
                         
-                        <div class="flex flex-row flex-wrap gap-3 relative z-30">
-                            <a href="#produk" class="bg-nibras-magenta text-white px-5 py-2.5 md:px-8 md:py-3.5 text-sm md:text-base rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-auto text-center flex items-center justify-center gap-2">
+                        <div class="flex flex-row flex-wrap gap-3 relative z-30 justify-center">
+                            <a 
+                                href="#produk" 
+                                class="bg-nibras-magenta text-white px-5 py-2.5 md:px-8 md:py-3.5 text-sm md:text-base rounded-full font-bold shadow-lg hover:bg-pink-700 hover:scale-105 transition-all duration-300 w-auto text-center flex items-center justify-center gap-2"
+                            >
                                 Belanja Sekarang 
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    class="h-4 w-4 md:h-5 md:w-5" 
+                                    fill="none" 
+                                    viewBox="0 0 24 24" 
+                                    stroke="currentColor"
+                                >
+                                    <path 
+                                        stroke-linecap="round" 
+                                        stroke-linejoin="round" 
+                                        stroke-width="2" 
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" 
+                                    />
                                 </svg>
                             </a>
                         </div>
+                
                     </div>
                 </div>
             </section>
@@ -121,39 +166,39 @@
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-16 text-center">
                     <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-8">Kategori Pilihan</h2>
                     @php
-                        $gamisCat = \App\Models\Category::where('name', 'like', '%Gamis%')->first();
+                        $gamisCat = \App\Models\Category::where('name', 'like', '%Gamis%')->where('name', 'not like', '%Anak%')->first();
                         $kokoCat = \App\Models\Category::where('name', 'like', '%Koko%')->first();
-                        $anakCat = \App\Models\Category::where('name', 'like', '%Anak%')->first();
-                        $sarimbitCat = \App\Models\Category::where('name', 'like', '%Sarimbit%')->first();
+                        $gamisAnakCat = \App\Models\Category::where('name', 'like', '%Gamis Anak%')->first();
+                        $mukenaCat = \App\Models\Category::where('name', 'like', '%Mukena%')->first();
                     @endphp
                     <div class="grid grid-cols-4 gap-2 md:gap-6">
                         <!-- Shortcut 1 -->
-                        <a href="{{ url('/produk') }}{{ $gamisCat ? '?category_id=' . $gamisCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $gamisCat ? '?category_id='.$gamisCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                             </div>
-                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis<span class="hidden md:inline"> Wanita</span></h3>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis</h3>
                         </a>
                         <!-- Shortcut 2 -->
-                        <a href="{{ url('/produk') }}{{ $kokoCat ? '?category_id=' . $kokoCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $kokoCat ? '?category_id='.$kokoCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </div>
-                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Koko</h3>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Koko</h3>
                         </a>
                         <!-- Shortcut 3 -->
-                        <a href="{{ url('/produk') }}{{ $anakCat ? '?category_id=' . $anakCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $gamisAnakCat ? '?category_id='.$gamisAnakCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Baju Anak</h3>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Gamis Anak</h3>
                         </a>
                         <!-- Shortcut 4 -->
-                        <a href="{{ url('/produk') }}{{ $sarimbitCat ? '?category_id=' . $sarimbitCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
+                        <a href="{{ url('/produk') }}{{ $mukenaCat ? '?category_id='.$mukenaCat->id : '' }}" class="group block bg-white rounded-xl md:rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-nibras-magenta hover:-translate-y-1 flex flex-col items-center justify-center">
                             <div class="w-10 h-10 md:w-16 md:h-16 bg-pink-100 text-nibras-magenta rounded-full flex items-center justify-center mb-2 md:mb-4 group-hover:bg-nibras-magenta group-hover:text-white transition-colors duration-300">
                                 <svg class="w-5 h-5 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </div>
-                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Sarimbit</h3>
+                            <h3 class="font-bold text-gray-800 group-hover:text-nibras-magenta transition-colors text-[9px] sm:text-[10px] md:text-base leading-tight">Mukena</h3>
                         </a>
                     </div>
                 </div>
@@ -225,7 +270,7 @@
                                         <!-- Empty space to push brand to right if no discount -->
                                         <div class="flex-grow"></div>
                                     @endif
-
+                                    
                                     <!-- Brand Badge -->
                                     @if($p->brand)
                                         <div class="bg-gray-800 text-white px-2 py-1 font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-sm flex items-center justify-center {{ !$p->has_discount ? 'rounded-bl-lg' : '' }}">
