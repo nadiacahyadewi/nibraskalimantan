@@ -237,10 +237,10 @@ class CartController extends Controller
             ];
 
             // Deduct stock
-            if ($variant) {
-                $variant->stock = max(0, $variant->stock - $item->quantity);
-                $variant->save();
-            }
+            // if ($variant) {
+            //     $variant->stock = max(0, $variant->stock - $item->quantity);
+            //     $variant->save();
+            // }
         }
 
         // Create Order

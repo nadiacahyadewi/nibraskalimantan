@@ -35,11 +35,29 @@
            @if($product->images && $product->images->count() > 0)
                @foreach($product->images as $image)
                    <image:image>
-                       <image:loc>{{ $image->url }}</image:loc>
+                       <image:loc>{{ asset($image->url) }}</image:loc>
                        <image:title>{{ $product->name }}</image:title>
                    </image:image>
                @endforeach
            @endif
+       </url>
+   @endforeach
+
+   <!-- Dynamic Categories -->
+   @foreach ($categories as $category)
+       <url>
+           <loc>{{ url('/produk?category_id=' . $category->id) }}</loc>
+           <changefreq>weekly</changefreq>
+           <priority>0.7</priority>
+       </url>
+   @endforeach
+
+   <!-- Dynamic Brands -->
+   @foreach ($brands as $brand)
+       <url>
+           <loc>{{ url('/produk?brand_id=' . $brand->id) }}</loc>
+           <changefreq>weekly</changefreq>
+           <priority>0.7</priority>
        </url>
    @endforeach
 </urlset>
